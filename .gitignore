@@ -1,0 +1,10 @@
+# Local Claude Code settings (machine-specific permissions)
+.claude/settings.local.json
+
+# Runtime user data (created by /learning:init)
+profile.json
+roadmap.json
+learning-log.jsonl
+.spaced-repetition.json
+.review-schedule.json
+synthesis/

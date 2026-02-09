@@ -1,0 +1,74 @@
+#!/bin/bash
+# Learning System - Load State Helper
+# Loads profile, roadmap, and learning state into environment variables
+
+set -euo pipefail
+
+# Derive project root from script location (portable across systems)
+# This script is at: .claude/plugins/local/learning-science/helpers/load-state.sh
+# Project root is 5 levels up
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LEARNING_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
+
+PROFILE_FILE="$LEARNING_ROOT/profile.json"
+ROADMAP_FILE="$LEARNING_ROOT/roadmap.json"
+LEARNING_LOG="$LEARNING_ROOT/learning-log.jsonl"
+SPACED_REP_FILE="$LEARNING_ROOT/.spaced-repetition.json"
+REVIEW_SCHEDULE_FILE="$LEARNING_ROOT/.review-schedule.json"
+
+# Export state file paths
+export LEARNING_ROOT
+export PROFILE_FILE
+export ROADMAP_FILE
+export LEARNING_LOG
+export SPACED_REP_FILE
+export REVIEW_SCHEDULE_FILE
+
+# Function to check if profile exists
+has_profile() {
+    [[ -f "$PROFILE_FILE" ]]
+}
+
+# Function to check if roadmap exists
+has_roadmap() {
+    [[ -f "$ROADMAP_FILE" ]]
+}
+
+# Function to get profile field
+get_profile_field() {
+    local field="$1"
+    if has_profile; then
+        jq -r ".$field // empty" "$PROFILE_FILE"
+    fi
+}
+
+# Function to get roadmap field
+get_roadmap_field() {
+    local field="$1"
+    if has_roadmap; then
+        jq -r ".$field // empty" "$ROADMAP_FILE"
+    fi
+}
+
+# Export helper functions
+export -f has_profile
+export -f has_roadmap
+export -f get_profile_field
+export -f get_roadmap_field
+
+# Load current state (if files exist)
+if has_profile; then
+    export LEARNER_NAME=$(get_profile_field "name")
+    export LEARNER_ROLE=$(get_profile_field "role")
+    export LEARNING_STYLE=$(get_profile_field "learning_style.mode")
+    export TIME_DAILY=$(get_profile_field "time_commitment.daily_minutes")
+    export TIME_WEEKLY=$(get_profile_field "time_commitment.weekly_hours")
+fi
+
+if has_roadmap; then
+    export CURRENT_PHASE=$(get_roadmap_field "current_phase")
+    export ROADMAP_GOAL=$(get_roadmap_field "primary_goal")
+fi
+
+# Return success
+return 0 2>/dev/null || exit 0
