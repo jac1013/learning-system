@@ -113,29 +113,17 @@ Based on accuracy and completeness:
 
 ### Next Steps
 
-!`# Save to spaced repetition
-SCORE=[score from evaluation]
-NOTES="[brief summary of gaps]"
+*Execute the following, replacing placeholders with actual values from the session:*
 
+```bash
 bash ./.claude/scripts/save-state.sh spaced-rep "$TOPIC" "$SCORE" "$NOTES"
+```
 
-# Append to learning log
-LOG_ENTRY=$(cat <<EOF
-{
-  "timestamp": "$(date -Iseconds)",
-  "type": "daily-recall",
-  "topic": "$TOPIC",
-  "score": $SCORE,
-  "duration_minutes": [estimated],
-  "strengths": ["[what you got right]"],
-  "gaps": ["[what was missing]"],
-  "next_review": "$(date -I -d "+$(jq -r --arg topic "$TOPIC" '.topics[$topic].intervals[-1] // 1' ./.spaced-repetition.json) days")"
-}
-EOF
-)
-
+```bash
 bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
-`
+```
+
+*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "daily-recall", topic, score, duration_minutes, strengths array, gaps array, next_review date.*
 
 ---
 

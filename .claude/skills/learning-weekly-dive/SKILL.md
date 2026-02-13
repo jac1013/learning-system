@@ -172,42 +172,21 @@ I'm a [junior developer / new learner / mid-level engineer - adjust based on pro
 
 ### Save Results
 
-!`# Calculate overall score
-CLARITY_SCORE=[score]
-ACCURACY_SCORE=[score]
-DEPTH_SCORE=[score]
-COMPLETENESS_SCORE=[score]
-OVERALL_SCORE=$(echo "scale=0; ($CLARITY_SCORE + $ACCURACY_SCORE + $DEPTH_SCORE + $COMPLETENESS_SCORE) / 4" | bc)
+*Calculate overall score as average of the 4 dimension scores, then execute:*
 
-# Save to spaced repetition
-NOTES="Teach-back: C:$CLARITY_SCORE A:$ACCURACY_SCORE D:$DEPTH_SCORE Cm:$COMPLETENESS_SCORE"
-bash ./.claude/scripts/save-state.sh spaced-rep "$TOPIC" "$OVERALL_SCORE" "$NOTES"
+```bash
+bash ./.claude/scripts/save-state.sh spaced-rep "$TOPIC" "$OVERALL_SCORE" "Teach-back: C:$CLARITY A:$ACCURACY D:$DEPTH Cm:$COMPLETENESS"
+```
 
-# Update roadmap status
+```bash
 bash ./.claude/scripts/save-state.sh roadmap "$TOPIC" "completed"
+```
 
-# Append to learning log
-LOG_ENTRY=$(cat <<EOF
-{
-  "timestamp": "$(date -Iseconds)",
-  "type": "weekly-dive",
-  "topic": "$TOPIC",
-  "overall_score": $OVERALL_SCORE,
-  "scores": {
-    "clarity": $CLARITY_SCORE,
-    "accuracy": $ACCURACY_SCORE,
-    "depth": $DEPTH_SCORE,
-    "completeness": $COMPLETENESS_SCORE
-  },
-  "duration_minutes": [estimated],
-  "strengths": ["[what explained well]"],
-  "gaps": ["[what to improve]"],
-  "next_review": "$(date -I -d "+$(jq -r --arg topic "$TOPIC" '.topics[$topic].intervals[-1] // 3' ./.spaced-repetition.json) days")"
-}
-EOF
-)
+```bash
 bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
-`
+```
+
+*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "weekly-dive", topic, overall_score, scores (clarity/accuracy/depth/completeness), duration_minutes, strengths array, gaps array, next_review date.*
 
 ---
 

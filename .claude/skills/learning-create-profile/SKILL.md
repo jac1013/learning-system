@@ -111,53 +111,31 @@ This takes 10-15 minutes. Let's go!
 
 ## Save Profile
 
-!`# Create profile JSON from answers
-cat > ./profile.json <<'PROFILE'
+*Write `./profile.json` using the Write tool with the user's answers. Structure:*
+
+```json
 {
-  "name": "[optional name]",
-  "role": "[from answer 1]",
-  "experience_years": [from answer 2],
-  "domains": {
-    "experienced": [from answer 3],
-    "learning": [from answer 4]
-  },
+  "name": "[optional]",
+  "role": "[answer 1]",
+  "experience_years": 0,
+  "domains": { "experienced": [], "learning": [] },
   "goals": {
-    "three_month": [
-      {
-        "topic": "[from answer 6]",
-        "motivation": "[from answer 7]",
-        "success_criteria": "[from answer 8]"
-      }
-    ],
-    "six_month": "[from answer 9]",
-    "blockers": "[from answer 10]"
+    "three_month": [{ "topic": "", "motivation": "", "success_criteria": "" }],
+    "six_month": "",
+    "blockers": ""
   },
   "learning_style": {
-    "mode": "[exploratory|methodical|example-driven]",
-    "stress_tolerance": "[high|medium|low]",
-    "feedback_style": "[direct|balanced|gentle]",
-    "learning_type": "[social|applied|conceptual|hands-on]"
+    "mode": "exploratory|methodical|example-driven",
+    "stress_tolerance": "high|medium|low",
+    "feedback_style": "direct|balanced|gentle",
+    "learning_type": "social|applied|conceptual|hands-on"
   },
-  "time_commitment": {
-    "daily_minutes": [from answer 15],
-    "weekly_hours": [from answer 15],
-    "best_time": "[from answer 17]"
-  },
-  "work_context": {
-    "focus": "[from answer 16]",
-    "technologies": [from answer 16],
-    "problems": [from answer 16]
-  },
-  "created_at": "$(date -I)",
-  "updated_at": "$(date -I)"
+  "time_commitment": { "daily_minutes": 0, "weekly_hours": 0, "best_time": "" },
+  "work_context": { "focus": "", "technologies": [], "problems": [] },
+  "created_at": "YYYY-MM-DD",
+  "updated_at": "YYYY-MM-DD"
 }
-PROFILE
-
-echo ""
-echo "✅ **Profile Created!**"
-echo ""
-echo "Saved to: ./profile.json"
-`
+```
 
 ---
 

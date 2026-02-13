@@ -127,36 +127,35 @@ Read the codebase systematically and categorize what you find into knowledge **a
 
 Based on the analysis above, create the knowledge map:
 
-!`cat > ./project-knowledge.json <<'PKG_END'
+*Write `./project-knowledge.json` using the Write tool based on codebase analysis. Structure:*
+
+```json
 {
-  "project_name": "[detected or confirmed name]",
-  "analyzed_at": "$(date -I)",
-  "analyzed_commit": "$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown')",
-  "tech_stack": ["[detected technologies]"],
-  "architecture_patterns": ["[detected patterns]"],
+  "project_name": "",
+  "analyzed_at": "YYYY-MM-DD",
+  "analyzed_commit": "[git short hash]",
+  "tech_stack": [],
+  "architecture_patterns": [],
   "areas": {
     "[area-key]": {
-      "name": "[Human-readable name]",
-      "description": "[1-2 sentence summary]",
-      "key_files": ["[path/to/file.ext]"],
-      "concepts": ["[concept1]", "[concept2]"],
-      "depends_on": ["[other-area-key]"],
-      "importance": "[critical|high|medium|low]",
-      "layer": "[data|domain|infrastructure|api|deployment|testing]"
+      "name": "", "description": "", "key_files": [],
+      "concepts": [], "depends_on": [],
+      "importance": "critical|high|medium|low",
+      "layer": "data|domain|infrastructure|api|deployment|testing"
     }
   },
   "layers": {
-    "data": { "description": "[what the data layer looks like in this project]", "areas": [] },
-    "domain": { "description": "[...]", "areas": [] },
-    "infrastructure": { "description": "[...]", "areas": [] },
-    "api": { "description": "[...]", "areas": [] },
-    "deployment": { "description": "[...]", "areas": [] },
-    "testing": { "description": "[...]", "areas": [] }
+    "data": { "description": "", "areas": [] },
+    "domain": { "description": "", "areas": [] },
+    "infrastructure": { "description": "", "areas": [] },
+    "api": { "description": "", "areas": [] },
+    "deployment": { "description": "", "areas": [] },
+    "testing": { "description": "", "areas": [] }
   },
-  "critical_paths": ["[area-key-1]", "[area-key-2]"],
-  "entry_points": ["[area-key-best-to-learn-first]"]
+  "critical_paths": [],
+  "entry_points": []
 }
-PKG_END`
+```
 
 **Tell the developer what you found:**
 
@@ -190,21 +189,18 @@ Based on the knowledge map + developer's familiarity gaps + learning goal, gener
 
 ### Save Roadmap
 
-!`cat > ./roadmap.json <<'ROADMAP'
+*Write `./roadmap.json` using the Write tool based on the knowledge map and interview. Structure:*
+
+```json
 {
-  "primary_goal": "[from interview: onboard/deepen/broaden/prepare] [project_name]",
+  "primary_goal": "[goal] [project_name]",
   "timeline_weeks": 12,
   "current_phase": "Phase 1",
   "topics": {
     "[area-key]": {
-      "name": "[Area name from knowledge map]",
-      "phase": 1,
-      "sequence": 1,
-      "status": "ready",
-      "prerequisites": ["[other-area-key or empty]"],
-      "estimated_hours": 2,
-      "project_area": "[area-key]",
-      "type": "project-knowledge"
+      "name": "", "phase": 1, "sequence": 1, "status": "ready",
+      "prerequisites": [], "estimated_hours": 2,
+      "project_area": "[area-key]", "type": "project-knowledge"
     }
   },
   "phases": {
@@ -212,16 +208,11 @@ Based on the knowledge map + developer's familiarity gaps + learning goal, gener
     "2": { "name": "Core Systems", "weeks": "5-8" },
     "3": { "name": "Advanced & Integration", "weeks": "9-12" }
   },
-  "created_at": "$(date -I)",
-  "updated_at": "$(date -I)",
-  "metadata": {
-    "mode": "project",
-    "project_name": "[name]",
-    "learning_goal": "[from interview]",
-    "last_updated": "$(date -I)"
-  }
+  "created_at": "YYYY-MM-DD",
+  "updated_at": "YYYY-MM-DD",
+  "metadata": { "mode": "project", "project_name": "", "learning_goal": "", "last_updated": "YYYY-MM-DD" }
 }
-ROADMAP`
+```
 
 ---
 

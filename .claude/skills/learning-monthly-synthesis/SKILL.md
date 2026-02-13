@@ -151,120 +151,16 @@ I'll ask **challenging questions**:
 
 Create a permanent artifact of your understanding:
 
-!`SYNTHESIS_FILE="./synthesis/${TOPIC//\//-}-$(date -I).md"
-mkdir -p ./synthesis
+*Create a synthesis document at `./synthesis/[topic]-[date].md` using the Write tool. The document should contain:*
 
-cat > "$SYNTHESIS_FILE" <<'SYNTHESIS'
-# Synthesis: [Topic Name]
-
-**Date**: $(date -I)
-**Mastery Score**: [X/10]
-**Review Count**: [N]
-
----
-
-## Complete Understanding
-
-### Core Concepts
-[Your complete reconstruction - what it is, how it works]
-
-### Key Components
-[All major components and their relationships]
-
-### Trade-offs & Alternatives
-[When to use this vs alternatives, pros/cons]
-
-### Real-World Application
-[How you'd apply this in actual work]
-
----
-
-## Mental Model
-
-### Before This Synthesis
-[What you thought you knew]
-
-### After Reconstruction & Scenarios
-[Updated understanding, corrections, insights]
-
-### Key Insights Gained
-1. [Insight about how it really works]
-2. [Insight about when to apply]
-3. [Insight about common misconceptions]
-
----
-
-## Gaps Identified
-
-### What I Missed in Reconstruction
-- [Gap 1]: [What was missing]
-- [Gap 2]: [What was missing]
-
-### What I Got Wrong
-- [Misconception 1]: [What I thought vs reality]
-- [Misconception 2]: [Correction]
-
----
-
-## Scenario Analysis
-
-### Scenario 1: [Description]
-**My Analysis**: [Your reasoning]
-**Outcome**: [What actually happened / best practice]
-**Learning**: [What this taught you]
-
-### Scenario 2: [Description]
-...
-
----
-
-## Application to Real Work
-
-### Where I Can Apply This
-1. [Specific work context 1]
-2. [Specific work context 2]
-
-### How I'd Use It
-[Concrete plan for application]
-
-### Success Criteria
-[How I'll know I've applied it well]
-
----
-
-## Connections to Other Knowledge
-
-### Related Topics
-- [Topic A]: [How they connect]
-- [Topic B]: [How they connect]
-
-### Builds Foundation For
-[What topics this enables you to learn next]
-
----
-
-## Mastery Evidence
-
-✅ Can reconstruct complete understanding from memory
-✅ Can analyze real scenarios using this knowledge
-✅ Can teach at advanced level
-✅ Can identify edge cases and trade-offs
-✅ Can compare to alternatives intelligently
-
-**Status**: [Mastered / Near Mastery / Needs More Work]
-
----
-
-## Next Steps
-
-- **Maintenance Review**: [Date] (30-day interval)
-- **Real-World Application**: [Planned application]
-- **Related Topics to Learn**: [Next in roadmap]
-
-SYNTHESIS
-
-echo "Synthesis document created: $SYNTHESIS_FILE"
-`
+- Core Concepts, Key Components, Trade-offs & Alternatives, Real-World Application
+- Mental Model (before/after synthesis, key insights)
+- Gaps Identified (what was missed, what was wrong)
+- Scenario Analysis (each scenario with analysis, outcome, learning)
+- Application to Real Work (where, how, success criteria)
+- Connections to Other Knowledge (related topics, builds foundation for)
+- Mastery Evidence checklist
+- Next Steps (maintenance review date, real-world application, related topics)
 
 ---
 
@@ -288,36 +184,23 @@ echo "Synthesis document created: $SYNTHESIS_FILE"
 
 ### Update State
 
-!`# Save mastery score
-MASTERY_SCORE=[score]
-NOTES="Synthesis complete. Reconstruction: [X%]. Scenarios: [result]."
+*Execute the following, replacing placeholders with actual values from the session:*
 
+```bash
 bash ./.claude/scripts/save-state.sh spaced-rep "$TOPIC" "$MASTERY_SCORE" "$NOTES"
+```
 
-# Mark as synthesized
-jq --arg topic "$TOPIC" '.topics[$topic].synthesized = true | .topics[$topic].synthesis_date = "'$(date -I)'"' \
-   ./.spaced-repetition.json > /tmp/sr.json && mv /tmp/sr.json ./.spaced-repetition.json
+*Mark as synthesized in `.spaced-repetition.json` (set `synthesized: true` and `synthesis_date` for the topic).*
 
-# Update roadmap to mastered
+```bash
 bash ./.claude/scripts/save-state.sh roadmap "$TOPIC" "mastered"
+```
 
-# Log synthesis session
-LOG_ENTRY=$(cat <<EOF
-{
-  "timestamp": "$(date -Iseconds)",
-  "type": "monthly-synthesis",
-  "topic": "$TOPIC",
-  "mastery_score": $MASTERY_SCORE,
-  "reconstruction_accuracy": [percentage],
-  "duration_minutes": [estimated],
-  "synthesis_document": "$SYNTHESIS_FILE",
-  "status": "mastered",
-  "next_review": "$(date -I -d "+30 days")"
-}
-EOF
-)
+```bash
 bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
-`
+```
+
+*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "monthly-synthesis", topic, mastery_score, reconstruction_accuracy, duration_minutes, synthesis_document path, status "mastered", next_review (30 days from today).*
 
 ---
 

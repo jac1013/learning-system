@@ -201,45 +201,19 @@ For each concept you struggled to apply:
 
 ### 📊 Application Scores
 
-!`# Score each applied topic
-for topic in $APPLICABLE_TOPICS; do
-    echo "Score for $topic (0-10):"
-    echo "9-10: Applied confidently and successfully"
-    echo "7-8: Applied but with some struggle"
-    echo "5-6: Tried but struggled significantly"
-    echo "0-4: Couldn't apply or forgot to apply"
-    read -p "Score: " SCORE
+*For each applied topic, ask the user for a score (0-10), then execute:*
 
-    NOTES="Applied to $WORK_TYPE: $(if [[ -n "$TARGET" ]]; then echo "$TARGET"; else echo "general"; fi)"
+```bash
+bash ./.claude/scripts/save-state.sh spaced-rep "$TOPIC" "$SCORE" "Applied to $WORK_TYPE: $TARGET"
+```
 
-    # Update spaced repetition with application score
-    bash ./.claude/scripts/save-state.sh spaced-rep "$topic" "$SCORE" "$NOTES"
+*After scoring all topics, log the session:*
 
-    # If successfully applied (7+), extend interval
-    if (( SCORE >= 7 )); then
-        echo "✅ Successfully applied! Interval extended."
-    elif (( SCORE < 5 )); then
-        echo "⚠️ Struggled to apply. Consider: /learning-weekly-dive \"$topic\""
-    fi
-done
-
-# Log application session
-LOG_ENTRY=$(cat <<EOF
-{
-  "timestamp": "$(date -Iseconds)",
-  "type": "apply-to-work",
-  "work_type": "$WORK_TYPE",
-  "target": "${TARGET:-general}",
-  "topics_applied": [$(echo "$APPLICABLE_TOPICS" | jq -R . | jq -s .)],
-  "duration_minutes": [estimated],
-  "successes": ["[concepts successfully applied]"],
-  "struggles": ["[concepts struggled with]"],
-  "insights": ["[what you learned from application]"]
-}
-EOF
-)
+```bash
 bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
-`
+```
+
+*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "apply-to-work", work_type, target, topics_applied array, duration_minutes, successes array, struggles array, insights array.*
 
 ---
 

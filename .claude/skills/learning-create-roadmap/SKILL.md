@@ -93,86 +93,32 @@ Based on your work context (**[from profile]**):
 
 ## Save Roadmap
 
-!`# Generate roadmap JSON
-cat > ./roadmap.json <<'ROADMAP'
+*Write `./roadmap.json` using the Write tool based on the profile analysis. Structure:*
+
+```json
 {
-  "primary_goal": "$(get_profile_field 'goals.three_month[0].topic')",
-  "success_criteria": "$(get_profile_field 'goals.three_month[0].success_criteria')",
+  "primary_goal": "[from profile]",
+  "success_criteria": "[from profile]",
   "timeline_weeks": 12,
   "current_phase": "Phase 1",
   "topics": {
-    "topic-1-1": {
-      "name": "[Topic name]",
-      "phase": 1,
-      "week": "1-2",
-      "sequence": 1,
-      "status": "ready",
-      "prerequisites": [],
-      "estimated_hours": 3,
-      "type": "foundational"
-    },
-    "topic-1-2": {
-      "name": "[Topic name]",
-      "phase": 1,
-      "week": "3-4",
-      "sequence": 2,
-      "status": "blocked",
-      "prerequisites": ["topic-1-1"],
-      "estimated_hours": 4,
-      "type": "building"
-    },
-    "topic-1-3": {
-      "name": "[Topic name]",
-      "phase": 1,
-      "week": "4-5",
-      "sequence": 3,
-      "status": "blocked",
-      "prerequisites": ["topic-1-1", "topic-1-2"],
-      "estimated_hours": 4,
-      "type": "core",
-      "application": "[work context]"
+    "topic-key": {
+      "name": "", "phase": 1, "week": "1-2", "sequence": 1,
+      "status": "ready|blocked", "prerequisites": [],
+      "estimated_hours": 3, "type": "foundational|building|core"
     }
   },
   "phases": {
-    "1": {
-      "name": "Fundamentals",
-      "weeks": "1-4",
-      "focus": "Build foundation",
-      "topics": ["topic-1-1", "topic-1-2", "topic-1-3"]
-    },
-    "2": {
-      "name": "Intermediate",
-      "weeks": "5-8",
-      "focus": "Build capability",
-      "topics": ["topic-2-1", "topic-2-2"]
-    },
-    "3": {
-      "name": "Advanced",
-      "weeks": "9-12",
-      "focus": "Achieve mastery",
-      "topics": ["topic-3-1", "topic-3-2"]
-    }
+    "1": { "name": "Fundamentals", "weeks": "1-4", "focus": "", "topics": [] },
+    "2": { "name": "Intermediate", "weeks": "5-8", "focus": "", "topics": [] },
+    "3": { "name": "Advanced", "weeks": "9-12", "focus": "", "topics": [] }
   },
-  "milestones": {
-    "week-4": "Phase 1 complete, first application",
-    "week-8": "Phase 2 complete, confident application",
-    "week-12": "Goal achieved, mastery demonstrated"
-  },
-  "created_at": "$(date -I)",
-  "updated_at": "$(date -I)",
-  "metadata": {
-    "last_updated": "$(date -I)",
-    "pacing": "balanced",
-    "total_hours_estimated": 40
-  }
+  "milestones": { "week-4": "", "week-8": "", "week-12": "" },
+  "created_at": "YYYY-MM-DD",
+  "updated_at": "YYYY-MM-DD",
+  "metadata": { "last_updated": "YYYY-MM-DD", "pacing": "balanced", "total_hours_estimated": 40 }
 }
-ROADMAP
-
-echo ""
-echo "✅ **Roadmap Generated!**"
-echo ""
-echo "Saved to: ./roadmap.json"
-`
+```
 
 ---
 
