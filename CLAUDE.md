@@ -8,16 +8,20 @@ This project is a **learning system**, not a software application. It consists o
 
 Each `SKILL.md` file defines a learning command (e.g., `/learning-daily-recall`). Skills are auto-discovered by Claude Code from flat directories — no plugin registration needed. Skills:
 - Are invoked by users via slash commands (e.g., `/learning-init`, `/learning-daily-recall`)
-- Source helper scripts using relative paths: `./.claude/plugins/local/learning-science/helpers/`
+- Call helper scripts via `bash ./.claude/scripts/<script>.sh` (matches `Bash(bash:*)` permission pattern)
 - Read/write user state files in the project root
 - Should use Socratic questioning — ask before explaining
 
-### Helpers (`.claude/plugins/local/learning-science/helpers/`)
+### Scripts (`.claude/scripts/`)
 
-Bash scripts that manage state:
+Bash scripts that manage state. Called via `bash ./.claude/scripts/<name>.sh` from skill `!` backtick blocks:
 - `load-state.sh` — loads profile, roadmap, spaced repetition data. Derives project root dynamically from `${BASH_SOURCE[0]}`.
 - `save-state.sh` — updates spaced repetition scores and review schedule
 - `infer-next.sh` — determines next topic based on profile, roadmap, and review state
+- `check-state.sh` — consolidated state checker for skill initialization (contexts: init, profile, roadmap, project, profile-exists)
+- `determine-topic.sh` — topic resolution for daily-recall, weekly-dive, monthly-synthesis
+- `parse-apply-args.sh` — argument parser for apply-to-work skill
+- `display-state.sh` — state display helper (profile-summary, profile-analysis, roadmap-summary, pacing)
 
 All paths are resolved dynamically. Never introduce hardcoded absolute paths.
 
@@ -77,9 +81,10 @@ When creating or modifying skills, maintain these principles:
 To add a new skill:
 1. Create `.claude/skills/learning-<name>/SKILL.md`
 2. Follow the frontmatter pattern from existing skills (name field should be `learning-<name>`)
-3. Source `load-state.sh` for state access
+3. Use `bash ./.claude/scripts/<helper>.sh` for state access (not `source`)
 4. Add to the commands table in `README.md`
 
 To add a new helper function:
-1. Add it to `load-state.sh` (for read operations) or `save-state.sh` (for write operations)
+1. Add it to `load-state.sh` (for read operations) or `save-state.sh` (for write operations), or create a new script in `.claude/scripts/`
 2. Use `$LEARNING_ROOT` for file paths — it's set dynamically by `load-state.sh`
+3. All scripts must be callable via `bash ./.claude/scripts/<name>.sh` to match the `Bash(bash:*)` permission pattern

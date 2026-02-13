@@ -16,32 +16,7 @@ Deep exploration session (30-60 minutes) using Socratic method and teach-back.
 
 ## Phase 1: Determine Topic
 
-!`source ./.claude/plugins/local/learning-science/helpers/load-state.sh`
-
-!`if [[ -n "$1" ]]; then
-    echo "📚 Topic specified: $1"
-    TOPIC="$1"
-else
-    echo "🔍 Analyzing roadmap and learning state..."
-    TOPIC=$(source ./.claude/plugins/local/learning-science/helpers/infer-next.sh weekly-dive)
-
-    if [[ "$TOPIC" == "none" ]]; then
-        echo "📋 No topics ready in roadmap."
-        echo ""
-        echo "Options:"
-        echo "1. Specify a topic: /learning-weekly-dive \"topic name\""
-        echo "2. Update roadmap: Edit ./roadmap.json"
-        echo "3. Review a weak topic from past sessions"
-        exit 0
-    fi
-
-    echo "📖 **Suggested Topic**: $TOPIC"
-    echo ""
-    echo "**Why this topic?**"
-    echo "Next in your roadmap sequence (prerequisites met)"
-    echo ""
-    echo "Ready for a deep dive? (yes/no, or specify different topic)"
-fi`
+!`bash ./.claude/scripts/determine-topic.sh weekly-dive "$1"`
 
 ---
 
@@ -206,10 +181,10 @@ OVERALL_SCORE=$(echo "scale=0; ($CLARITY_SCORE + $ACCURACY_SCORE + $DEPTH_SCORE 
 
 # Save to spaced repetition
 NOTES="Teach-back: C:$CLARITY_SCORE A:$ACCURACY_SCORE D:$DEPTH_SCORE Cm:$COMPLETENESS_SCORE"
-source ./.claude/plugins/local/learning-science/helpers/save-state.sh spaced-rep "$TOPIC" "$OVERALL_SCORE" "$NOTES"
+bash ./.claude/scripts/save-state.sh spaced-rep "$TOPIC" "$OVERALL_SCORE" "$NOTES"
 
 # Update roadmap status
-source ./.claude/plugins/local/learning-science/helpers/save-state.sh roadmap "$TOPIC" "completed"
+bash ./.claude/scripts/save-state.sh roadmap "$TOPIC" "completed"
 
 # Append to learning log
 LOG_ENTRY=$(cat <<EOF
@@ -231,7 +206,7 @@ LOG_ENTRY=$(cat <<EOF
 }
 EOF
 )
-source ./.claude/plugins/local/learning-science/helpers/save-state.sh log "$LOG_ENTRY"
+bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
 `
 
 ---
@@ -255,7 +230,7 @@ source ./.claude/plugins/local/learning-science/helpers/save-state.sh log "$LOG_
 - [What needs more work]
 
 **Next Actions**:
-- **Next Review**: !`jq -r --arg topic "$TOPIC" '.topics[$topic].next_review' ./.spaced-repetition.json` ([N] days)
+- **Next Review**: !`bash -c 'jq -r --arg topic "$TOPIC" ".topics[\$topic].next_review" ./.spaced-repetition.json'` ([N] days)
 - **Recommended**: [Specific next step based on score]
 
 ---

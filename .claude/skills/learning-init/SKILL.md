@@ -19,21 +19,7 @@ Let's begin!
 
 ## Step 1: Check Existing State
 
-!`source ./.claude/plugins/local/learning-science/helpers/load-state.sh`
-
-!`if has_profile && has_roadmap; then
-    echo "🔄 **Existing Setup Detected**"
-    echo ""
-    echo "Profile: $PROFILE_FILE (created $(stat -c %y "$PROFILE_FILE" | cut -d' ' -f1))"
-    echo "Roadmap: $ROADMAP_FILE (created $(stat -c %y "$ROADMAP_FILE" | cut -d' ' -f1))"
-    echo ""
-    echo "What would you like to do?"
-    echo "1. Fresh start (delete and recreate both)"
-    echo "2. Update profile only → /learning-create-profile"
-    echo "3. Update roadmap only → /learning-create-roadmap"
-    echo "4. Skip to system tour"
-    echo "5. Cancel"
-fi`
+!`bash ./.claude/scripts/check-state.sh init`
 
 ---
 

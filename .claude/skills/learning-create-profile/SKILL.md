@@ -14,25 +14,7 @@ Create or update your personalized learning profile (10-15 minutes).
 
 ## Check Existing Profile
 
-!`source ./.claude/plugins/local/learning-science/helpers/load-state.sh`
-
-!`if has_profile; then
-    echo "📋 **Existing Profile Found**"
-    echo ""
-    echo "Profile: $PROFILE_FILE"
-    echo "Created: $(jq -r '.created_at' "$PROFILE_FILE")"
-    echo "Last updated: $(jq -r '.updated_at' "$PROFILE_FILE")"
-    echo ""
-    echo "Current goals:"
-    jq -r '.goals.three_month[].topic' "$PROFILE_FILE" | while read goal; do
-        echo "- $goal"
-    done
-    echo ""
-    echo "What would you like to do?"
-    echo "1. Update profile (keep most, change some)"
-    echo "2. Fresh profile (delete and recreate)"
-    echo "3. Cancel"
-fi`
+!`bash ./.claude/scripts/check-state.sh profile`
 
 ---
 
@@ -181,16 +163,7 @@ echo "Saved to: ./profile.json"
 
 ## Profile Summary
 
-!`source ./.claude/plugins/local/learning-science/helpers/load-state.sh`
-
-**Your Profile**:
-
-- **Role**: !`get_profile_field "role"`
-- **Experience**: !`get_profile_field "experience_years"` years
-- **Primary Goal**: !`get_profile_field "goals.three_month[0].topic"`
-- **Success in 3 months**: !`get_profile_field "goals.three_month[0].success_criteria"`
-- **Learning Style**: !`get_profile_field "learning_style.mode"` (stress tolerance: !`get_profile_field "learning_style.stress_tolerance"`)
-- **Time Commitment**: !`get_profile_field "time_commitment.daily_minutes"` min/day, !`get_profile_field "time_commitment.weekly_hours"` hours/week
+!`bash ./.claude/scripts/display-state.sh profile-summary`
 
 ---
 

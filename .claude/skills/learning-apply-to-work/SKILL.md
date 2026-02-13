@@ -15,69 +15,7 @@ Apply learned concepts to actual work tasks.
 
 ## Phase 1: Determine Work Type & Topics
 
-!`source ./.claude/plugins/local/learning-science/helpers/load-state.sh`
-
-!`# Parse arguments
-WORK_TYPE=""
-TARGET=""
-
-for arg in "$@"; do
-    case $arg in
-        --type=*)
-            WORK_TYPE="${arg#*=}"
-            ;;
-        --target=*)
-            TARGET="${arg#*=}"
-            ;;
-    esac
-done
-
-if [[ -z "$WORK_TYPE" ]]; then
-    echo "🔍 **Inferring work type from profile...**"
-    echo ""
-
-    # Get work context from profile
-    WORK_CONTEXT=$(get_profile_field "work_context.focus")
-
-    echo "Your work context: $WORK_CONTEXT"
-    echo ""
-    echo "What type of work are you doing?"
-    echo "1. code-pr - Code PR review"
-    echo "2. writing - Writing/documentation"
-    echo "3. qa - QA/testing"
-    echo "4. architecture - Architecture decision"
-    echo "5. security - Security review"
-    echo ""
-    echo "Specify: --type=<type> --target=<identifier>"
-    exit 0
-fi
-
-# Get recently learned topics ready for application
-APPLICABLE_TOPICS=$(source ./.claude/plugins/local/learning-science/helpers/infer-next.sh apply-to-work)
-
-if [[ "$APPLICABLE_TOPICS" == "none" ]]; then
-    echo "📚 No recent topics ready for application."
-    echo ""
-    echo "Topics become applicable when:"
-    echo "- Learned in last 2 weeks"
-    echo "- Score 7+ (confident recall)"
-    echo ""
-    echo "Keep doing weekly dives!"
-    exit 0
-fi
-
-echo "✨ **Work Type**: $WORK_TYPE"
-if [[ -n "$TARGET" ]]; then
-    echo "🎯 **Target**: $TARGET"
-fi
-echo ""
-echo "📚 **Applicable Topics**:"
-echo "$APPLICABLE_TOPICS" | while read topic; do
-    score=$(jq -r --arg topic "$topic" '.topics[$topic].recall_score // 0' "$SPACED_REP_FILE")
-    echo "- $topic (score: $score/10)"
-done
-echo ""
-`
+!`bash ./.claude/scripts/parse-apply-args.sh "$@"`
 
 ---
 
@@ -275,7 +213,7 @@ for topic in $APPLICABLE_TOPICS; do
     NOTES="Applied to $WORK_TYPE: $(if [[ -n "$TARGET" ]]; then echo "$TARGET"; else echo "general"; fi)"
 
     # Update spaced repetition with application score
-    source ./.claude/plugins/local/learning-science/helpers/save-state.sh spaced-rep "$topic" "$SCORE" "$NOTES"
+    bash ./.claude/scripts/save-state.sh spaced-rep "$topic" "$SCORE" "$NOTES"
 
     # If successfully applied (7+), extend interval
     if (( SCORE >= 7 )); then
@@ -300,7 +238,7 @@ LOG_ENTRY=$(cat <<EOF
 }
 EOF
 )
-source ./.claude/plugins/local/learning-science/helpers/save-state.sh log "$LOG_ENTRY"
+bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
 `
 
 ---

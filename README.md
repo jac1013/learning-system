@@ -78,8 +78,7 @@ All commands are **context-aware** — they read your profile, roadmap, and revi
 │   └── learning-init-project/SKILL.md
 ├── hooks/                        # SessionStart hook
 ├── settings.json                 # Hook registration
-├── plugins/local/learning-science/
-│   └── helpers/                  # Bash helpers (state management)
+├── scripts/                      # Bash helpers (state management)
 └── docs/                         # Extended documentation
 
 # User state (created at runtime, gitignored)

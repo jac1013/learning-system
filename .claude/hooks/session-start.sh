@@ -14,8 +14,7 @@ SPACED_REP_FILE="$LEARNING_ROOT/.spaced-repetition.json"
 TODAY=$(date -I)
 
 # Source the state loader
-HELPER_DIR="$LEARNING_ROOT/.claude/plugins/local/learning-science/helpers"
-source "$HELPER_DIR/load-state.sh" 2>/dev/null || true
+source "$LEARNING_ROOT/.claude/scripts/load-state.sh" 2>/dev/null || true
 
 # Check if profile exists
 if [[ ! -f "$LEARNING_ROOT/profile.json" ]]; then

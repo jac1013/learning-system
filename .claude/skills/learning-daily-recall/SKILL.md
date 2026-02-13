@@ -15,40 +15,7 @@ Quick retrieval stress session (5-15 minutes).
 
 ## Phase 1: Determine Topic
 
-!`source ./.claude/plugins/local/learning-science/helpers/load-state.sh`
-
-!`if [[ -n "$1" ]]; then
-    echo "📝 Topic specified: $1"
-    TOPIC="$1"
-else
-    echo "🔍 Analyzing what's due for review..."
-    TOPIC=$(source ./.claude/plugins/local/learning-science/helpers/infer-next.sh daily-recall)
-
-    if [[ "$TOPIC" == "none" ]]; then
-        echo "✅ All caught up! No topics due for review."
-        echo ""
-        echo "Options:"
-        echo "1. Start a new topic: /learning-weekly-dive"
-        echo "2. Review specific topic: /learning-daily-recall \"topic name\""
-        echo "3. Take a break!"
-        exit 0
-    fi
-
-    echo "📅 **Suggested Topic**: $TOPIC"
-    echo ""
-
-    # Get topic details from spaced repetition
-    LAST_SCORE=$(jq -r --arg topic "$TOPIC" '.topics[$topic].recall_score // "unknown"' "$SPACED_REP_FILE" 2>/dev/null)
-    LAST_REVIEWED=$(jq -r --arg topic "$TOPIC" '.topics[$topic].last_reviewed // "never"' "$SPACED_REP_FILE" 2>/dev/null)
-    NEXT_REVIEW=$(jq -r --arg topic "$TOPIC" '.topics[$topic].next_review // "unknown"' "$SPACED_REP_FILE" 2>/dev/null)
-
-    echo "**Why this topic?**"
-    echo "- Last reviewed: $LAST_REVIEWED"
-    echo "- Next review was: $NEXT_REVIEW"
-    echo "- Last score: $LAST_SCORE/10"
-    echo ""
-    echo "Ready to start? (yes/no, or specify different topic)"
-fi`
+!`bash ./.claude/scripts/determine-topic.sh daily-recall "$1"`
 
 ---
 
@@ -150,7 +117,7 @@ Based on accuracy and completeness:
 SCORE=[score from evaluation]
 NOTES="[brief summary of gaps]"
 
-source ./.claude/plugins/local/learning-science/helpers/save-state.sh spaced-rep "$TOPIC" "$SCORE" "$NOTES"
+bash ./.claude/scripts/save-state.sh spaced-rep "$TOPIC" "$SCORE" "$NOTES"
 
 # Append to learning log
 LOG_ENTRY=$(cat <<EOF
@@ -167,7 +134,7 @@ LOG_ENTRY=$(cat <<EOF
 EOF
 )
 
-source ./.claude/plugins/local/learning-science/helpers/save-state.sh log "$LOG_ENTRY"
+bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
 `
 
 ---
@@ -187,7 +154,7 @@ source ./.claude/plugins/local/learning-science/helpers/save-state.sh log "$LOG_
 1. [Gap with specific action]
 2. [Another gap]
 
-**Next Review**: !`jq -r --arg topic "$TOPIC" '.topics[$topic].next_review' ./.spaced-repetition.json` ([N] days)
+**Next Review**: !`bash -c 'jq -r --arg topic "$TOPIC" ".topics[\$topic].next_review" ./.spaced-repetition.json'` ([N] days)
 
 ---
 

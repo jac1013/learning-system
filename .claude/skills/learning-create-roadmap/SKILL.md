@@ -14,50 +14,13 @@ Generate your personalized learning roadmap (5-10 minutes).
 
 ## Prerequisites Check
 
-!`source ./.claude/plugins/local/learning-science/helpers/load-state.sh`
-
-!`if ! has_profile; then
-    echo "❌ **Profile Required**"
-    echo ""
-    echo "I need your learning profile to generate a roadmap."
-    echo ""
-    echo "Create profile first: /learning-create-profile"
-    echo ""
-    exit 1
-fi
-
-if has_roadmap; then
-    echo "🗺️ **Existing Roadmap Found**"
-    echo ""
-    echo "Roadmap: $ROADMAP_FILE"
-    echo "Created: $(jq -r '.created_at' "$ROADMAP_FILE")"
-    echo "Goal: $(jq -r '.primary_goal' "$ROADMAP_FILE")"
-    echo "Current phase: $(jq -r '.current_phase' "$ROADMAP_FILE")"
-    echo ""
-    echo "What would you like to do?"
-    echo "1. Update roadmap (adjust pacing, add/remove topics)"
-    echo "2. Fresh roadmap (delete and recreate)"
-    echo "3. Cancel"
-    echo ""
-fi`
+!`bash ./.claude/scripts/check-state.sh roadmap`
 
 ---
 
 ## Analyze Profile
 
-!`echo "🔍 **Analyzing Your Profile...**"
-echo ""
-echo "**Your 3-Month Goal**: $(get_profile_field 'goals.three_month[0].topic')"
-echo "**Success Criteria**: $(get_profile_field 'goals.three_month[0].success_criteria')"
-echo ""
-echo "**Time Available**:"
-echo "- Daily: $(get_profile_field 'time_commitment.daily_minutes') min/day"
-echo "- Weekly: $(get_profile_field 'time_commitment.weekly_hours') hours/week"
-echo ""
-echo "**Learning Style**: $(get_profile_field 'learning_style.mode')"
-echo ""
-echo "Generating roadmap..."
-`
+!`bash ./.claude/scripts/display-state.sh profile-analysis`
 
 ---
 
@@ -215,18 +178,7 @@ echo "Saved to: ./roadmap.json"
 
 ## Roadmap Summary
 
-!`echo "📋 **Your Learning Path**"
-echo ""
-echo "**Goal**: $(jq -r '.primary_goal' ./roadmap.json)"
-echo "**Timeline**: 12 weeks"
-echo "**Total Estimated Effort**: $(jq -r '.metadata.total_hours_estimated' ./roadmap.json) hours"
-echo ""
-echo "**Phase Breakdown**:"
-jq -r '.phases | to_entries[] | "Phase \(.key): \(.value.name) (Weeks \(.value.weeks)) - \(.value.focus)"' ./roadmap.json
-echo ""
-echo "**First Topic**: $(jq -r '.topics["topic-1-1"].name' ./roadmap.json)"
-echo "**Ready to start!**"
-`
+!`bash ./.claude/scripts/display-state.sh roadmap-summary`
 
 ---
 
@@ -235,8 +187,7 @@ echo "**Ready to start!**"
 Based on your time commitment:
 
 **Your capacity**:
-- Daily: !`get_profile_field "time_commitment.daily_minutes"` min/day = !`echo "$(get_profile_field 'time_commitment.daily_minutes') * 7 / 60" | bc` hours/week minimum
-- Weekly deep dives: !`get_profile_field "time_commitment.weekly_hours"` hours/week
+!`bash ./.claude/scripts/display-state.sh pacing`
 
 **Roadmap requires**:
 - ~3-5 hours/week average

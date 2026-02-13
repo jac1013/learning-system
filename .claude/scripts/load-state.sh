@@ -5,10 +5,10 @@
 set -euo pipefail
 
 # Derive project root from script location (portable across systems)
-# This script is at: .claude/plugins/local/learning-science/helpers/load-state.sh
-# Project root is 5 levels up
+# This script is at: .claude/scripts/load-state.sh
+# Project root is 2 levels up
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LEARNING_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
+LEARNING_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 PROFILE_FILE="$LEARNING_ROOT/profile.json"
 ROADMAP_FILE="$LEARNING_ROOT/roadmap.json"

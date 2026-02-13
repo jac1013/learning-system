@@ -19,20 +19,7 @@ This takes 10-15 minutes:
 
 ## Step 1: Check Existing State
 
-!`source ./.claude/plugins/local/learning-science/helpers/load-state.sh`
-
-!`if has_project_knowledge; then
-    echo "**Existing project knowledge map detected**"
-    echo ""
-    echo "Project: $(get_project_field 'project_name')"
-    echo "Analyzed: $(get_project_field 'analyzed_at')"
-    echo "Commit: $(get_project_field 'analyzed_commit')"
-    echo ""
-    echo "What would you like to do?"
-    echo "1. Fresh start (re-analyze everything)"
-    echo "2. Keep knowledge map, regenerate learning path only"
-    echo "3. Cancel"
-fi`
+!`bash ./.claude/scripts/check-state.sh project`
 
 ---
 
@@ -240,12 +227,7 @@ ROADMAP`
 
 ## Step 6: Create Profile (if needed)
 
-!`if ! has_profile; then
-    echo "**Quick Profile Setup**"
-    echo ""
-    echo "I'll create a minimal profile from your interview answers."
-    echo "You can enrich it later with /learning-create-profile"
-fi`
+!`bash ./.claude/scripts/check-state.sh profile-exists`
 
 *If no profile exists, create a minimal one from the interview answers (name, role from context, time commitment, learning style defaults). Save to `profile.json`.*
 

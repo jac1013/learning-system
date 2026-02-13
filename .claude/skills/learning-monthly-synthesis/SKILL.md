@@ -16,40 +16,7 @@ Complete reconstruction and mastery verification (1-2 hours).
 
 ## Phase 1: Determine Topic
 
-!`source ./.claude/plugins/local/learning-science/helpers/load-state.sh`
-
-!`if [[ -n "$1" ]]; then
-    echo "🎓 Topic specified: $1"
-    TOPIC="$1"
-else
-    echo "🔍 Finding topics ready for mastery verification..."
-    TOPIC=$(source ./.claude/plugins/local/learning-science/helpers/infer-next.sh monthly-synthesis)
-
-    if [[ "$TOPIC" == "none" ]]; then
-        echo "📚 No topics ready for synthesis yet."
-        echo ""
-        echo "Topics become ready for synthesis when:"
-        echo "- Reviewed 3+ times"
-        echo "- Score 8+ consistently"
-        echo "- Not yet synthesized"
-        echo ""
-        echo "Keep doing weekly dives and daily recalls!"
-        exit 0
-    fi
-
-    echo "🎯 **Suggested Topic**: $TOPIC"
-    echo ""
-
-    REVIEW_COUNT=$(jq -r --arg topic "$TOPIC" '.topics[$topic].review_count // 0' "$SPACED_REP_FILE")
-    AVG_SCORE=$(jq -r --arg topic "$TOPIC" '.topics[$topic].score_history | add / length' "$SPACED_REP_FILE")
-
-    echo "**Why this topic?**"
-    echo "- Reviewed: $REVIEW_COUNT times"
-    echo "- Average score: $(printf "%.1f" $AVG_SCORE)/10"
-    echo "- Ready for mastery verification"
-    echo ""
-    echo "Ready for synthesis? (yes/no, or specify different topic)"
-fi`
+!`bash ./.claude/scripts/determine-topic.sh monthly-synthesis "$1"`
 
 ---
 
@@ -185,6 +152,7 @@ I'll ask **challenging questions**:
 Create a permanent artifact of your understanding:
 
 !`SYNTHESIS_FILE="./synthesis/${TOPIC//\//-}-$(date -I).md"
+mkdir -p ./synthesis
 
 cat > "$SYNTHESIS_FILE" <<'SYNTHESIS'
 # Synthesis: [Topic Name]
@@ -324,14 +292,14 @@ echo "Synthesis document created: $SYNTHESIS_FILE"
 MASTERY_SCORE=[score]
 NOTES="Synthesis complete. Reconstruction: [X%]. Scenarios: [result]."
 
-source ./.claude/plugins/local/learning-science/helpers/save-state.sh spaced-rep "$TOPIC" "$MASTERY_SCORE" "$NOTES"
+bash ./.claude/scripts/save-state.sh spaced-rep "$TOPIC" "$MASTERY_SCORE" "$NOTES"
 
 # Mark as synthesized
 jq --arg topic "$TOPIC" '.topics[$topic].synthesized = true | .topics[$topic].synthesis_date = "'$(date -I)'"' \
    ./.spaced-repetition.json > /tmp/sr.json && mv /tmp/sr.json ./.spaced-repetition.json
 
 # Update roadmap to mastered
-source ./.claude/plugins/local/learning-science/helpers/save-state.sh roadmap "$TOPIC" "mastered"
+bash ./.claude/scripts/save-state.sh roadmap "$TOPIC" "mastered"
 
 # Log synthesis session
 LOG_ENTRY=$(cat <<EOF
@@ -348,7 +316,7 @@ LOG_ENTRY=$(cat <<EOF
 }
 EOF
 )
-source ./.claude/plugins/local/learning-science/helpers/save-state.sh log "$LOG_ENTRY"
+bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
 `
 
 ---
@@ -365,13 +333,13 @@ source ./.claude/plugins/local/learning-science/helpers/save-state.sh log "$LOG_
 **Scenarios**: [Strong/Moderate/Weak] analysis
 **Teaching**: [X/10] advanced explanation
 
-**Synthesis Document**: !`echo $SYNTHESIS_FILE`
+**Synthesis Document**: !`bash -c 'echo $SYNTHESIS_FILE'`
 
 **Key Achievement**:
 [What you can now do that you couldn't before]
 
 **Next Steps**:
-- **Maintenance Review**: 30 days (!`date -I -d "+30 days"`)
+- **Maintenance Review**: 30 days (!`bash -c 'date -I -d "+30 days"'`)
 - **Application**: [Planned real-world use]
 - **Next Topic**: [From roadmap]
 
