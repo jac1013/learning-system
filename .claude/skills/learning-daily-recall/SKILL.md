@@ -154,7 +154,7 @@ bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
 1. [Gap with specific action]
 2. [Another gap]
 
-**Next Review**: !`bash -c 'jq -r --arg topic "$TOPIC" ".topics[\$topic].next_review" ./.spaced-repetition.json'` ([N] days)
+**Next Review**: [next review date from save-state output] ([N] days)
 
 ---
 

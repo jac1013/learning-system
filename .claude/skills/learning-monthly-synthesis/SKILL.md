@@ -333,13 +333,13 @@ bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
 **Scenarios**: [Strong/Moderate/Weak] analysis
 **Teaching**: [X/10] advanced explanation
 
-**Synthesis Document**: !`bash -c 'echo $SYNTHESIS_FILE'`
+**Synthesis Document**: [path from synthesis creation output]
 
 **Key Achievement**:
 [What you can now do that you couldn't before]
 
 **Next Steps**:
-- **Maintenance Review**: 30 days (!`bash -c 'date -I -d "+30 days"'`)
+- **Maintenance Review**: 30 days from today
 - **Application**: [Planned real-world use]
 - **Next Topic**: [From roadmap]
 

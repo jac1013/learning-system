@@ -230,7 +230,7 @@ bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
 - [What needs more work]
 
 **Next Actions**:
-- **Next Review**: !`bash -c 'jq -r --arg topic "$TOPIC" ".topics[\$topic].next_review" ./.spaced-repetition.json'` ([N] days)
+- **Next Review**: [next review date from save-state output] ([N] days)
 - **Recommended**: [Specific next step based on score]
 
 ---
