@@ -1,38 +1,62 @@
 #!/bin/bash
-# SessionStart Hook for Learning Science Plugin
+# SessionStart Hook for Learning Framework
 # Checks for overdue reviews and injects retrieval stress patterns
 
 set -euo pipefail
 
 # Derive paths from script location (portable across systems)
-# This script is at: .claude/plugins/local/learning-science/hooks-handlers/session-start.sh
+# This script is at: .claude/hooks/session-start.sh
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PLUGIN_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-LEARNING_ROOT="$(cd "$PLUGIN_DIR/../../../.." && pwd)"
+LEARNING_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 PREFERENCES_FILE="$LEARNING_ROOT/.learning-preferences.json"
 SPACED_REP_FILE="$LEARNING_ROOT/.spaced-repetition.json"
 TODAY=$(date -I)
 
 # Source the state loader
-source "$PLUGIN_DIR/helpers/load-state.sh" 2>/dev/null || true
+HELPER_DIR="$LEARNING_ROOT/.claude/plugins/local/learning-science/helpers"
+source "$HELPER_DIR/load-state.sh" 2>/dev/null || true
 
 # Check if profile exists
 if [[ ! -f "$LEARNING_ROOT/profile.json" ]]; then
-    cat <<'WELCOME'
+    if is_project_mode; then
+        PROJECT_DISPLAY=$(get_project_field "project_name")
+        cat <<WELCOME
 🎓 **Welcome to the Learning System!**
 
-Get started with: `/learning:init`
+📂 **Project detected**: $PROJECT_DISPLAY
+
+Get started with: \`/learning-init-project\` to set up codebase learning,
+or \`/learning-init\` for general topic learning.
+
+---
+
+WELCOME
+    else
+        cat <<'WELCOME'
+🎓 **Welcome to the Learning System!**
+
+Get started with: `/learning-init`
 
 This will:
 - Create your personalized profile (10-15 min)
 - Generate your learning roadmap (5-10 min)
 - Show you how to use the system
 
+Or use `/learning-init-project` to learn about a specific codebase.
+
 ---
 
 WELCOME
+    fi
     exit 0
+fi
+
+# Show learning mode indicator
+if is_project_mode; then
+    PROJECT_DISPLAY=$(get_project_field "project_name")
+    echo "📂 **Learning Mode**: Project ($PROJECT_DISPLAY)"
+    echo ""
 fi
 
 # Check for overdue daily reviews
@@ -50,7 +74,7 @@ if [[ -f "$SPACED_REP_FILE" ]]; then
 
 You have $overdue_count topic(s) due for review.
 
-Quick practice: \`/learning:daily-recall\` (5-15 min)
+Quick practice: \`/learning-daily-recall\` (5-15 min)
 
 ---
 

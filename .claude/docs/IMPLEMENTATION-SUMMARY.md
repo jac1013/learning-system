@@ -11,11 +11,15 @@ All 5 phases of the Modern Learning Science Framework have been successfully imp
 - `.claude/agents/knowledge-examiner.md` (Evaluation & gap analysis)
 - `.claude/agents/progress-archivist.md` (State tracking & scheduling)
 
-#### Commands (4 files)
-- `.claude/commands/learning/daily-recall.md` (5-15 min daily)
-- `.claude/commands/learning/weekly-dive.md` (30-60 min weekly)
-- `.claude/commands/learning/monthly-synthesis.md` (1-2 hour monthly)
-- `.claude/commands/learning/apply-to-work.md` (Real-world application)
+#### Skills (8 files)
+- `.claude/skills/learning-init/SKILL.md` (Complete onboarding)
+- `.claude/skills/learning-create-profile/SKILL.md` (Profile creation)
+- `.claude/skills/learning-create-roadmap/SKILL.md` (Roadmap generation)
+- `.claude/skills/learning-daily-recall/SKILL.md` (5-15 min daily)
+- `.claude/skills/learning-weekly-dive/SKILL.md` (30-60 min weekly)
+- `.claude/skills/learning-monthly-synthesis/SKILL.md` (1-2 hour monthly)
+- `.claude/skills/learning-apply-to-work/SKILL.md` (Real-world application)
+- `.claude/skills/learning-init-project/SKILL.md` (Project-mode learning)
 
 #### Skills (7 files)
 - `skills/recall-test/SKILL.md` (Predict-before-see)
@@ -31,9 +35,9 @@ All 5 phases of the Modern Learning Science Framework have been successfully imp
 - `./.review-schedule.json` (Review queue)
 - `./.learning-preferences.json` (User settings)
 
-#### Plugin Infrastructure (2 files)
-- `hooks-handlers/session-start.sh` (Session hook)
-- `.claude-plugin/plugin.json` (Plugin config)
+#### Hook Infrastructure (2 files)
+- `.claude/hooks/session-start.sh` (SessionStart hook)
+- `.claude/settings.json` (Hook registration)
 
 #### Documentation (2 files)
 - `./LEARNING-FRAMEWORK-README.md` (Complete guide)
@@ -48,23 +52,23 @@ All 5 phases of the Modern Learning Science Framework have been successfully imp
 
 ### 1. Test Daily Recall (5 min)
 ```bash
-/learning:daily-recall "test pyramid"
+/learning-daily-recall "test pyramid"
 ```
 Expected: AI asks you to explain without references first.
 
 ### 2. Try Weekly Dive (30 min)
 ```bash
-/learning:weekly-dive "Event Sourcing"
+/learning-weekly-dive "Event Sourcing"
 ```
 Expected: Socratic interrogation followed by teach-back evaluation.
 
 ### 3. Apply to Real Work
 ```bash
 # Next PR review
-/learning:apply-to-work --type=code-pr --target=<PR-number>
+/learning-apply-to-work --type=code-pr --target=<PR-number>
 
 # Next writing task
-/learning:apply-to-work --type=writing --target=<file-path>
+/learning-apply-to-work --type=writing --target=<file-path>
 ```
 Expected: Recall test BEFORE starting work.
 
@@ -76,8 +80,8 @@ Expected: Recall test BEFORE starting work.
 - [x] All commands created with domain-specific examples
 - [x] All skills created with universal patterns
 - [x] State files initialized with valid JSON
-- [x] Plugin configuration created
 - [x] SessionStart hook created and made executable
+- [x] Hook registered in project settings.json
 - [x] Directories created for synthesis documents
 - [x] Documentation complete (README + this summary)
 
@@ -180,16 +184,18 @@ After 3 months:
 ## Troubleshooting
 
 ### Issue: Commands not found
-**Solution**: Verify plugin.json is in correct location:
+**Solution**: Verify skill files exist in flat directories:
 ```bash
-ls .claude/plugins/local/learning-science/.claude-plugin/plugin.json
+ls .claude/skills/learning-*/SKILL.md
 ```
 
 ### Issue: SessionStart hook not running
-**Solution**: Check executable permissions:
+**Solution**: Check hook exists and is executable:
 ```bash
-chmod +x .claude/plugins/local/learning-science/hooks-handlers/session-start.sh
+ls -la .claude/hooks/session-start.sh
+chmod +x .claude/hooks/session-start.sh
 ```
+Also verify `.claude/settings.json` has the hook registered.
 
 ### Issue: State files not updating
 **Solution**: Check file permissions and JSON validity:

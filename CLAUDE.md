@@ -1,13 +1,13 @@
 # Learning Framework — Agent Instructions
 
-This project is a **learning system**, not a software application. It consists of Claude Code skills, plugins, and helper scripts that facilitate spaced-repetition learning for any domain. Understanding this context is critical — the code here is the learning infrastructure, not a product being built.
+This project is a **learning system**, not a software application. It consists of Claude Code skills, hooks, and helper scripts that facilitate spaced-repetition learning for any domain. Understanding this context is critical — the code here is the learning infrastructure, not a product being built.
 
 ## Architecture
 
-### Skills (`.claude/skills/learning/`)
+### Skills (`.claude/skills/learning-*/`)
 
-Each `SKILL.md` file defines a learning command (e.g., `/learning:daily-recall`). Skills:
-- Are invoked by users via slash commands
+Each `SKILL.md` file defines a learning command (e.g., `/learning-daily-recall`). Skills are auto-discovered by Claude Code from flat directories — no plugin registration needed. Skills:
+- Are invoked by users via slash commands (e.g., `/learning-init`, `/learning-daily-recall`)
 - Source helper scripts using relative paths: `./.claude/plugins/local/learning-science/helpers/`
 - Read/write user state files in the project root
 - Should use Socratic questioning — ask before explaining
@@ -21,9 +21,9 @@ Bash scripts that manage state:
 
 All paths are resolved dynamically. Never introduce hardcoded absolute paths.
 
-### Plugin (`.claude/plugins/local/learning-science/.claude-plugin/plugin.json`)
+### Hooks (`.claude/hooks/`)
 
-Registers skills and hooks with Claude Code. The `session-start` hook checks for overdue reviews.
+- `session-start.sh` — checks for overdue reviews and shows welcome message. Registered in `.claude/settings.json` as a `SessionStart` hook.
 
 ### Docs (`.claude/docs/`)
 
@@ -75,11 +75,10 @@ When creating or modifying skills, maintain these principles:
 ## Extending the System
 
 To add a new skill:
-1. Create `.claude/skills/learning/<name>/SKILL.md`
-2. Follow the frontmatter pattern from existing skills
+1. Create `.claude/skills/learning-<name>/SKILL.md`
+2. Follow the frontmatter pattern from existing skills (name field should be `learning-<name>`)
 3. Source `load-state.sh` for state access
-4. Register in `plugin.json`
-5. Add to the commands table in `README.md`
+4. Add to the commands table in `README.md`
 
 To add a new helper function:
 1. Add it to `load-state.sh` (for read operations) or `save-state.sh` (for write operations)

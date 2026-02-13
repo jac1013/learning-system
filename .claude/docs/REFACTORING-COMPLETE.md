@@ -12,27 +12,29 @@ The learning framework now follows **proper Claude Code architecture** with ever
 ./                    # Self-contained learning system (portable!)
 │
 ├── .claude/                           # Claude Code configuration
-│   ├── skills/learning/               # User-invocable skills
-│   │   ├── init/SKILL.md ✅          # /learning:init
-│   │   ├── create-profile/SKILL.md ✅ # /learning:create-profile
-│   │   ├── create-roadmap/SKILL.md ✅ # /learning:create-roadmap
-│   │   ├── daily-recall/SKILL.md ✅   # /learning:daily-recall
-│   │   ├── weekly-dive/SKILL.md ✅    # /learning:weekly-dive
-│   │   ├── monthly-synthesis/SKILL.md ✅ # /learning:monthly-synthesis
-│   │   └── apply-to-work/SKILL.md ✅  # /learning:apply-to-work
+│   ├── skills/                        # User-invocable skills (auto-discovered)
+│   │   ├── learning-init/SKILL.md ✅
+│   │   ├── learning-create-profile/SKILL.md ✅
+│   │   ├── learning-create-roadmap/SKILL.md ✅
+│   │   ├── learning-daily-recall/SKILL.md ✅
+│   │   ├── learning-weekly-dive/SKILL.md ✅
+│   │   ├── learning-monthly-synthesis/SKILL.md ✅
+│   │   ├── learning-apply-to-work/SKILL.md ✅
+│   │   └── learning-init-project/SKILL.md ✅
+│   │
+│   ├── hooks/
+│   │   └── session-start.sh ✅        # SessionStart hook
+│   │
+│   ├── settings.json ✅               # Hook registration
 │   │
 │   └── plugins/local/learning-science/
-│       ├── .claude-plugin/
-│       │   └── plugin.json ✅         # All skills registered
-│       ├── hooks-handlers/
-│       │   └── session-start.sh ✅    # Updated paths, executable
 │       └── helpers/
 │           ├── load-state.sh ✅       # Load profile/roadmap/state
 │           ├── infer-next.sh ✅       # Intelligent topic inference
 │           └── save-state.sh ✅       # Persist learning sessions
 │
-├── profile.json                       # Created by /learning:init
-├── roadmap.json                       # Created by /learning:init
+├── profile.json                       # Created by /learning-init
+├── roadmap.json                       # Created by /learning-init
 ├── learning-log.jsonl                 # Appended by skills
 ├── .spaced-repetition.json           # Managed by save-state.sh
 ├── .review-schedule.json             # Managed by save-state.sh
@@ -52,16 +54,16 @@ The learning framework now follows **proper Claude Code architecture** with ever
 - `save-state.sh` - Updates spaced repetition, logs, roadmap status
 
 ### Skills (7/7) ✅
-1. `/learning:init` - Complete onboarding (15-25 min)
-2. `/learning:create-profile` - Profile creation (10-15 min)
-3. `/learning:create-roadmap` - Roadmap generation (5-10 min)
-4. `/learning:daily-recall` - Daily retrieval practice (5-15 min)
-5. `/learning:weekly-dive` - Socratic deep dives (30-60 min)
-6. `/learning:monthly-synthesis` - Mastery verification (1-2 hours)
-7. `/learning:apply-to-work` - Real-world application (varies)
+1. `/learning-init` - Complete onboarding (15-25 min)
+2. `/learning-create-profile` - Profile creation (10-15 min)
+3. `/learning-create-roadmap` - Roadmap generation (5-10 min)
+4. `/learning-daily-recall` - Daily retrieval practice (5-15 min)
+5. `/learning-weekly-dive` - Socratic deep dives (30-60 min)
+6. `/learning-monthly-synthesis` - Mastery verification (1-2 hours)
+7. `/learning-apply-to-work` - Real-world application (varies)
 
 ### Configuration (100%) ✅
-- `plugin.json` - All 7 skills registered with proper paths
+- `settings.json` - SessionStart hook registered
 - `session-start.sh` - Updated to use new paths, made executable
 - All helper scripts executable
 
@@ -77,7 +79,7 @@ The learning framework now follows **proper Claude Code architecture** with ever
 
 ### First Time (15-25 min)
 ```bash
-/learning:init
+/learning-init
 ```
 
 **This single command**:
@@ -90,27 +92,27 @@ The learning framework now follows **proper Claude Code architecture** with ever
 
 ```bash
 # Daily practice (5-15 min)
-/learning:daily-recall
+/learning-daily-recall
 # → System suggests: "Test pyramid overdue 2 days (score: 6)"
 
 # Weekly deep dive (30-60 min)
-/learning:weekly-dive
+/learning-weekly-dive
 # → System suggests: "Event sourcing next in roadmap (Phase 2)"
 
 # Monthly mastery (1-2 hours)
-/learning:monthly-synthesis
+/learning-monthly-synthesis
 # → System suggests: "Microservices ready for mastery (score 8+)"
 
 # Apply to work (varies)
-/learning:apply-to-work
+/learning-apply-to-work
 # → System suggests: "Apply circuit breakers to payment service PR"
 ```
 
 ### Manual Override (Always Available)
 ```bash
-/learning:daily-recall "specific topic"
-/learning:weekly-dive "specific topic"
-/learning:apply-to-work --type=code-pr --target=PR-123
+/learning-daily-recall "specific topic"
+/learning-weekly-dive "specific topic"
+/learning-apply-to-work --type=code-pr --target=PR-123
 ```
 
 ---
@@ -120,8 +122,8 @@ The learning framework now follows **proper Claude Code architecture** with ever
 ### Proper Claude Code Patterns ✅
 
 **Skills = User Commands**
-- All `/learning:*` commands are skills
-- Located in `.claude/skills/learning/`
+- All `/learning-*` commands are skills
+- Located in `.claude/skills/learning-*/`
 - YAML frontmatter with metadata
 - Run in main context (fork for weekly-dive)
 
@@ -226,22 +228,22 @@ cd ~/.claude/commands && ls -la learning/
 
 ### Start Learning
 ```bash
-/learning:init
+/learning-init
 ```
 
 ### After Init
 ```bash
 # See what commands do
-/learning:init  # Shows system tour again
+/learning-init  # Shows system tour again
 
 # Start first topic
-/learning:weekly-dive
+/learning-weekly-dive
 
 # Daily practice
-/learning:daily-recall
+/learning-daily-recall
 
 # Apply to work
-/learning:apply-to-work
+/learning-apply-to-work
 ```
 
 ### Customize
@@ -289,4 +291,4 @@ Built on modern research (2008-2026):
 For questions or issues, see:
 - `docs/QUICK-START.md` - Command reference
 - `docs/START-HERE.md` - Getting started guide
-- Skill files in `.claude/skills/learning/` - Implementation details
+- Skill files in `.claude/skills/learning-*/` - Implementation details

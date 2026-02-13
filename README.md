@@ -28,7 +28,7 @@ cd my-learning
 ### Setup (15-25 minutes, one time)
 
 ```bash
-/learning:init
+/learning-init
 ```
 
 This single command walks you through:
@@ -42,43 +42,44 @@ After setup, the system guides you — no manual topic selection needed.
 
 | Command | Time | Purpose |
 |---|---|---|
-| `/learning:init` | 15-25 min | First-time setup (profile + roadmap + tour) |
-| `/learning:daily-recall` | 5-15 min | Quick retrieval practice on overdue topics |
-| `/learning:weekly-dive` | 30-60 min | Deep Socratic exploration of a topic |
-| `/learning:monthly-synthesis` | 1-2 hours | Mastery verification with full reconstruction |
-| `/learning:apply-to-work` | varies | Apply learning to real tasks (PRs, design, writing) |
-| `/learning:create-profile` | 10-15 min | Create or update your learner profile |
-| `/learning:create-roadmap` | 5-10 min | Generate or regenerate your learning roadmap |
+| `/learning-init` | 15-25 min | First-time setup (profile + roadmap + tour) |
+| `/learning-daily-recall` | 5-15 min | Quick retrieval practice on overdue topics |
+| `/learning-weekly-dive` | 30-60 min | Deep Socratic exploration of a topic |
+| `/learning-monthly-synthesis` | 1-2 hours | Mastery verification with full reconstruction |
+| `/learning-apply-to-work` | varies | Apply learning to real tasks (PRs, design, writing) |
+| `/learning-create-profile` | 10-15 min | Create or update your learner profile |
+| `/learning-create-roadmap` | 5-10 min | Generate or regenerate your learning roadmap |
 
 All commands are **context-aware** — they read your profile, roadmap, and review history to suggest what to work on. You can always override with a specific topic:
 
 ```bash
-/learning:daily-recall "circuit breaker pattern"
+/learning-daily-recall "circuit breaker pattern"
 ```
 
 ## Recommended Rhythm
 
-- **Daily** (5-15 min): `/learning:daily-recall` — quick retrieval on due topics
-- **Weekly** (30-60 min): `/learning:weekly-dive` — deep dive on next roadmap topic
-- **Monthly** (1-2 hours): `/learning:monthly-synthesis` — verify mastery, create synthesis doc
-- **As needed**: `/learning:apply-to-work` — before PRs, architecture decisions, writing
+- **Daily** (5-15 min): `/learning-daily-recall` — quick retrieval on due topics
+- **Weekly** (30-60 min): `/learning-weekly-dive` — deep dive on next roadmap topic
+- **Monthly** (1-2 hours): `/learning-monthly-synthesis` — verify mastery, create synthesis doc
+- **As needed**: `/learning-apply-to-work` — before PRs, architecture decisions, writing
 
 ## Project Structure
 
 ```
 .claude/                          # Framework code (versioned)
-├── skills/learning/              # Skill definitions (7 commands)
-│   ├── init/SKILL.md
-│   ├── daily-recall/SKILL.md
-│   ├── weekly-dive/SKILL.md
-│   ├── monthly-synthesis/SKILL.md
-│   ├── apply-to-work/SKILL.md
-│   ├── create-profile/SKILL.md
-│   └── create-roadmap/SKILL.md
+├── skills/                       # Skill definitions (auto-discovered)
+│   ├── learning-init/SKILL.md
+│   ├── learning-daily-recall/SKILL.md
+│   ├── learning-weekly-dive/SKILL.md
+│   ├── learning-monthly-synthesis/SKILL.md
+│   ├── learning-apply-to-work/SKILL.md
+│   ├── learning-create-profile/SKILL.md
+│   ├── learning-create-roadmap/SKILL.md
+│   └── learning-init-project/SKILL.md
+├── hooks/                        # SessionStart hook
+├── settings.json                 # Hook registration
 ├── plugins/local/learning-science/
-│   ├── helpers/                  # Bash helpers (state management)
-│   ├── hooks-handlers/           # Session start hook
-│   └── .claude-plugin/           # Plugin registration
+│   └── helpers/                  # Bash helpers (state management)
 └── docs/                         # Extended documentation
 
 # User state (created at runtime, gitignored)

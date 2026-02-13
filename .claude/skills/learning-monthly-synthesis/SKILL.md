@@ -1,5 +1,5 @@
 ---
-name: monthly-synthesis
+name: learning-monthly-synthesis
 description: 1-2 hour mastery verification session. Reconstruct complete understanding from memory, analyze scenarios, and create synthesis document. For topics with consistent high scores.
 disable-model-invocation: false
 argument-hint: "[optional-topic]"
@@ -388,13 +388,13 @@ This means:
 ✅ You're ready to apply confidently
 
 **Recommended**:
-1. Apply to real work: `/learning:apply-to-work`
+1. Apply to real work: `/learning-apply-to-work`
 2. Help others learn this topic (teaching deepens mastery)
-3. Move to next roadmap topic: `/learning:weekly-dive`
+3. Move to next roadmap topic: `/learning-weekly-dive`
 
 ---
 
 **What would you like to do next?**
-1. Apply to work: `/learning:apply-to-work`
-2. Next topic: `/learning:weekly-dive`
+1. Apply to work: `/learning-apply-to-work`
+2. Next topic: `/learning-weekly-dive`
 3. Celebrate and rest! 🎊

@@ -24,7 +24,7 @@ LEARNING_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
 - `save-state.sh` - Sources load-state.sh (inherits portable paths)
 - `infer-next.sh` - Sources load-state.sh (inherits portable paths)
 
-### 2. Skills (`.claude/skills/learning/*/SKILL.md`)
+### 2. Skills (`.claude/skills/learning-*/SKILL.md`)
 
 All skill files now use relative paths:
 
@@ -45,19 +45,17 @@ source ./.claude/plugins/local/learning-science/helpers/load-state.sh
 - `create-roadmap/SKILL.md`
 - `apply-to-work/SKILL.md`
 
-### 3. Hook Handlers (`.claude/plugins/local/learning-science/hooks-handlers/`)
+### 3. Hooks (`.claude/hooks/`)
 
-The session-start hook now calculates paths dynamically:
+The session-start hook calculates paths dynamically:
 
 ```bash
-# Before:
-PLUGIN_DIR="/home/jac/learning/.claude/plugins/local/learning-science"
+# Before (hard-coded):
 LEARNING_ROOT="/home/jac/learning"
 
-# After:
+# After (portable):
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PLUGIN_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-LEARNING_ROOT="$(cd "$PLUGIN_DIR/../../../.." && pwd)"
+LEARNING_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 ```
 
 ### 4. Documentation (`.claude/docs/`)
@@ -85,12 +83,12 @@ The portable structure:
 ```
 <project-root>/                     # Can be anywhere!
 ├── .claude/
-│   ├── skills/learning/            # All use relative paths
+│   ├── skills/learning-*/           # All use relative paths
+│   ├── hooks/                      # SessionStart hook
 │   ├── plugins/local/learning-science/
-│   │   ├── helpers/                # Dynamically derive project root
-│   │   └── hooks-handlers/         # Dynamically derive paths
+│   │   └── helpers/                # Dynamically derive project root
 │   ├── docs/                       # Generic path references
-│   └── settings.local.json
+│   └── settings.json               # Hook registration
 ├── profile.json                    # Created in project root
 ├── roadmap.json                    # Created in project root
 ├── learning-log.jsonl              # Created in project root

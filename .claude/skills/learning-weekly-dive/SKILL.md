@@ -1,5 +1,5 @@
 ---
-name: weekly-dive
+name: learning-weekly-dive
 description: 30-60 minute deep dive using Socratic questioning and teach-back. System suggests next roadmap topic or specify your own. Builds deep understanding through challenge.
 disable-model-invocation: false
 argument-hint: "[optional-topic]"
@@ -29,7 +29,7 @@ else
         echo "📋 No topics ready in roadmap."
         echo ""
         echo "Options:"
-        echo "1. Specify a topic: /learning:weekly-dive \"topic name\""
+        echo "1. Specify a topic: /learning-weekly-dive \"topic name\""
         echo "2. Update roadmap: Edit ./roadmap.json"
         echo "3. Review a weak topic from past sessions"
         exit 0
@@ -263,7 +263,7 @@ source ./.claude/plugins/local/learning-science/helpers/save-state.sh log "$LOG_
 ### Recommended Follow-Up
 
 **If score < 6**:
-📚 Schedule another weekly dive: `/learning:weekly-dive "[topic]"`
+📚 Schedule another weekly dive: `/learning-weekly-dive "[topic]"`
 Consider breaking into smaller sub-topics
 
 **If score 7-8**:
@@ -273,13 +273,13 @@ Consider breaking into smaller sub-topics
 
 **If score 9-10**:
 🎉 Excellent mastery! Next steps:
-- Apply to real work: `/learning:apply-to-work`
-- Move to next topic: `/learning:weekly-dive`
+- Apply to real work: `/learning-apply-to-work`
+- Move to next topic: `/learning-weekly-dive`
 - Consider monthly synthesis when ready
 
 ---
 
 **What would you like to do next?**
-1. Next topic: `/learning:weekly-dive`
-2. Apply this: `/learning:apply-to-work`
+1. Next topic: `/learning-weekly-dive`
+2. Apply this: `/learning-apply-to-work`
 3. That's enough for today!

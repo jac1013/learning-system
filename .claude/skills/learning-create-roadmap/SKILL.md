@@ -1,6 +1,6 @@
 ---
-name: create-roadmap
-description: Generate personalized learning roadmap based on your profile. Breaks down goals into topics, sequences by dependencies, estimates timeline. Usually done via /learning:init but can be run standalone.
+name: learning-create-roadmap
+description: Generate personalized learning roadmap based on your profile. Breaks down goals into topics, sequences by dependencies, estimates timeline. Usually done via /learning-init but can be run standalone.
 disable-model-invocation: false
 ---
 
@@ -8,7 +8,7 @@ disable-model-invocation: false
 
 Generate your personalized learning roadmap (5-10 minutes).
 
-**Note**: This is included in `/learning:init`. Use this command to regenerate your roadmap or create one standalone.
+**Note**: This is included in `/learning-init`. Use this command to regenerate your roadmap or create one standalone.
 
 ---
 
@@ -21,7 +21,7 @@ Generate your personalized learning roadmap (5-10 minutes).
     echo ""
     echo "I need your learning profile to generate a roadmap."
     echo ""
-    echo "Create profile first: /learning:create-profile"
+    echo "Create profile first: /learning-create-profile"
     echo ""
     exit 1
 fi
@@ -253,7 +253,7 @@ Based on your time commitment:
 
 **Recommended next steps**:
 
-1. **Start first topic**: `/learning:weekly-dive`
+1. **Start first topic**: `/learning-weekly-dive`
    - System will suggest: Topic 1.1
    - ~30-60 minutes
    - Gets you started on your journey!
@@ -281,12 +281,12 @@ Based on your time commitment:
 - ✅ Sequence can be reordered (if prerequisites met)
 - ✅ Application opportunities can be updated
 
-**Update anytime**: Edit the JSON file or run `/learning:create-roadmap` again
+**Update anytime**: Edit the JSON file or run `/learning-create-roadmap` again
 
 ---
 
 **What would you like to do?**
-1. `/learning:weekly-dive` - Start first topic now!
+1. `/learning-weekly-dive` - Start first topic now!
 2. Review roadmap - `cat ./roadmap.json | jq`
 3. Adjust roadmap - Edit the file manually
-4. Daily practice - `/learning:daily-recall`
+4. Daily practice - `/learning-daily-recall`

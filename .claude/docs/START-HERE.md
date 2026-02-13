@@ -15,7 +15,7 @@ This is a **personalized learning framework** that adapts to YOU. It knows:
 ## 🎯 New User? One Command to Start!
 
 ```bash
-/learning:init
+/learning-init
 ```
 
 **That's it!** This single command:
@@ -30,37 +30,37 @@ After this, the system guides you—no manual topic specification needed!
 
 ---
 
-## 📚 What You Get After `/learning:init`
+## 📚 What You Get After `/learning-init`
 
 ### Context-Aware Commands
 
 **Daily Practice** (5-15 min):
 ```bash
-/learning:daily-recall
+/learning-daily-recall
 # → System: "Test pyramid overdue 2 days (score: 6)"
 ```
 
 **Weekly Deep Dives** (30-60 min):
 ```bash
-/learning:weekly-dive
+/learning-weekly-dive
 # → System: "Event sourcing next in roadmap (Phase 2)"
 ```
 
 **Monthly Mastery** (1-2 hours):
 ```bash
-/learning:monthly-synthesis
+/learning-monthly-synthesis
 # → System: "Microservices ready for mastery (score 8+)"
 ```
 
 **Apply to Real Work** (Varies):
 ```bash
-/learning:apply-to-work
+/learning-apply-to-work
 # → System: "Apply circuit breakers to payment service PR"
 ```
 
 **Manual override always available:**
 ```bash
-/learning:daily-recall "specific topic"
+/learning-daily-recall "specific topic"
 ```
 
 ---
@@ -177,7 +177,7 @@ Apply to actual work:
 
 ### Day 1: Setup (15-25 min)
 ```bash
-/learning:init
+/learning-init
 ```
 - Create profile
 - Generate roadmap
@@ -186,7 +186,7 @@ Apply to actual work:
 
 ### Day 1 (continued): First Topic (30-60 min)
 ```bash
-/learning:weekly-dive
+/learning-weekly-dive
 ```
 - System suggests first roadmap topic
 - Socratic questioning
@@ -195,7 +195,7 @@ Apply to actual work:
 
 ### Days 2-7: Daily Practice (5-15 min/day)
 ```bash
-/learning:daily-recall
+/learning-daily-recall
 ```
 - System suggests review topics
 - Quick retrieval tests
@@ -204,18 +204,18 @@ Apply to actual work:
 ### Week 2+: Ongoing Learning
 ```bash
 # Weekly deep dive (30-60 min)
-/learning:weekly-dive
+/learning-weekly-dive
 
 # Daily practice (5-15 min)
-/learning:daily-recall
+/learning-daily-recall
 
 # Apply to work (as needed)
-/learning:apply-to-work
+/learning-apply-to-work
 ```
 
 ### Month 1: Mastery Check (1-2 hours)
 ```bash
-/learning:monthly-synthesis
+/learning-monthly-synthesis
 ```
 - Complete reconstruction
 - Scenario analysis
@@ -310,7 +310,7 @@ A: Yes! Everything is local files on your machine.
 ## 🚀 Ready to Start?
 
 ```bash
-/learning:init
+/learning-init
 ```
 
 15-25 minutes to complete setup.

@@ -12,7 +12,7 @@
 
 ### 1. Single-Command Onboarding (NEW!)
 
-**`/learning:init`** - Your entry point!
+**`/learning-init`** - Your entry point!
 
 - ✅ Complete guided setup in 15-25 minutes
 - ✅ Profile creation + Roadmap generation + System tour
@@ -37,14 +37,14 @@
 **No manual topic specification needed!**
 
 All learning commands now intelligently suggest topics:
-- `/learning:daily-recall` → Infers overdue topics
-- `/learning:weekly-dive` → Infers next roadmap topic
-- `/learning:monthly-synthesis` → Infers mastery-ready topics
-- `/learning:apply-to-work` → Infers applicable topics + work type
+- `/learning-daily-recall` → Infers overdue topics
+- `/learning-weekly-dive` → Infers next roadmap topic
+- `/learning-monthly-synthesis` → Infers mastery-ready topics
+- `/learning-apply-to-work` → Infers applicable topics + work type
 
 **Always explains WHY it chose that topic**
 
-Manual override still works: `/learning:daily-recall "specific topic"`
+Manual override still works: `/learning-daily-recall "specific topic"`
 
 ### 4. Structured Learning Log (NEW!)
 
@@ -62,7 +62,7 @@ Manual override still works: `/learning:daily-recall "specific topic"`
 
 ### Setup (One-Time)
 
-**`/learning:init`** 🚀 **START HERE!**
+**`/learning-init`** 🚀 **START HERE!**
 - Complete guided setup
 - 15-25 minutes
 - Profile + Roadmap + Tour
@@ -70,35 +70,35 @@ Manual override still works: `/learning:daily-recall "specific topic"`
 
 ### Learning Commands (Daily Use)
 
-**`/learning:daily-recall`** ⚡ (5-15 min)
+**`/learning-daily-recall`** ⚡ (5-15 min)
 - Quick retrieval stress
 - Context-aware or manual
 - **Enhanced in v2.0.0** with context awareness
 
-**`/learning:weekly-dive`** 📖 (30-60 min)
+**`/learning-weekly-dive`** 📖 (30-60 min)
 - Socratic deep dive
 - Context-aware or manual
 - **Enhanced in v2.0.0** with context awareness
 
-**`/learning:monthly-synthesis`** 🎓 (1-2 hours)
+**`/learning-monthly-synthesis`** 🎓 (1-2 hours)
 - Mastery verification
 - Context-aware or manual
 - **Enhanced in v2.0.0** with context awareness
 
-**`/learning:apply-to-work`** 💼 (Varies)
+**`/learning-apply-to-work`** 💼 (Varies)
 - Apply to real work
 - Context-aware (infers type)
 - **Enhanced in v2.0.0** with context awareness
 
 ### Maintenance (As Needed)
 
-**`/learning:create-profile`**
+**`/learning-create-profile`**
 - Standalone profile creation
-- Now part of `/learning:init`
+- Now part of `/learning-init`
 
-**`/learning:create-roadmap`**
+**`/learning-create-roadmap`**
 - Standalone roadmap generation
-- Now part of `/learning:init`
+- Now part of `/learning-init`
 
 ---
 
@@ -107,8 +107,8 @@ Manual override still works: `/learning:daily-recall "specific topic"`
 ### Before v2.0.0
 ```bash
 # Users had to:
-1. Manually run /learning:create-profile
-2. Manually run /learning:create-roadmap
+1. Manually run /learning-create-profile
+2. Manually run /learning-create-roadmap
 3. Figure out what commands exist
 4. Manually specify every topic
 5. Track what they've learned
@@ -117,7 +117,7 @@ Manual override still works: `/learning:daily-recall "specific topic"`
 ### After v2.0.0
 ```bash
 # Users just run:
-/learning:init
+/learning-init
 
 # Then the system:
 1. ✅ Guides through complete setup
@@ -208,7 +208,7 @@ Standardized format enables:
 ### For New Users
 ```bash
 # Just run:
-/learning:init
+/learning-init
 ```
 
 ### For Existing Users (v1.0.0)
@@ -216,30 +216,30 @@ Standardized format enables:
 **Option 1: Full Adoption**
 ```bash
 # Create profile and roadmap
-/learning:init
+/learning-init
 
 # Start using context-aware commands
-/learning:daily-recall  # No params!
-/learning:weekly-dive   # No params!
+/learning-daily-recall  # No params!
+/learning-weekly-dive   # No params!
 ```
 
 **Option 2: Gradual Adoption**
 ```bash
 # Create profile only
-/learning:create-profile
+/learning-create-profile
 
 # Try context-aware commands
-/learning:daily-recall
+/learning-daily-recall
 
 # Add roadmap when ready
-/learning:create-roadmap
+/learning-create-roadmap
 ```
 
 **Option 3: Keep Manual (Still Works!)**
 ```bash
 # Continue specifying topics manually
-/learning:daily-recall "specific topic"
-/learning:weekly-dive "specific topic"
+/learning-daily-recall "specific topic"
+/learning-weekly-dive "specific topic"
 ```
 
 **100% Backward Compatible!**
@@ -265,7 +265,7 @@ Standardized format enables:
 ## 🎯 Success Metrics
 
 ### User Experience
-- ✅ Single command to start (`/learning:init`)
+- ✅ Single command to start (`/learning-init`)
 - ✅ No manual topic specification needed
 - ✅ Clear command explanations in init
 - ✅ Immediate action after setup
@@ -339,7 +339,7 @@ Tag in learning-log: `#framework-feedback`
 
 ### For Users
 ```bash
-/learning:init
+/learning-init
 ```
 
 That's it! The system guides you from there.

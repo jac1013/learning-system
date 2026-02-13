@@ -33,12 +33,12 @@ The learning framework now includes a **complete personalization layer** that ma
 
 ### New Commands (2)
 
-1. **`/learning:create-profile`** - 10-15 min guided profiling session
+1. **`/learning-create-profile`** - 10-15 min guided profiling session
    - Run this FIRST (before anything else)
    - Creates `./profile.md`
    - Configures system preferences
 
-2. **`/learning:create-roadmap`** - 5-10 min roadmap generation
+2. **`/learning-create-roadmap`** - 5-10 min roadmap generation
    - Run AFTER creating profile
    - Creates `./roadmap.md`
    - Maps path to your goals
@@ -57,20 +57,20 @@ All existing commands now work **without parameters**:
 
 #### Before (Manual)
 ```bash
-/learning:daily-recall "test pyramid"
-/learning:weekly-dive "event sourcing"
-/learning:monthly-synthesis "microservices"
+/learning-daily-recall "test pyramid"
+/learning-weekly-dive "event sourcing"
+/learning-monthly-synthesis "microservices"
 ```
 
 #### After (Context-Aware)
 ```bash
-/learning:daily-recall
+/learning-daily-recall
 # → System infers: "Test pyramid is overdue (last reviewed 5 days ago)"
 
-/learning:weekly-dive
+/learning-weekly-dive
 # → System infers: "Event sourcing is next in roadmap (Phase 2, Week 5)"
 
-/learning:monthly-synthesis
+/learning-monthly-synthesis
 # → System infers: "Microservices ready for mastery (score 8+ consistently)"
 ```
 
@@ -81,7 +81,7 @@ All existing commands now work **without parameters**:
 ### Step 1: Create Profile (First Time Only)
 
 ```bash
-/learning:create-profile
+/learning-create-profile
 ```
 
 **What happens**:
@@ -132,7 +132,7 @@ All existing commands now work **without parameters**:
 ### Step 2: Generate Roadmap (After Profile)
 
 ```bash
-/learning:create-roadmap
+/learning-create-roadmap
 ```
 
 **What happens**:
@@ -172,7 +172,7 @@ Now when you run learning commands **without parameters**, the system decides wh
 
 ```bash
 # Daily recall (5-15 min)
-/learning:daily-recall
+/learning-daily-recall
 ```
 
 **System thinks**:
@@ -195,12 +195,12 @@ Ready to start?
 
 **You confirm or override**:
 - "yes" → Start recall test
-- "/learning:daily-recall 'different topic'" → Override
+- "/learning-daily-recall 'different topic'" → Override
 
 ### Step 4: Apply to Work (Inferred Type)
 
 ```bash
-/learning:apply-to-work
+/learning-apply-to-work
 ```
 
 **System thinks**:
@@ -235,22 +235,22 @@ Ready to review PRs with this lens?
 
 ```bash
 # Step 1: Create profile (10-15 min, one-time)
-/learning:create-profile
+/learning-create-profile
 # → Guided interview, creates profile.md
 
 # Step 2: Generate roadmap (5-10 min, one-time)
-/learning:create-roadmap
+/learning-create-roadmap
 # → Creates personalized roadmap.md
 
 # Step 3: Start learning (daily/weekly)
-/learning:weekly-dive
+/learning-weekly-dive
 # → System suggests first topic from roadmap
 
-/learning:daily-recall
+/learning-daily-recall
 # → System suggests reviews based on spaced repetition
 
 # Step 4: Apply to work (ongoing)
-/learning:apply-to-work
+/learning-apply-to-work
 # → System matches learning to real work
 ```
 
@@ -258,19 +258,19 @@ Ready to review PRs with this lens?
 
 ```bash
 # Daily (5-15 min)
-/learning:daily-recall
+/learning-daily-recall
 # → System: "Test pyramid overdue, let's review"
 
 # Weekly (30-60 min)
-/learning:weekly-dive
+/learning-weekly-dive
 # → System: "Event sourcing is next in roadmap"
 
 # Monthly (1-2 hours)
-/learning:monthly-synthesis
+/learning-monthly-synthesis
 # → System: "Microservices ready for mastery verification"
 
 # As needed
-/learning:apply-to-work
+/learning-apply-to-work
 # → System: "Apply circuit breakers to payment service PR"
 ```
 
@@ -383,9 +383,9 @@ Work type inferred from:
 
 I can't suggest topics without knowing your goals and context.
 
-Create your profile first: `/learning:create-profile` (10-15 min)
+Create your profile first: `/learning-create-profile` (10-15 min)
 
-Or specify a topic manually: `/learning:daily-recall "topic"`
+Or specify a topic manually: `/learning-daily-recall "topic"`
 ```
 
 ### No Roadmap
@@ -397,9 +397,9 @@ I can help you learn specific topics, but a roadmap ensures you:
 - Don't miss prerequisites
 - Apply learning to real work
 
-Create roadmap: `/learning:create-roadmap` (5-10 min)
+Create roadmap: `/learning-create-roadmap` (5-10 min)
 
-Or continue with: `/learning:weekly-dive "topic"`
+Or continue with: `/learning-weekly-dive "topic"`
 ```
 
 ### Multiple Equal Candidates
@@ -428,7 +428,7 @@ Every 3 months:
 
 ### Mid-Roadmap Adjustments
 ```bash
-/learning:update-roadmap
+/learning-update-roadmap
 ```
 - Add/remove topics
 - Reorder sequence
@@ -472,14 +472,14 @@ System adjusts based on:
 ## Migration Path
 
 ### For New Users
-1. `/learning:create-profile` (required)
-2. `/learning:create-roadmap` (recommended)
+1. `/learning-create-profile` (required)
+2. `/learning-create-roadmap` (recommended)
 3. Start learning (context-aware)
 
 ### For Existing Users
 You can:
 - **Keep using manual commands**: Still works!
-  - `/learning:daily-recall "topic"` (specify manually)
+  - `/learning-daily-recall "topic"` (specify manually)
 
 - **Adopt gradually**:
   1. Create profile (enables personalization)

@@ -23,7 +23,7 @@ This framework implements modern learning science research (2024-2026 consensus)
 ### ✅ Phase 2: Daily Cadence (COMPLETE)
 
 **Commands**:
-- `.claude/commands/learning/daily-recall.md` - 5-15 min daily retrieval stress
+- `.claude/skills/learning-daily-recall/SKILL.md` - 5-15 min daily retrieval stress
 
 **Skills**:
 - `skills/recall-test/SKILL.md` - Predict-before-see pattern
@@ -32,8 +32,8 @@ This framework implements modern learning science research (2024-2026 consensus)
 ### ✅ Phase 3: Weekly & Monthly Cadence (COMPLETE)
 
 **Commands**:
-- `.claude/commands/learning/weekly-dive.md` - 30-60 min Socratic interrogation
-- `.claude/commands/learning/monthly-synthesis.md` - 1-2 hour reconstruction
+- `.claude/skills/learning-weekly-dive/SKILL.md` - 30-60 min Socratic interrogation
+- `.claude/skills/learning-monthly-synthesis/SKILL.md` - 1-2 hour reconstruction
 
 **Skills**:
 - `skills/teach-back/SKILL.md` - Learn by teaching
@@ -45,13 +45,12 @@ This framework implements modern learning science research (2024-2026 consensus)
 ### ✅ Phase 4: Enhanced SessionStart Hook (COMPLETE)
 
 **Files**:
-- `hooks-handlers/session-start.sh` - Checks overdue reviews, injects retrieval patterns
-- `.claude-plugin/plugin.json` - Plugin configuration
+- `.claude/hooks/session-start.sh` - Checks overdue reviews, injects retrieval patterns
 
 ### ✅ Phase 5: Real-World Application (COMPLETE)
 
 **Commands**:
-- `.claude/commands/learning/apply-to-work.md` - Domain-agnostic application anchoring
+- `.claude/skills/learning-apply-to-work/SKILL.md` - Domain-agnostic application anchoring
   - Supports: code-pr, code-implement, writing, qa, architecture, security
 
 **Directories Created**:
@@ -63,11 +62,11 @@ This framework implements modern learning science research (2024-2026 consensus)
 
 ```bash
 # Check what's due for review
-/learning:daily-recall
+/learning-daily-recall
 
 # Or specify a topic
-/learning:daily-recall "test pyramid"
-/learning:daily-recall "src/auth/middleware.ts"
+/learning-daily-recall "test pyramid"
+/learning-daily-recall "src/auth/middleware.ts"
 ```
 
 **What Happens**:
@@ -83,8 +82,8 @@ This framework implements modern learning science research (2024-2026 consensus)
 
 ```bash
 # Deep dive on a topic
-/learning:weekly-dive "Event Sourcing"
-/learning:weekly-dive "STRIDE threat modeling" --domain=security
+/learning-weekly-dive "Event Sourcing"
+/learning-weekly-dive "STRIDE threat modeling" --domain=security
 ```
 
 **What Happens**:
@@ -97,8 +96,8 @@ This framework implements modern learning science research (2024-2026 consensus)
 
 ```bash
 # Reconstruct and synthesize
-/learning:monthly-synthesis "DDD Aggregates"
-/learning:monthly-synthesis "Authentication Flow"
+/learning-monthly-synthesis "DDD Aggregates"
+/learning-monthly-synthesis "Authentication Flow"
 ```
 
 **What Happens**:
@@ -111,19 +110,19 @@ This framework implements modern learning science research (2024-2026 consensus)
 
 ```bash
 # Code PR review with learning reinforcement
-/learning:apply-to-work --type=code-pr --target=123
+/learning-apply-to-work --type=code-pr --target=123
 
 # Writing task with technique recall
-/learning:apply-to-work --type=writing --target=~/docs/essay.md
+/learning-apply-to-work --type=writing --target=~/docs/essay.md
 
 # QA test plan with strategy recall
-/learning:apply-to-work --type=qa --target="new feature X"
+/learning-apply-to-work --type=qa --target="new feature X"
 
 # Architecture decision with pattern recall
-/learning:apply-to-work --type=architecture --target="API design choice"
+/learning-apply-to-work --type=architecture --target="API design choice"
 
 # Security review with threat model recall
-/learning:apply-to-work --type=security --target="payment service"
+/learning-apply-to-work --type=security --target="payment service"
 ```
 
 **What Happens**:
@@ -285,7 +284,7 @@ Edit `.learning-preferences.json`:
 ## Typical Learning Rhythm
 
 ### Daily (5-15 min)
-- Wake up → Check notifications or run `/learning:daily-recall`
+- Wake up → Check notifications or run `/learning-daily-recall`
 - Quick retrieval test on 1 topic
 - Update state automatically
 
@@ -301,21 +300,21 @@ Edit `.learning-preferences.json`:
 - Create synthesis document
 
 ### Real Work (Ongoing)
-- Before code review: `/learning:apply-to-work --type=code-pr`
-- Before writing: `/learning:apply-to-work --type=writing`
-- Before architecture decision: `/learning:apply-to-work --type=architecture`
+- Before code review: `/learning-apply-to-work --type=code-pr`
+- Before writing: `/learning-apply-to-work --type=writing`
+- Before architecture decision: `/learning-apply-to-work --type=architecture`
 
 ## Example Learning Journey
 
 ### Week 1: Introduction to DDD Aggregates
 ```bash
 # Monday: First exposure
-/learning:weekly-dive "DDD Aggregates"
+/learning-weekly-dive "DDD Aggregates"
 # Result: Teach-back score 6/10, gaps identified
 # Scheduled: Daily recall in 3 days
 
 # Thursday: First review
-/learning:daily-recall "DDD Aggregates"
+/learning-daily-recall "DDD Aggregates"
 # Result: Recall score 7/10 (improved!)
 # Scheduled: Next review in 5 days
 ```
@@ -323,7 +322,7 @@ Edit `.learning-preferences.json`:
 ### Week 2: Apply to Real Work
 ```bash
 # Tuesday: PR review opportunity
-/learning:apply-to-work --type=code-pr --target=234
+/learning-apply-to-work --type=code-pr --target=234
 # Recognized aggregate boundary issue in PR!
 # Result: Applied score 8/10
 # Scheduled: Next review in 10 days
@@ -332,7 +331,7 @@ Edit `.learning-preferences.json`:
 ### Week 3: Reinforce
 ```bash
 # Following Tuesday: Scheduled review
-/learning:daily-recall "DDD Aggregates"
+/learning-daily-recall "DDD Aggregates"
 # Result: Recall score 9/10 (strong!)
 # Scheduled: Next review in 25 days
 ```
@@ -340,7 +339,7 @@ Edit `.learning-preferences.json`:
 ### Month 2: Mastery
 ```bash
 # After multiple successful applications
-/learning:monthly-synthesis "DDD Aggregates"
+/learning-monthly-synthesis "DDD Aggregates"
 # Complete reconstruction from memory
 # Synthesis document created
 # Result: Mastery score 9/10
@@ -350,9 +349,9 @@ Edit `.learning-preferences.json`:
 ## Troubleshooting
 
 ### "I don't see overdue review notifications"
-- Check SessionStart hook is enabled: `ls -la ./.claude/plugins/local/learning-science/hooks-handlers/session-start.sh`
+- Check SessionStart hook exists: `ls -la ./.claude/hooks/session-start.sh`
 - Verify it's executable: `chmod +x` if not
-- Check plugin.json is valid: `cat ./.claude/plugins/local/learning-science/.claude-plugin/plugin.json | jq`
+- Check settings.json has the hook registered: `cat ./.claude/settings.json | jq`
 
 ### "Retrieval stress feels overwhelming"
 - Reduce intensity: Edit `.learning-preferences.json`, set `"intensity": "low"`
@@ -416,9 +415,9 @@ The system is designed to be **respectful** (opt-out anytime), **efficient** (5-
 
 ## Next Steps
 
-1. **Test Daily Recall**: Run `/learning:daily-recall` on any topic
+1. **Test Daily Recall**: Run `/learning-daily-recall` on any topic
 2. **Schedule Weekly Dive**: Pick something from your roadmap
-3. **Apply to Real Work**: Use `/learning:apply-to-work` next time you code/write/test
+3. **Apply to Real Work**: Use `/learning-apply-to-work` next time you code/write/test
 4. **Track Progress**: Check `.spaced-repetition.json` after a week
 5. **Customize**: Adjust preferences to your learning style
 

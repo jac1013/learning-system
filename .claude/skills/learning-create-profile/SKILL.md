@@ -1,6 +1,6 @@
 ---
-name: create-profile
-description: Create or update your learning profile. Guided 10-15 minute interview about goals, learning style, and work context. Usually done via /learning:init but can be run standalone.
+name: learning-create-profile
+description: Create or update your learning profile. Guided 10-15 minute interview about goals, learning style, and work context. Usually done via /learning-init but can be run standalone.
 disable-model-invocation: false
 ---
 
@@ -8,7 +8,7 @@ disable-model-invocation: false
 
 Create or update your personalized learning profile (10-15 minutes).
 
-**Note**: This is included in `/learning:init`. Use this command to update an existing profile or create one standalone.
+**Note**: This is included in `/learning-init`. Use this command to update an existing profile or create one standalone.
 
 ---
 
@@ -200,20 +200,20 @@ echo "Saved to: ./profile.json"
 
 **Recommended next steps**:
 
-1. **Generate roadmap**: `/learning:create-roadmap`
+1. **Generate roadmap**: `/learning-create-roadmap`
    - Creates personalized learning path based on this profile
 
-2. **Start learning**: `/learning:weekly-dive`
+2. **Start learning**: `/learning-weekly-dive`
    - Begin your first topic
 
 3. **Review profile**: `cat ./profile.json | jq`
    - Check what was saved
 
-**Update anytime**: Just run `/learning:create-profile` again!
+**Update anytime**: Just run `/learning-create-profile` again!
 
 ---
 
 **What would you like to do?**
-1. `/learning:create-roadmap` - Generate learning path
-2. `/learning:weekly-dive` - Start learning
+1. `/learning-create-roadmap` - Generate learning path
+2. `/learning-weekly-dive` - Start learning
 3. Edit profile manually - `nano ./profile.json`

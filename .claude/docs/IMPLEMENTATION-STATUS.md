@@ -57,11 +57,11 @@ All 5 phases of the comprehensive learning science framework have been successfu
 ### Phase 4: Enhanced SessionStart Hook ✅ COMPLETE
 **Goal**: Automatic retrieval stress injection and review notifications
 
-- ✅ `session-start.sh` - SessionStart hook with overdue review checks
-- ✅ `plugin.json` - Complete plugin configuration with all commands/skills/agents
+- ✅ `session-start.sh` - SessionStart hook with overdue review checks (`.claude/hooks/`)
+- ✅ `settings.json` - Hook registration in project settings
 - ✅ Hook made executable (`chmod +x`)
 
-**Validation**: ✅ Plugin structure verified, JSON validated, hook executable
+**Validation**: ✅ Hook registered in settings.json, executable
 
 ---
 
@@ -153,7 +153,7 @@ Score <5:   interval = 1 day (reset)
 ✅ .spaced-repetition.json    - Valid
 ✅ .review-schedule.json      - Valid
 ✅ .learning-preferences.json - Valid
-✅ plugin.json                - Valid
+✅ settings.json              - Valid (hook registration)
 ```
 
 ### File Structure Validation
@@ -162,7 +162,7 @@ Score <5:   interval = 1 day (reset)
 ✅ All 4 commands created
 ✅ All 7 skills created
 ✅ All 3 state files initialized
-✅ Plugin infrastructure complete
+✅ Hook infrastructure complete
 ✅ Documentation complete
 ```
 
@@ -185,41 +185,41 @@ Score <5:   interval = 1 day (reset)
 ### Daily Recall (5-15 min)
 ```bash
 # Auto-select from overdue reviews
-/learning:daily-recall
+/learning-daily-recall
 
 # Or specify topic
-/learning:daily-recall "test pyramid"
-/learning:daily-recall "src/auth/middleware.ts"
+/learning-daily-recall "test pyramid"
+/learning-daily-recall "src/auth/middleware.ts"
 ```
 
 ### Weekly Dive (30-60 min)
 ```bash
-/learning:weekly-dive "Event Sourcing"
-/learning:weekly-dive "STRIDE threat modeling" --domain=security
+/learning-weekly-dive "Event Sourcing"
+/learning-weekly-dive "STRIDE threat modeling" --domain=security
 ```
 
 ### Monthly Synthesis (1-2 hours)
 ```bash
-/learning:monthly-synthesis "DDD Aggregates"
-/learning:monthly-synthesis "Authentication Architecture"
+/learning-monthly-synthesis "DDD Aggregates"
+/learning-monthly-synthesis "Authentication Architecture"
 ```
 
 ### Apply to Work (Varies)
 ```bash
 # Code PR review
-/learning:apply-to-work --type=code-pr --target=123
+/learning-apply-to-work --type=code-pr --target=123
 
 # Writing task
-/learning:apply-to-work --type=writing --target=~/docs/essay.md
+/learning-apply-to-work --type=writing --target=~/docs/essay.md
 
 # QA test plan
-/learning:apply-to-work --type=qa --target="new checkout feature"
+/learning-apply-to-work --type=qa --target="new checkout feature"
 
 # Architecture decision
-/learning:apply-to-work --type=architecture --target="database choice"
+/learning-apply-to-work --type=architecture --target="database choice"
 
 # Security review
-/learning:apply-to-work --type=security --target="payment API"
+/learning-apply-to-work --type=security --target="payment API"
 ```
 
 ---
@@ -235,7 +235,7 @@ Score <5:   interval = 1 day (reset)
 - ✅ All agents fully documented with examples
 - ✅ All commands include domain-specific workflows
 - ✅ All skills include anti-patterns and success criteria
-- ✅ Plugin configuration documented with settings
+- ✅ Hook configuration documented with settings
 
 ### Examples Provided
 - ✅ 35+ complete workflow examples across all domains
@@ -253,7 +253,7 @@ Score <5:   interval = 1 day (reset)
 - [x] All skills domain-agnostic
 - [x] State management implemented
 - [x] Spaced repetition algorithm implemented
-- [x] Plugin infrastructure complete
+- [x] Hook infrastructure complete
 - [x] Documentation comprehensive
 
 ### Quality Criteria ✅
@@ -328,14 +328,13 @@ This implementation incorporates:
 ### Quick Diagnostics
 ```bash
 # Verify installation
-ls ./.claude/agents/learning-coach.md
-ls ./.claude/commands/learning/daily-recall.md
+ls ./.claude/skills/learning-daily-recall/SKILL.md
 
 # Validate JSON
 cat ./.spaced-repetition.json | jq
 
 # Check hook
-ls -la ./.claude/plugins/local/learning-science/hooks-handlers/session-start.sh
+ls -la ./.claude/hooks/session-start.sh
 ```
 
 ### Common Issues
@@ -367,7 +366,7 @@ See `LEARNING-FRAMEWORK-README.md` troubleshooting section for:
 ## ✨ Next Steps for User
 
 1. **Read the Guide**: `./LEARNING-FRAMEWORK-README.md`
-2. **Try Daily Recall**: `/learning:daily-recall "any topic"`
+2. **Try Daily Recall**: `/learning-daily-recall "any topic"`
 3. **Schedule Weekly Dive**: Pick from roadmap or weak areas
 4. **Apply to Work**: Use before next PR/writing/testing task
 5. **Track Progress**: Check `.spaced-repetition.json` after 1 week

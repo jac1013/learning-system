@@ -5,7 +5,7 @@
 ### Single Command Setup (15-25 minutes)
 
 ```bash
-/learning:init
+/learning-init
 ```
 
 This **one command** does everything:
@@ -22,7 +22,7 @@ This **one command** does everything:
 
 ### Setup (One-Time)
 
-**`/learning:init`** 🚀 **START HERE!**
+**`/learning-init`** 🚀 **START HERE!**
 - Complete guided setup
 - Profile + Roadmap + System tour
 - 15-25 minutes
@@ -32,28 +32,28 @@ This **one command** does everything:
 
 ### Daily Learning (After Setup)
 
-**`/learning:daily-recall`** ⚡ (5-15 min)
+**`/learning-daily-recall`** ⚡ (5-15 min)
 - Quick retrieval stress
 - System suggests overdue topics
-- Or specify: `/learning:daily-recall "topic"`
+- Or specify: `/learning-daily-recall "topic"`
 - **Use**: Daily or every few days
 
-**`/learning:weekly-dive`** 📖 (30-60 min)
+**`/learning-weekly-dive`** 📖 (30-60 min)
 - Deep dive with Socratic questioning
 - System suggests next roadmap topic
-- Or specify: `/learning:weekly-dive "topic"`
+- Or specify: `/learning-weekly-dive "topic"`
 - **Use**: Weekly, for new topics
 
-**`/learning:monthly-synthesis`** 🎓 (1-2 hours)
+**`/learning-monthly-synthesis`** 🎓 (1-2 hours)
 - Mastery verification + synthesis
 - System suggests ready topics
-- Or specify: `/learning:monthly-synthesis "topic"`
+- Or specify: `/learning-monthly-synthesis "topic"`
 - **Use**: Monthly, for core topics
 
-**`/learning:apply-to-work`** 💼 (Varies)
+**`/learning-apply-to-work`** 💼 (Varies)
 - Apply learning to real work
 - System infers type + suggests topics
-- Or specify: `/learning:apply-to-work --type=code-pr --target=123`
+- Or specify: `/learning-apply-to-work --type=code-pr --target=123`
 - **Use**: Before PRs, writing, testing, design decisions
 - **Types**: `code-pr`, `writing`, `qa`, `architecture`, `security`
 
@@ -61,12 +61,12 @@ This **one command** does everything:
 
 ### Maintenance (As Needed)
 
-**`/learning:update-profile`** (5 min)
-- Update goals, time commitment, preferences
+**`/learning-create-profile`** (10-15 min)
+- Create or update your learner profile
 - Run quarterly or when things change
 
-**`/learning:update-roadmap`** (5 min)
-- Adjust pacing, add/remove topics
+**`/learning-create-roadmap`** (5-10 min)
+- Generate or regenerate your learning roadmap
 - Run when roadmap needs changes
 
 ---
@@ -76,32 +76,32 @@ This **one command** does everything:
 ### Week 1: Setup + First Topic
 ```bash
 # Day 1: Complete setup (15-25 min)
-/learning:init
+/learning-init
 
 # Day 1 (continued): Start first topic (30-60 min)
-/learning:weekly-dive
+/learning-weekly-dive
 # → System suggests first roadmap topic
 ```
 
 ### Ongoing: Daily + Weekly Rhythm
 ```bash
 # Daily (5-15 min, 3-5 days/week)
-/learning:daily-recall
+/learning-daily-recall
 # → System: "Test pyramid overdue 2 days"
 
 # Weekly (30-60 min, once per week)
-/learning:weekly-dive
+/learning-weekly-dive
 # → System: "Event sourcing next in roadmap"
 
 # As needed (before real work)
-/learning:apply-to-work
+/learning-apply-to-work
 # → System: "Apply circuit breakers to payment service PR"
 ```
 
 ### Monthly: Mastery Verification
 ```bash
 # Monthly (1-2 hours)
-/learning:monthly-synthesis
+/learning-monthly-synthesis
 # → System: "Microservices ready for mastery verification"
 ```
 
@@ -147,7 +147,7 @@ You don't call these directly—commands use them:
 
 ## 💡 How Context-Aware Works
 
-**You**: `/learning:daily-recall`
+**You**: `/learning-daily-recall`
 
 **System thinks**:
 1. Check `.spaced-repetition.json` → What's overdue?
@@ -167,7 +167,7 @@ High priority in your profile (QA fundamentals).
 Ready to start?
 ```
 
-**You can override**: `/learning:daily-recall "different topic"`
+**You can override**: `/learning-daily-recall "different topic"`
 
 ---
 
@@ -245,10 +245,10 @@ During any session, say "Just show me" to skip retrieval stress for that interac
 ## ❓ FAQ
 
 **Q: Do I have to specify topics manually?**
-A: No! After `/learning:init`, commands suggest topics automatically. Manual specification is optional.
+A: No! After `/learning-init`, commands suggest topics automatically. Manual specification is optional.
 
 **Q: What if I disagree with the suggestion?**
-A: Just specify the topic you want: `/learning:daily-recall "your topic"`
+A: Just specify the topic you want: `/learning-daily-recall "your topic"`
 
 **Q: Can I skip the retrieval stress?**
 A: Yes! Say "Just show me" or disable in `.learning-preferences.json`
@@ -270,7 +270,7 @@ A: Yes! Update profile or roadmap anytime.
 ## 🚀 Ready?
 
 ```bash
-/learning:init
+/learning-init
 ```
 
 That's all you need to start! The system guides you from there.

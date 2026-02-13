@@ -1,5 +1,5 @@
 ---
-name: apply-to-work
+name: learning-apply-to-work
 description: Apply learned concepts to real work (code PRs, writing, QA, architecture, security). Pre-application recall test + post-application review. System infers work type or specify with --type=<type> --target=<target>.
 disable-model-invocation: false
 argument-hint: "[--type=code-pr|writing|qa|architecture|security] [--target=<identifier>]"
@@ -281,7 +281,7 @@ for topic in $APPLICABLE_TOPICS; do
     if (( SCORE >= 7 )); then
         echo "✅ Successfully applied! Interval extended."
     elif (( SCORE < 5 )); then
-        echo "⚠️ Struggled to apply. Consider: /learning:weekly-dive \"$topic\""
+        echo "⚠️ Struggled to apply. Consider: /learning-weekly-dive \"$topic\""
     fi
 done
 
@@ -337,7 +337,7 @@ source ./.claude/plugins/local/learning-science/helpers/save-state.sh log "$LOG_
 
 **For struggles (<7)**:
 📚 Consider deeper learning:
-- `/learning:weekly-dive "[topic]"` for deeper understanding
+- `/learning-weekly-dive "[topic]"` for deeper understanding
 - Daily recalls to reinforce
 
 **For strong applications (9+)**:
@@ -362,6 +362,6 @@ You've proven you can:
 ---
 
 **What would you like to do next?**
-1. Apply more: `/learning:apply-to-work --type=<type>`
-2. Reinforce weak areas: `/learning:weekly-dive "<topic>"`
-3. Continue daily practice: `/learning:daily-recall`
+1. Apply more: `/learning-apply-to-work --type=<type>`
+2. Reinforce weak areas: `/learning-weekly-dive "<topic>"`
+3. Continue daily practice: `/learning-daily-recall`

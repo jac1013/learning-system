@@ -15,6 +15,7 @@ ROADMAP_FILE="$LEARNING_ROOT/roadmap.json"
 LEARNING_LOG="$LEARNING_ROOT/learning-log.jsonl"
 SPACED_REP_FILE="$LEARNING_ROOT/.spaced-repetition.json"
 REVIEW_SCHEDULE_FILE="$LEARNING_ROOT/.review-schedule.json"
+PROJECT_KNOWLEDGE_FILE="$LEARNING_ROOT/project-knowledge.json"
 
 # Export state file paths
 export LEARNING_ROOT
@@ -23,6 +24,7 @@ export ROADMAP_FILE
 export LEARNING_LOG
 export SPACED_REP_FILE
 export REVIEW_SCHEDULE_FILE
+export PROJECT_KNOWLEDGE_FILE
 
 # Function to check if profile exists
 has_profile() {
@@ -50,11 +52,32 @@ get_roadmap_field() {
     fi
 }
 
+# Function to check if project knowledge map exists
+has_project_knowledge() {
+    [[ -f "$PROJECT_KNOWLEDGE_FILE" ]]
+}
+
+# Function to detect project vs generic learning mode
+is_project_mode() {
+    has_project_knowledge
+}
+
+# Function to get project knowledge field
+get_project_field() {
+    local field="$1"
+    if has_project_knowledge; then
+        jq -r ".$field // empty" "$PROJECT_KNOWLEDGE_FILE"
+    fi
+}
+
 # Export helper functions
 export -f has_profile
 export -f has_roadmap
 export -f get_profile_field
 export -f get_roadmap_field
+export -f has_project_knowledge
+export -f is_project_mode
+export -f get_project_field
 
 # Load current state (if files exist)
 if has_profile; then
@@ -68,6 +91,15 @@ fi
 if has_roadmap; then
     export CURRENT_PHASE=$(get_roadmap_field "current_phase")
     export ROADMAP_GOAL=$(get_roadmap_field "primary_goal")
+fi
+
+# Detect learning mode
+if is_project_mode; then
+    export LEARNING_MODE="project"
+    export PROJECT_NAME=$(get_project_field "project_name")
+else
+    export LEARNING_MODE="generic"
+    export PROJECT_NAME=""
 fi
 
 # Return success

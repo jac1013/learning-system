@@ -1,5 +1,5 @@
 ---
-name: daily-recall
+name: learning-daily-recall
 description: 5-15 minute daily retrieval stress session. System suggests overdue topics or specify your own. Forces recall before showing information.
 disable-model-invocation: false
 argument-hint: "[optional-topic]"
@@ -28,8 +28,8 @@ else
         echo "✅ All caught up! No topics due for review."
         echo ""
         echo "Options:"
-        echo "1. Start a new topic: /learning:weekly-dive"
-        echo "2. Review specific topic: /learning:daily-recall \"topic name\""
+        echo "1. Start a new topic: /learning-weekly-dive"
+        echo "2. Review specific topic: /learning-daily-recall \"topic name\""
         echo "3. Take a break!"
         exit 0
     fi
@@ -195,17 +195,17 @@ source ./.claude/plugins/local/learning-science/helpers/save-state.sh log "$LOG_
 
 **If score < 6**:
 💡 **Quick Win**: [Specific 5-minute action to address biggest gap]
-Consider: `/learning:weekly-dive "[topic]"` for deeper understanding
+Consider: `/learning-weekly-dive "[topic]"` for deeper understanding
 
 **If score 7-8**:
 ✅ Solid recall! Keep up the daily practice.
 
 **If score 9-10**:
-🎉 Excellent! Consider applying to real work: `/learning:apply-to-work`
+🎉 Excellent! Consider applying to real work: `/learning-apply-to-work`
 
 ---
 
 **What would you like to do next?**
-1. Another recall: `/learning:daily-recall`
-2. Deep dive: `/learning:weekly-dive`
+1. Another recall: `/learning-daily-recall`
+2. Deep dive: `/learning-weekly-dive`
 3. That's it for today!
