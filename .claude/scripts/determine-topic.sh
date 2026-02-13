@@ -3,7 +3,7 @@
 # Topic resolution for daily-recall, weekly-dive, monthly-synthesis
 # Usage: bash ./.claude/scripts/determine-topic.sh <skill-type> [optional-topic]
 
-set -euo pipefail
+set -uo pipefail
 
 source "$(dirname "$0")/load-state.sh"
 
@@ -21,7 +21,7 @@ if [[ -n "$USER_TOPIC" ]]; then
 fi
 
 # Auto-determine topic
-TOPIC=$(bash "$(dirname "$0")/infer-next.sh" "$SKILL_TYPE")
+TOPIC=$(bash "$(dirname "$0")/infer-next.sh" "$SKILL_TYPE" || echo "none")
 
 case "$SKILL_TYPE" in
     daily-recall)
@@ -40,9 +40,9 @@ case "$SKILL_TYPE" in
         echo ""
 
         # Get topic details from spaced repetition
-        LAST_SCORE=$(jq -r --arg topic "$TOPIC" '.topics[$topic].recall_score // "unknown"' "$SPACED_REP_FILE" 2>/dev/null)
-        LAST_REVIEWED=$(jq -r --arg topic "$TOPIC" '.topics[$topic].last_reviewed // "never"' "$SPACED_REP_FILE" 2>/dev/null)
-        NEXT_REVIEW=$(jq -r --arg topic "$TOPIC" '.topics[$topic].next_review // "unknown"' "$SPACED_REP_FILE" 2>/dev/null)
+        LAST_SCORE=$(jq -r --arg topic "$TOPIC" '.topics[$topic].recall_score // "unknown"' "$SPACED_REP_FILE" 2>/dev/null || echo "unknown")
+        LAST_REVIEWED=$(jq -r --arg topic "$TOPIC" '.topics[$topic].last_reviewed // "never"' "$SPACED_REP_FILE" 2>/dev/null || echo "never")
+        NEXT_REVIEW=$(jq -r --arg topic "$TOPIC" '.topics[$topic].next_review // "unknown"' "$SPACED_REP_FILE" 2>/dev/null || echo "unknown")
 
         echo "**Why this topic?**"
         echo "- Last reviewed: $LAST_REVIEWED"
@@ -91,8 +91,8 @@ case "$SKILL_TYPE" in
         echo "**Suggested Topic**: $TOPIC"
         echo ""
 
-        REVIEW_COUNT=$(jq -r --arg topic "$TOPIC" '.topics[$topic].review_count // 0' "$SPACED_REP_FILE")
-        AVG_SCORE=$(jq -r --arg topic "$TOPIC" '.topics[$topic].score_history | add / length' "$SPACED_REP_FILE")
+        REVIEW_COUNT=$(jq -r --arg topic "$TOPIC" '.topics[$topic].review_count // 0' "$SPACED_REP_FILE" 2>/dev/null || echo "0")
+        AVG_SCORE=$(jq -r --arg topic "$TOPIC" '.topics[$topic].score_history | add / length' "$SPACED_REP_FILE" 2>/dev/null || echo "0")
 
         echo "**Why this topic?**"
         echo "- Reviewed: $REVIEW_COUNT times"

@@ -2,7 +2,7 @@
 # Learning System - Infer Next Topic Helper
 # Analyzes state to determine what to work on next
 
-set -euo pipefail
+set -uo pipefail
 
 # Source state loader
 source "$(dirname "$0")/load-state.sh"
@@ -21,7 +21,7 @@ get_overdue_topics() {
             | map(select(.value.next_review <= $today))
             | sort_by(.value.priority, .value.next_review)
             | .[].key
-        ' "$SPACED_REP_FILE"
+        ' "$SPACED_REP_FILE" 2>/dev/null || true
     fi
 }
 
@@ -34,7 +34,7 @@ get_next_roadmap_topic() {
             | map(select(.value.status == "ready"))
             | sort_by(.value.sequence)
             | .[0].key // empty
-        ' "$ROADMAP_FILE"
+        ' "$ROADMAP_FILE" 2>/dev/null || true
     fi
 }
 
@@ -47,7 +47,7 @@ get_synthesis_ready_topics() {
             | map(select(.value.recall_score >= 8 and .value.review_count >= 3 and .value.synthesized != true))
             | sort_by(-.value.recall_score)
             | .[].key
-        ' "$SPACED_REP_FILE"
+        ' "$SPACED_REP_FILE" 2>/dev/null || true
     fi
 }
 
@@ -61,7 +61,7 @@ get_recent_topics() {
             | map(select(.value.last_reviewed >= $date and .value.recall_score >= 7))
             | sort_by(-.value.last_reviewed)
             | .[].key
-        ' "$SPACED_REP_FILE"
+        ' "$SPACED_REP_FILE" 2>/dev/null || true
     fi
 }
 
@@ -101,7 +101,7 @@ case "$COMMAND_TYPE" in
             | map(select(.value.recall_score < 6 and .value.review_count >= 2))
             | sort_by(.value.recall_score)
             | .[0].key // empty
-        ' "$SPACED_REP_FILE" 2>/dev/null)
+        ' "$SPACED_REP_FILE" 2>/dev/null || true)
 
         if [[ -n "$weak" ]]; then
             echo "$weak"
