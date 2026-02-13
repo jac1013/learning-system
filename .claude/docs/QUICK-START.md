@@ -124,18 +124,18 @@ You don't call these directly—commands use them:
 ## 📁 Key Files
 
 **Your Profile**:
-`./profile.md`
+`./profile.json`
 - Who you are, what you want, how you learn
 - Edit anytime
 
 **Your Roadmap**:
-`./roadmap.md`
-- Your learning path (🔲 → 🔄 → ✅ → 🎓)
+`./roadmap.json`
+- Your learning path with topic statuses (ready/in-progress/completed)
 - Tracks progress
 
 **Learning Log**:
-`./learning-log.md`
-- Auto-updated after each session
+`./learning-log.jsonl`
+- Auto-appended after each session (one JSON object per line)
 - Tracks history, scores, insights
 
 **Preferences**:
@@ -151,9 +151,9 @@ You don't call these directly—commands use them:
 
 **System thinks**:
 1. Check `.spaced-repetition.json` → What's overdue?
-2. Check `roadmap.md` → What's in progress?
-3. Check `profile.md` → What are priorities?
-4. Check `learning-log.md` → What was recent?
+2. Check `roadmap.json` → What's in progress?
+3. Check `profile.json` → What are priorities?
+4. Check `learning-log.jsonl` → What was recent?
 
 **System decides**:
 ```

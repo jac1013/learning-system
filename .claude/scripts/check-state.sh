@@ -4,7 +4,7 @@
 # Usage: bash ./.claude/scripts/check-state.sh <context>
 # Contexts: init, profile, roadmap, project, profile-exists
 
-set -euo pipefail
+set -uo pipefail
 
 source "$(dirname "$0")/load-state.sh"
 
@@ -34,11 +34,11 @@ case "$CONTEXT" in
             echo "**Existing Profile Found**"
             echo ""
             echo "Profile: $PROFILE_FILE"
-            echo "Created: $(jq -r '.created_at' "$PROFILE_FILE")"
-            echo "Last updated: $(jq -r '.updated_at' "$PROFILE_FILE")"
+            echo "Created: $(jq -r '.created_at' "$PROFILE_FILE" 2>/dev/null || echo "unknown")"
+            echo "Last updated: $(jq -r '.updated_at' "$PROFILE_FILE" 2>/dev/null || echo "unknown")"
             echo ""
             echo "Current goals:"
-            jq -r '.goals.three_month[].topic' "$PROFILE_FILE" | while read goal; do
+            jq -r '.goals.three_month[].topic' "$PROFILE_FILE" 2>/dev/null | while read goal; do
                 echo "- $goal"
             done
             echo ""
@@ -58,16 +58,16 @@ case "$CONTEXT" in
             echo "I need your learning profile to generate a roadmap."
             echo ""
             echo "Create profile first: /learning-create-profile"
-            exit 1
+            exit 0
         fi
 
         if has_roadmap; then
             echo "**Existing Roadmap Found**"
             echo ""
             echo "Roadmap: $ROADMAP_FILE"
-            echo "Created: $(jq -r '.created_at' "$ROADMAP_FILE")"
-            echo "Goal: $(jq -r '.primary_goal' "$ROADMAP_FILE")"
-            echo "Current phase: $(jq -r '.current_phase' "$ROADMAP_FILE")"
+            echo "Created: $(jq -r '.created_at' "$ROADMAP_FILE" 2>/dev/null || echo "unknown")"
+            echo "Goal: $(jq -r '.primary_goal' "$ROADMAP_FILE" 2>/dev/null || echo "unknown")"
+            echo "Current phase: $(jq -r '.current_phase' "$ROADMAP_FILE" 2>/dev/null || echo "unknown")"
             echo ""
             echo "What would you like to do?"
             echo "1. Update roadmap (adjust pacing, add/remove topics)"

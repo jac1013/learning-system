@@ -6,34 +6,35 @@ The entire `.claude` folder and learning system is now **fully portable** across
 
 ## Key Changes
 
-### 1. Helper Scripts (`.claude/plugins/local/learning-science/helpers/`)
+### 1. Helper Scripts (`.claude/scripts/`)
 
-All helper scripts now derive the project root dynamically:
+All helper scripts derive the project root dynamically:
 
 ```bash
-# Before (hard-coded):
-LEARNING_ROOT="/home/jac/learning"
-
-# After (portable):
+# Scripts are at: .claude/scripts/<name>.sh
+# Project root is 2 levels up:
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LEARNING_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
+LEARNING_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 ```
 
-**Files updated:**
+**Scripts:**
 - `load-state.sh` - Derives all state file paths from project root
 - `save-state.sh` - Sources load-state.sh (inherits portable paths)
 - `infer-next.sh` - Sources load-state.sh (inherits portable paths)
+- `check-state.sh` - Consolidated state checker for skill initialization
+- `determine-topic.sh` - Topic resolution for daily-recall, weekly-dive, monthly-synthesis
+- `display-state.sh` - State display helper (profile-summary, roadmap-summary, pacing)
+- `parse-apply-args.sh` - Argument parser for apply-to-work skill
 
 ### 2. Skills (`.claude/skills/learning-*/SKILL.md`)
 
 All skill files now use relative paths:
 
 ```bash
-# Before:
-source /home/jac/learning/.claude/plugins/local/learning-science/helpers/load-state.sh
-
-# After:
-source ./.claude/plugins/local/learning-science/helpers/load-state.sh
+# Skills call scripts via bash (matches Bash(bash:*) permission pattern):
+bash ./.claude/scripts/load-state.sh
+bash ./.claude/scripts/check-state.sh profile
+bash ./.claude/scripts/display-state.sh profile-summary
 ```
 
 **Skills updated:**
@@ -85,9 +86,8 @@ The portable structure:
 ├── .claude/
 │   ├── skills/learning-*/           # All use relative paths
 │   ├── hooks/                      # SessionStart hook
-│   ├── plugins/local/learning-science/
-│   │   └── helpers/                # Dynamically derive project root
-│   ├── docs/                       # Generic path references
+│   ├── scripts/                    # Bash helpers (dynamically derive project root)
+│   ├── docs/                       # Extended documentation
 │   └── settings.json               # Hook registration
 ├── profile.json                    # Created in project root
 ├── roadmap.json                    # Created in project root
@@ -123,8 +123,8 @@ cp -r /home/jac/learning /tmp/test-learning
 # Navigate to new location
 cd /tmp/test-learning
 
-# Skills and helpers should work identically
-./.claude/plugins/local/learning-science/helpers/load-state.sh
+# Scripts should work identically
+bash ./.claude/scripts/check-state.sh init
 # Output: Will use /tmp/test-learning as root
 ```
 

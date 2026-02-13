@@ -35,12 +35,12 @@ The learning framework now includes a **complete personalization layer** that ma
 
 1. **`/learning-create-profile`** - 10-15 min guided profiling session
    - Run this FIRST (before anything else)
-   - Creates `./profile.md`
+   - Creates `./profile.json`
    - Configures system preferences
 
 2. **`/learning-create-roadmap`** - 5-10 min roadmap generation
    - Run AFTER creating profile
-   - Creates `./roadmap.md`
+   - Creates `./roadmap.json`
    - Maps path to your goals
 
 ### Structured Learning Log
@@ -92,7 +92,7 @@ All existing commands now work **without parameters**:
   - How you learn best
   - Time you can commit
   - Work context for tailored examples
-- Creates `./profile.md`
+- Creates `./profile.json`
 - Configures `.learning-preferences.json`
 
 **Example Profile Output**:
@@ -126,7 +126,7 @@ All existing commands now work **without parameters**:
 - Stack: Node.js, PostgreSQL, Docker, Kubernetes
 - Problems: Service reliability, data consistency
 
-[Full profile structure defined in profile.md]
+[Full profile structure defined in profile.json]
 ```
 
 ### Step 2: Generate Roadmap (After Profile)
@@ -141,7 +141,7 @@ All existing commands now work **without parameters**:
 - Sequences by dependencies
 - Estimates effort and timeline
 - Identifies application opportunities
-- Creates `./roadmap.md`
+- Creates `./roadmap.json`
 
 **Example Roadmap Output**:
 ```markdown
@@ -177,9 +177,9 @@ Now when you run learning commands **without parameters**, the system decides wh
 
 **System thinks**:
 1. Check `.spaced-repetition.json` → What's overdue?
-2. Check `roadmap.md` → What's in progress?
-3. Check `profile.md` → What are priorities?
-4. Check `learning-log.md` → What was recent?
+2. Check `roadmap.json` → What's in progress?
+3. Check `profile.json` → What are priorities?
+4. Check `learning-log.jsonl` → What was recent?
 
 **System decides**:
 ```
@@ -204,7 +204,7 @@ Ready to start?
 ```
 
 **System thinks**:
-1. Check `profile.md` → Work context: "Building payment service, weekly PR reviews"
+1. Check `profile.json` → Work context: "Building payment service, weekly PR reviews"
 2. Check recent learning → "Circuit breakers learned last week (score: 8)"
 3. Infer work type → Code PR review (from profile)
 4. Match topics to work → Circuit breakers relevant to service calls
@@ -236,11 +236,11 @@ Ready to review PRs with this lens?
 ```bash
 # Step 1: Create profile (10-15 min, one-time)
 /learning-create-profile
-# → Guided interview, creates profile.md
+# → Guided interview, creates profile.json
 
 # Step 2: Generate roadmap (5-10 min, one-time)
 /learning-create-roadmap
-# → Creates personalized roadmap.md
+# → Creates personalized roadmap.json
 
 # Step 3: Start learning (daily/weekly)
 /learning-weekly-dive
@@ -279,8 +279,8 @@ Ready to review PRs with this lens?
 ## Key Files Created
 
 ### Profile & Roadmap
-- `./profile.md` - Your personalized profile
-- `./roadmap.md` - Your learning path
+- `./profile.json` - Your personalized profile
+- `./roadmap.json` - Your learning path
 - `./learning-log-structure.md` - Log format guide
 
 ### Agents
@@ -289,8 +289,8 @@ Ready to review PRs with this lens?
 - `learning-context-analyzer.md` - Topic inference
 
 ### Commands
-- `create-profile.md` - Profile creation command
-- `create-roadmap.md` - Roadmap generation command
+- `create-profile.json` - Profile creation command
+- `create-roadmap.json` - Roadmap generation command
 
 ## Benefits of Personalization
 

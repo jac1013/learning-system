@@ -234,8 +234,8 @@ Control behavior:
 **100% compatible** with existing learning system:
 - ✅ Existing "Learn by Doing" unchanged
 - ✅ Existing Insights format unchanged
-- ✅ Existing `learning-log.md` respected
-- ✅ Existing `roadmap.md` integration maintained
+- ✅ Existing `learning-log.jsonl` respected
+- ✅ Existing `roadmap.json` integration maintained
 
 **Enhancement Strategy**: Additive (new patterns on top of existing)
 

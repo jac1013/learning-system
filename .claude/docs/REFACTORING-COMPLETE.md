@@ -27,7 +27,7 @@ The learning framework now follows **proper Claude Code architecture** with ever
 │   │
 │   ├── settings.json ✅               # Hook registration
 │   │
-│   └── plugins/local/learning-science/
+│   └── scripts/
 │       └── helpers/
 │           ├── load-state.sh ✅       # Load profile/roadmap/state
 │           ├── infer-next.sh ✅       # Intelligent topic inference
@@ -128,7 +128,7 @@ The learning framework now follows **proper Claude Code architecture** with ever
 - Run in main context (fork for weekly-dive)
 
 **Helper Scripts = Infrastructure**
-- Bash scripts in `.claude/plugins/local/learning-science/helpers/`
+- Bash scripts in `.claude/scripts/helpers/`
 - Called by skills via `!source [path]`
 - Not user-facing
 - Executable permissions

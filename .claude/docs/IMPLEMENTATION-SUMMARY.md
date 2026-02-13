@@ -240,8 +240,8 @@ cat ./.spaced-repetition.json | jq
 ✅ All existing features preserved:
 - Learning output style "Learn by Doing" patterns
 - Insights format
-- learning-log.md structure
-- roadmap.md integration
+- learning-log.jsonl structure
+- roadmap.json integration
 
 ✅ Enhancement strategy: Additive (new patterns on top)
 

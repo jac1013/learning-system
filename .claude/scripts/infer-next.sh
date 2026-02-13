@@ -51,6 +51,51 @@ get_synthesis_ready_topics() {
     fi
 }
 
+# Function to get next roadmap topic, preferring ones in the same phase as recent learning
+get_related_roadmap_topic() {
+    if [[ ! -f "$ROADMAP_FILE" ]]; then
+        return
+    fi
+
+    # Determine the phase of the most recently learned topic
+    local recent_phase=""
+    if [[ -f "$SPACED_REP_FILE" ]]; then
+        local last_topic
+        last_topic=$(jq -r '
+            .topics | to_entries
+            | sort_by(-.value.last_reviewed)
+            | .[0].key // empty
+        ' "$SPACED_REP_FILE" 2>/dev/null)
+        if [[ -n "$last_topic" ]]; then
+            # Extract phase number from topic ID (e.g., "topic-2-1" → "2")
+            recent_phase=$(echo "$last_topic" | sed -n 's/^topic-\([0-9]*\)-.*/\1/p')
+        fi
+    fi
+
+    # Try same-phase first, then fall back to next sequential ready topic
+    if [[ -n "$recent_phase" ]]; then
+        local same_phase
+        same_phase=$(jq -r --arg phase "$recent_phase" '
+            .topics | to_entries
+            | map(select(.value.status == "ready" and (.key | startswith("topic-" + $phase + "-"))))
+            | sort_by(.value.sequence)
+            | .[0].key // empty
+        ' "$ROADMAP_FILE" 2>/dev/null)
+        if [[ -n "$same_phase" ]]; then
+            echo "$same_phase"
+            return
+        fi
+    fi
+
+    # Fallback: next ready topic by sequence
+    jq -r '
+        .topics | to_entries
+        | map(select(.value.status == "ready"))
+        | sort_by(.value.sequence)
+        | .[0].key // empty
+    ' "$ROADMAP_FILE" 2>/dev/null || true
+}
+
 # Function to get recently learned topics for application
 get_recent_topics() {
     if [[ -f "$SPACED_REP_FILE" ]]; then
@@ -79,6 +124,13 @@ case "$COMMAND_TYPE" in
         recent=$(get_recent_topics | head -1)
         if [[ -n "$recent" ]]; then
             echo "$recent"
+            exit 0
+        fi
+
+        # Priority 3: Suggest roadmap topic (prefer same phase as recent learning)
+        roadmap_topic=$(get_related_roadmap_topic)
+        if [[ -n "$roadmap_topic" ]]; then
+            echo "$roadmap_topic"
             exit 0
         fi
 

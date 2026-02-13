@@ -27,11 +27,14 @@
 │   ├── hooks/
 │   │   └── session-start.sh ✅
 │   ├── settings.json ✅               # Hook registration
-│   └── plugins/local/learning-science/
-│       └── helpers/
-│           ├── load-state.sh ✅
-│           ├── infer-next.sh ✅
-│           └── save-state.sh ✅
+│   └── scripts/
+│       ├── load-state.sh ✅
+│       ├── save-state.sh ✅
+│       ├── infer-next.sh ✅
+│       ├── check-state.sh ✅
+│       ├── determine-topic.sh ✅
+│       ├── display-state.sh ✅
+│       └── parse-apply-args.sh ✅
 ├── profile.json (created by /learning-init)
 ├── roadmap.json (created by /learning-init)
 ├── learning-log.jsonl (appended by skills)

@@ -2,7 +2,7 @@
 # Learning System - Load State Helper
 # Loads profile, roadmap, and learning state into environment variables
 
-set -euo pipefail
+set -uo pipefail
 
 # Derive project root from script location (portable across systems)
 # This script is at: .claude/scripts/load-state.sh

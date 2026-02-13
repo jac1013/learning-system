@@ -2,7 +2,7 @@
 # Learning System - Parse Apply-to-Work Arguments
 # Usage: bash ./.claude/scripts/parse-apply-args.sh [--type=X] [--target=Y]
 
-set -euo pipefail
+set -uo pipefail
 
 source "$(dirname "$0")/load-state.sh"
 
@@ -24,7 +24,7 @@ if [[ -z "$WORK_TYPE" ]]; then
     echo "**Inferring work type from profile...**"
     echo ""
 
-    WORK_CONTEXT=$(get_profile_field "work_context.focus")
+    WORK_CONTEXT=$(get_profile_field "work_context.focus" || echo "unknown")
 
     echo "Your work context: $WORK_CONTEXT"
     echo ""
@@ -62,7 +62,7 @@ fi
 echo ""
 echo "**Applicable Topics**:"
 echo "$APPLICABLE_TOPICS" | while read topic; do
-    score=$(jq -r --arg topic "$topic" '.topics[$topic].recall_score // 0' "$SPACED_REP_FILE")
+    score=$(jq -r --arg topic "$topic" '.topics[$topic].recall_score // 0' "$SPACED_REP_FILE" 2>/dev/null || echo "0")
     echo "- $topic (score: $score/10)"
 done
 echo ""
