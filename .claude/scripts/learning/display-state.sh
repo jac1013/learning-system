@@ -1,6 +1,6 @@
 #!/bin/bash
 # Learning System - Display State Helper
-# Usage: bash ./.claude/scripts/display-state.sh <what>
+# Usage: bash ./.claude/scripts/learning/display-state.sh <what>
 # Options: profile-summary, profile-analysis, roadmap-summary
 
 set -uo pipefail

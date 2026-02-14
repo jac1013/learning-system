@@ -5,10 +5,10 @@
 set -uo pipefail
 
 # Derive project root from script location (portable across systems)
-# This script is at: .claude/scripts/load-state.sh
-# Project root is 2 levels up
+# This script is at: .claude/scripts/learning/load-state.sh
+# Project root is 3 levels up
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LEARNING_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+LEARNING_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 
 PROFILE_FILE="$LEARNING_ROOT/profile.json"
 ROADMAP_FILE="$LEARNING_ROOT/roadmap.json"
@@ -78,6 +78,27 @@ export -f get_roadmap_field
 export -f has_project_knowledge
 export -f is_project_mode
 export -f get_project_field
+
+# Show session status (project mode + overdue reviews)
+show_session_status() {
+    if is_project_mode; then
+        echo "📂 **Learning Mode**: Project ($PROJECT_NAME)"
+        echo ""
+    fi
+    if [[ -f "$SPACED_REP_FILE" ]]; then
+        local today=$(date -I)
+        local overdue_count=$(jq --arg today "$today" '
+            .topics | to_entries
+            | map(select(.value.next_review <= $today))
+            | length
+        ' "$SPACED_REP_FILE" 2>/dev/null || echo "0")
+        if [[ "$overdue_count" -gt 0 ]]; then
+            echo "📅 You have **$overdue_count** topic(s) due for review."
+            echo ""
+        fi
+    fi
+}
+export -f show_session_status
 
 # Load current state (if files exist)
 if has_profile; then

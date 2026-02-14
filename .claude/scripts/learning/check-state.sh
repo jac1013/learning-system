@@ -1,7 +1,7 @@
 #!/bin/bash
 # Learning System - Check State Helper
 # Consolidated state checker for skill initialization blocks
-# Usage: bash ./.claude/scripts/check-state.sh <context>
+# Usage: bash ./.claude/scripts/learning/check-state.sh <context>
 # Contexts: init, profile, roadmap, project, profile-exists
 
 set -uo pipefail

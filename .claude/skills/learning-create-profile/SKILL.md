@@ -14,7 +14,7 @@ Create or update your personalized learning profile (10-15 minutes).
 
 ## Check Existing Profile
 
-!`bash ./.claude/scripts/check-state.sh profile`
+!`bash ./.claude/scripts/learning/check-state.sh profile`
 
 ---
 
@@ -141,7 +141,7 @@ This takes 10-15 minutes. Let's go!
 
 ## Profile Summary
 
-!`bash ./.claude/scripts/display-state.sh profile-summary`
+!`bash ./.claude/scripts/learning/display-state.sh profile-summary`
 
 ---
 

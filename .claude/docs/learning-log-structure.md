@@ -56,7 +56,7 @@ Each line is a JSON object with these fields:
 Entries are appended by `save-state.sh`:
 
 ```bash
-bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
+bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 ```
 
 Where `$LOG_ENTRY` is a JSON object with the fields above.

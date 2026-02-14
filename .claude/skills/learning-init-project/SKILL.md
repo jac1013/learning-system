@@ -19,7 +19,7 @@ This takes 10-15 minutes:
 
 ## Step 1: Check Existing State
 
-!`bash ./.claude/scripts/check-state.sh project`
+!`bash ./.claude/scripts/learning/check-state.sh project`
 
 ---
 
@@ -218,7 +218,7 @@ Based on the knowledge map + developer's familiarity gaps + learning goal, gener
 
 ## Step 6: Create Profile (if needed)
 
-!`bash ./.claude/scripts/check-state.sh profile-exists`
+!`bash ./.claude/scripts/learning/check-state.sh profile-exists`
 
 *If no profile exists, create a minimal one from the interview answers (name, role from context, time commitment, learning style defaults). Save to `profile.json`.*
 

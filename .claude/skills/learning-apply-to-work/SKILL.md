@@ -15,7 +15,7 @@ Apply learned concepts to actual work tasks.
 
 ## Phase 1: Determine Work Type & Topics
 
-!`bash ./.claude/scripts/parse-apply-args.sh "$@"`
+!`bash ./.claude/scripts/learning/parse-apply-args.sh "$@"`
 
 ---
 
@@ -204,13 +204,13 @@ For each concept you struggled to apply:
 *For each applied topic, ask the user for a score (0-10), then execute:*
 
 ```bash
-bash ./.claude/scripts/save-state.sh spaced-rep "$TOPIC" "$SCORE" "Applied to $WORK_TYPE: $TARGET"
+bash ./.claude/scripts/learning/save-state.sh spaced-rep "$TOPIC" "$SCORE" "Applied to $WORK_TYPE: $TARGET"
 ```
 
 *After scoring all topics, log the session:*
 
 ```bash
-bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
+bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 ```
 
 *Where `$LOG_ENTRY` is a JSON object with: timestamp, type "apply-to-work", work_type, target, topics_applied array, duration_minutes, successes array, struggles array, insights array.*

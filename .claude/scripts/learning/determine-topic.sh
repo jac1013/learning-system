@@ -1,11 +1,12 @@
 #!/bin/bash
 # Learning System - Determine Topic Helper
 # Topic resolution for daily-recall, weekly-dive, monthly-synthesis
-# Usage: bash ./.claude/scripts/determine-topic.sh <skill-type> [optional-topic]
+# Usage: bash ./.claude/scripts/learning/determine-topic.sh <skill-type> [optional-topic]
 
 set -uo pipefail
 
 source "$(dirname "$0")/load-state.sh"
+show_session_status
 
 SKILL_TYPE="${1:-daily-recall}"
 USER_TOPIC="${2:-}"

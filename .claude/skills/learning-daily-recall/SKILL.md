@@ -15,7 +15,7 @@ Quick retrieval stress session (5-15 minutes).
 
 ## Phase 1: Determine Topic
 
-!`bash ./.claude/scripts/determine-topic.sh daily-recall "$1"`
+!`bash ./.claude/scripts/learning/determine-topic.sh daily-recall "$1"`
 
 ---
 
@@ -116,11 +116,11 @@ Based on accuracy and completeness:
 *Execute the following, replacing placeholders with actual values from the session:*
 
 ```bash
-bash ./.claude/scripts/save-state.sh spaced-rep "$TOPIC" "$SCORE" "$NOTES"
+bash ./.claude/scripts/learning/save-state.sh spaced-rep "$TOPIC" "$SCORE" "$NOTES"
 ```
 
 ```bash
-bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
+bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 ```
 
 *Where `$LOG_ENTRY` is a JSON object with: timestamp, type "daily-recall", topic, score, duration_minutes, strengths array, gaps array, next_review date.*

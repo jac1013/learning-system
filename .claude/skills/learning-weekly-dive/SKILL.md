@@ -16,7 +16,7 @@ Deep exploration session (30-60 minutes) using Socratic method and teach-back.
 
 ## Phase 1: Determine Topic
 
-!`bash ./.claude/scripts/determine-topic.sh weekly-dive "$1"`
+!`bash ./.claude/scripts/learning/determine-topic.sh weekly-dive "$1"`
 
 ---
 
@@ -175,15 +175,15 @@ I'm a [junior developer / new learner / mid-level engineer - adjust based on pro
 *Calculate overall score as average of the 4 dimension scores, then execute:*
 
 ```bash
-bash ./.claude/scripts/save-state.sh spaced-rep "$TOPIC" "$OVERALL_SCORE" "Teach-back: C:$CLARITY A:$ACCURACY D:$DEPTH Cm:$COMPLETENESS"
+bash ./.claude/scripts/learning/save-state.sh spaced-rep "$TOPIC" "$OVERALL_SCORE" "Teach-back: C:$CLARITY A:$ACCURACY D:$DEPTH Cm:$COMPLETENESS"
 ```
 
 ```bash
-bash ./.claude/scripts/save-state.sh roadmap "$TOPIC" "completed"
+bash ./.claude/scripts/learning/save-state.sh roadmap "$TOPIC" "completed"
 ```
 
 ```bash
-bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
+bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 ```
 
 *Where `$LOG_ENTRY` is a JSON object with: timestamp, type "weekly-dive", topic, overall_score, scores (clarity/accuracy/depth/completeness), duration_minutes, strengths array, gaps array, next_review date.*

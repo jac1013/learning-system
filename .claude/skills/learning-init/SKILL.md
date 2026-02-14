@@ -19,7 +19,7 @@ Let's begin!
 
 ## Step 1: Check Existing State
 
-!`bash ./.claude/scripts/check-state.sh init`
+!`bash ./.claude/scripts/learning/check-state.sh init`
 
 ---
 

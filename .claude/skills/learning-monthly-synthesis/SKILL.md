@@ -16,7 +16,7 @@ Complete reconstruction and mastery verification (1-2 hours).
 
 ## Phase 1: Determine Topic
 
-!`bash ./.claude/scripts/determine-topic.sh monthly-synthesis "$1"`
+!`bash ./.claude/scripts/learning/determine-topic.sh monthly-synthesis "$1"`
 
 ---
 
@@ -187,17 +187,17 @@ Create a permanent artifact of your understanding:
 *Execute the following, replacing placeholders with actual values from the session:*
 
 ```bash
-bash ./.claude/scripts/save-state.sh spaced-rep "$TOPIC" "$MASTERY_SCORE" "$NOTES"
+bash ./.claude/scripts/learning/save-state.sh spaced-rep "$TOPIC" "$MASTERY_SCORE" "$NOTES"
 ```
 
 *Mark as synthesized in `.spaced-repetition.json` (set `synthesized: true` and `synthesis_date` for the topic).*
 
 ```bash
-bash ./.claude/scripts/save-state.sh roadmap "$TOPIC" "mastered"
+bash ./.claude/scripts/learning/save-state.sh roadmap "$TOPIC" "mastered"
 ```
 
 ```bash
-bash ./.claude/scripts/save-state.sh log "$LOG_ENTRY"
+bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 ```
 
 *Where `$LOG_ENTRY` is a JSON object with: timestamp, type "monthly-synthesis", topic, mastery_score, reconstruction_accuracy, duration_minutes, synthesis_document path, status "mastered", next_review (30 days from today).*

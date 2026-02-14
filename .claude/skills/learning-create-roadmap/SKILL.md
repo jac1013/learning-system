@@ -14,13 +14,13 @@ Generate your personalized learning roadmap (5-10 minutes).
 
 ## Prerequisites Check
 
-!`bash ./.claude/scripts/check-state.sh roadmap`
+!`bash ./.claude/scripts/learning/check-state.sh roadmap`
 
 ---
 
 ## Analyze Profile
 
-!`bash ./.claude/scripts/display-state.sh profile-analysis`
+!`bash ./.claude/scripts/learning/display-state.sh profile-analysis`
 
 ---
 
@@ -124,7 +124,7 @@ Based on your work context (**[from profile]**):
 
 ## Roadmap Summary
 
-!`bash ./.claude/scripts/display-state.sh roadmap-summary`
+!`bash ./.claude/scripts/learning/display-state.sh roadmap-summary`
 
 ---
 
@@ -133,7 +133,7 @@ Based on your work context (**[from profile]**):
 Based on your time commitment:
 
 **Your capacity**:
-!`bash ./.claude/scripts/display-state.sh pacing`
+!`bash ./.claude/scripts/learning/display-state.sh pacing`
 
 **Roadmap requires**:
 - ~3-5 hours/week average

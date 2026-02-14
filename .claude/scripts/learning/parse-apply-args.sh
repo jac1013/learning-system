@@ -1,10 +1,11 @@
 #!/bin/bash
 # Learning System - Parse Apply-to-Work Arguments
-# Usage: bash ./.claude/scripts/parse-apply-args.sh [--type=X] [--target=Y]
+# Usage: bash ./.claude/scripts/learning/parse-apply-args.sh [--type=X] [--target=Y]
 
 set -uo pipefail
 
 source "$(dirname "$0")/load-state.sh"
+show_session_status
 
 WORK_TYPE=""
 TARGET=""

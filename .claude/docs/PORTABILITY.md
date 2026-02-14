@@ -6,15 +6,15 @@ The entire `.claude` folder and learning system is now **fully portable** across
 
 ## Key Changes
 
-### 1. Helper Scripts (`.claude/scripts/`)
+### 1. Helper Scripts (`.claude/scripts/learning/`)
 
 All helper scripts derive the project root dynamically:
 
 ```bash
-# Scripts are at: .claude/scripts/<name>.sh
-# Project root is 2 levels up:
+# Scripts are at: .claude/scripts/learning/<name>.sh
+# Project root is 3 levels up:
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LEARNING_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+LEARNING_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 ```
 
 **Scripts:**
@@ -32,9 +32,9 @@ All skill files now use relative paths:
 
 ```bash
 # Skills call scripts via bash (matches Bash(bash:*) permission pattern):
-bash ./.claude/scripts/load-state.sh
-bash ./.claude/scripts/check-state.sh profile
-bash ./.claude/scripts/display-state.sh profile-summary
+bash ./.claude/scripts/learning/load-state.sh
+bash ./.claude/scripts/learning/check-state.sh profile
+bash ./.claude/scripts/learning/display-state.sh profile-summary
 ```
 
 **Skills updated:**
@@ -86,7 +86,8 @@ The portable structure:
 ├── .claude/
 │   ├── skills/learning-*/           # All use relative paths
 │   ├── hooks/                      # SessionStart hook
-│   ├── scripts/                    # Bash helpers (dynamically derive project root)
+│   ├── scripts/
+│   │   └── learning/              # Bash helpers (dynamically derive project root)
 │   ├── docs/                       # Extended documentation
 │   └── settings.json               # Hook registration
 ├── profile.json                    # Created in project root
@@ -124,7 +125,7 @@ cp -r /home/jac/learning /tmp/test-learning
 cd /tmp/test-learning
 
 # Scripts should work identically
-bash ./.claude/scripts/check-state.sh init
+bash ./.claude/scripts/learning/check-state.sh init
 # Output: Will use /tmp/test-learning as root
 ```
 
