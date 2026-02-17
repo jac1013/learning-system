@@ -9,11 +9,39 @@ disable-model-invocation: false
 Set up codebase learning for **this project**. I'll analyze the code, understand the architecture, and create a personalized path to deepen your knowledge.
 
 This takes 10-15 minutes:
-1. **Detect & Map** (automatic) - Project type, structure, tech stack
-2. **Developer Interview** (5 questions) - Your familiarity and goals
-3. **Codebase Analysis** (automatic) - Knowledge areas, layers, dependencies
-4. **Knowledge Map** (generated) - `project-knowledge.json`
-5. **Learning Path** (generated) - `roadmap.json` tailored to your gaps
+1. **Readiness Check** (automatic) - Verify the project has enough real code to learn from
+2. **Detect & Map** (automatic) - Project type, structure, tech stack
+3. **Developer Interview** (5 questions) - Your familiarity and goals
+4. **Codebase Analysis** (automatic) - Knowledge areas, layers, dependencies
+5. **Knowledge Map** (generated) - `project-knowledge.json`
+6. **Learning Path** (generated) - `roadmap.json` tailored to your gaps
+
+---
+
+## Step 0: Readiness Check
+
+Before starting, verify the project has moved beyond template/scaffolding stage. This skill is designed for **real projects with actual domain logic**, not templates or freshly scaffolded codebases.
+
+**Check for readiness signals:**
+- At least one bounded context beyond reference/example contexts
+- Real domain entities with business logic (not just scaffolding stubs)
+- Multiple use cases or meaningful application layer code
+- Actual business rules or access policies
+
+**If the project is still a template or only has example/scaffolding code:**
+
+> **Not ready for project learning yet.**
+>
+> This codebase is still in template/scaffolding stage. The knowledge map would only cover boilerplate patterns, not real domain logic worth learning.
+>
+> **Run this skill after you've:**
+> 1. Implemented your first real bounded context with domain entities
+> 2. Built at least one aggregate with real business rules
+> 3. Wired up domain use cases to your API layer
+>
+> In the meantime, use `/learning-init` for general topic learning or check if your project has an onboarding guide.
+
+**Stop execution here if the project is not ready.** Do not proceed to detection or interview steps.
 
 ---
 
@@ -23,7 +51,7 @@ This takes 10-15 minutes:
 
 ---
 
-## Step 2: Detect Project Type
+## Step 2: Detect Project Type (requires Step 0 pass)
 
 Automatically detect the project by reading manifest files and directory structure.
 
