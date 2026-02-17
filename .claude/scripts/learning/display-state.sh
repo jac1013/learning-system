@@ -2,6 +2,8 @@
 # Learning System - Display State Helper
 # Usage: bash ./.claude/scripts/learning/display-state.sh <what>
 # Options: profile-summary, profile-analysis, roadmap-summary
+#
+# set -e omitted: jq calls use fallbacks for missing state files.
 
 set -uo pipefail
 
@@ -58,7 +60,7 @@ case "$WHAT" in
     pacing)
         daily=$(get_profile_field "time_commitment.daily_minutes" || echo "0")
         weekly=$(get_profile_field "time_commitment.weekly_hours" || echo "0")
-        weekly_from_daily=$(echo "$daily * 7 / 60" | bc 2>/dev/null || echo "0")
+        weekly_from_daily=$(awk "BEGIN {printf \"%.1f\", $daily * 7 / 60}" 2>/dev/null || echo "0")
 
         echo "**Your capacity**:"
         echo "- Daily: ${daily} min/day = ${weekly_from_daily} hours/week minimum"

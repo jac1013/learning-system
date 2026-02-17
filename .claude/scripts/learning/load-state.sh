@@ -1,6 +1,11 @@
 #!/bin/bash
 # Learning System - Load State Helper
 # Loads profile, roadmap, and learning state into environment variables
+#
+# NOTE: Requires bash (not sh/dash/zsh) due to export -f usage.
+# All scripts invoke via `bash ./script.sh` to ensure correct shell.
+# set -e is intentionally omitted: jq calls use `|| true` / `2>/dev/null`
+# for graceful degradation when state files are missing or malformed.
 
 set -uo pipefail
 
@@ -16,6 +21,23 @@ LEARNING_LOG="$LEARNING_ROOT/learning-log.jsonl"
 SPACED_REP_FILE="$LEARNING_ROOT/.spaced-repetition.json"
 REVIEW_SCHEDULE_FILE="$LEARNING_ROOT/.review-schedule.json"
 PROJECT_KNOWLEDGE_FILE="$LEARNING_ROOT/project-knowledge.json"
+
+# Portable date helpers (GNU/Linux vs BSD/macOS)
+# Usage: portable_date_iso        → today in YYYY-MM-DD
+#        portable_date_add N       → N days from today in YYYY-MM-DD
+#        portable_date_ago N       → N days ago in YYYY-MM-DD
+if date -I &>/dev/null; then
+    # GNU date (Linux)
+    portable_date_iso() { date -I; }
+    portable_date_add() { date -I -d "+${1} days"; }
+    portable_date_ago() { date -I -d "${1} days ago"; }
+else
+    # BSD date (macOS)
+    portable_date_iso() { date +%Y-%m-%d; }
+    portable_date_add() { date -v+"${1}"d +%Y-%m-%d; }
+    portable_date_ago() { date -v-"${1}"d +%Y-%m-%d; }
+fi
+export -f portable_date_iso portable_date_add portable_date_ago
 
 # Export state file paths
 export LEARNING_ROOT
@@ -86,7 +108,7 @@ show_session_status() {
         echo ""
     fi
     if [[ -f "$SPACED_REP_FILE" ]]; then
-        local today=$(date -I)
+        local today=$(portable_date_iso)
         local overdue_count=$(jq --arg today "$today" '
             .topics | to_entries
             | map(select(.value.next_review <= $today))

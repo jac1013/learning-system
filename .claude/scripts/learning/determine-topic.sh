@@ -2,6 +2,8 @@
 # Learning System - Determine Topic Helper
 # Topic resolution for daily-recall, weekly-dive, monthly-synthesis
 # Usage: bash ./.claude/scripts/learning/determine-topic.sh <skill-type> [optional-topic]
+#
+# set -e omitted: jq calls use fallbacks for missing state files.
 
 set -uo pipefail
 

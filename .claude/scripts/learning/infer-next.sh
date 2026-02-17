@@ -1,6 +1,9 @@
 #!/bin/bash
 # Learning System - Infer Next Topic Helper
 # Analyzes state to determine what to work on next
+#
+# set -e omitted: jq calls use `|| true` for graceful degradation
+# when state files are missing or empty.
 
 set -uo pipefail
 
@@ -10,7 +13,7 @@ source "$(dirname "$0")/load-state.sh"
 # Get command type from argument
 COMMAND_TYPE="${1:-daily-recall}"
 
-TODAY=$(date -I)
+TODAY=$(portable_date_iso)
 
 # Function to get overdue topics from spaced repetition
 get_overdue_topics() {
@@ -99,7 +102,7 @@ get_related_roadmap_topic() {
 # Function to get recently learned topics for application
 get_recent_topics() {
     if [[ -f "$SPACED_REP_FILE" ]]; then
-        local days_ago=$(date -I -d "14 days ago")
+        local days_ago=$(portable_date_ago 14)
         jq -r --arg date "$days_ago" '
             .topics
             | to_entries

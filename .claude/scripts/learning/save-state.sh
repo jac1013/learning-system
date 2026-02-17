@@ -13,7 +13,7 @@ update_spaced_repetition() {
     local score="$2"
     local notes="${3:-}"
 
-    local today=$(date -I)
+    local today=$(portable_date_iso)
 
     # Calculate next interval based on score
     local last_interval=1
@@ -23,20 +23,21 @@ update_spaced_repetition() {
 
     local next_interval
     if (( score >= 9 )); then
-        next_interval=$(echo "$last_interval * 2.5" | bc | cut -d. -f1)
+        next_interval=$(awk "BEGIN {printf \"%d\", $last_interval * 2.5}")
         [[ $next_interval -gt 30 ]] && next_interval=30
     elif (( score >= 7 )); then
-        next_interval=$(echo "$last_interval * 1.5" | bc | cut -d. -f1)
+        next_interval=$(awk "BEGIN {printf \"%d\", $last_interval * 1.5}")
     elif (( score >= 5 )); then
         next_interval=$last_interval
     else
         next_interval=1
     fi
 
-    local next_review=$(date -I -d "+${next_interval} days")
+    local next_review=$(portable_date_add "$next_interval")
 
     # Create or update topic entry
     local temp_file=$(mktemp)
+    trap "rm -f '$temp_file'" RETURN
 
     if [[ ! -f "$SPACED_REP_FILE" ]]; then
         echo '{"topics": {}, "metadata": {}}' > "$SPACED_REP_FILE"
@@ -59,9 +60,7 @@ update_spaced_repetition() {
             updated_at: $today
         } |
         .metadata.last_updated = $today
-    ' "$SPACED_REP_FILE" > "$temp_file"
-
-    mv "$temp_file" "$SPACED_REP_FILE"
+    ' "$SPACED_REP_FILE" > "$temp_file" && mv "$temp_file" "$SPACED_REP_FILE"
 
     echo "Updated spaced repetition: $topic (score: $score, next: $next_review)"
 }
@@ -90,7 +89,8 @@ update_roadmap_status() {
     fi
 
     local temp_file=$(mktemp)
-    local today=$(date -I)
+    trap "rm -f '$temp_file'" RETURN
+    local today=$(portable_date_iso)
 
     jq --arg topic "$topic" \
        --arg status "$status" \
@@ -102,9 +102,7 @@ update_roadmap_status() {
             .
         end |
         .metadata.last_updated = $today
-    ' "$ROADMAP_FILE" > "$temp_file"
-
-    mv "$temp_file" "$ROADMAP_FILE"
+    ' "$ROADMAP_FILE" > "$temp_file" && mv "$temp_file" "$ROADMAP_FILE"
 
     echo "Updated roadmap: $topic → $status"
 }

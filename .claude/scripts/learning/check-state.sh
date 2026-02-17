@@ -3,6 +3,8 @@
 # Consolidated state checker for skill initialization blocks
 # Usage: bash ./.claude/scripts/learning/check-state.sh <context>
 # Contexts: init, profile, roadmap, project, profile-exists
+#
+# set -e omitted: jq calls use fallbacks for missing/malformed state files.
 
 set -uo pipefail
 
@@ -15,8 +17,8 @@ case "$CONTEXT" in
         if has_profile && has_roadmap; then
             echo "**Existing Setup Detected**"
             echo ""
-            echo "Profile: $PROFILE_FILE (created $(stat -c %y "$PROFILE_FILE" | cut -d' ' -f1))"
-            echo "Roadmap: $ROADMAP_FILE (created $(stat -c %y "$ROADMAP_FILE" | cut -d' ' -f1))"
+            echo "Profile: $PROFILE_FILE (created $(jq -r '.created_at // "unknown"' "$PROFILE_FILE" 2>/dev/null))"
+            echo "Roadmap: $ROADMAP_FILE (created $(jq -r '.created_at // "unknown"' "$ROADMAP_FILE" 2>/dev/null))"
             echo ""
             echo "What would you like to do?"
             echo "1. Fresh start (delete and recreate both)"

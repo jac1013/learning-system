@@ -1,6 +1,8 @@
 #!/bin/bash
 # Learning System - Parse Apply-to-Work Arguments
 # Usage: bash ./.claude/scripts/learning/parse-apply-args.sh [--type=X] [--target=Y]
+#
+# set -e omitted: jq calls use fallbacks for missing state files.
 
 set -uo pipefail
 
