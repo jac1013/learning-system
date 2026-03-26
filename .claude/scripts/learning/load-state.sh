@@ -21,6 +21,7 @@ LEARNING_LOG="$LEARNING_ROOT/learning-log.jsonl"
 SPACED_REP_FILE="$LEARNING_ROOT/.spaced-repetition.json"
 REVIEW_SCHEDULE_FILE="$LEARNING_ROOT/.review-schedule.json"
 PROJECT_KNOWLEDGE_FILE="$LEARNING_ROOT/project-knowledge.json"
+FLASHCARDS_FILE="$LEARNING_ROOT/.flashcards.json"
 
 # Portable date helpers (GNU/Linux vs BSD/macOS)
 # Usage: portable_date_iso        → today in YYYY-MM-DD
@@ -47,6 +48,7 @@ export LEARNING_LOG
 export SPACED_REP_FILE
 export REVIEW_SCHEDULE_FILE
 export PROJECT_KNOWLEDGE_FILE
+export FLASHCARDS_FILE
 
 # Function to check if profile exists
 has_profile() {
@@ -74,6 +76,11 @@ get_roadmap_field() {
     fi
 }
 
+# Function to check if flashcards exist
+has_flashcards() {
+    [[ -f "$FLASHCARDS_FILE" ]]
+}
+
 # Function to check if project knowledge map exists
 has_project_knowledge() {
     [[ -f "$PROJECT_KNOWLEDGE_FILE" ]]
@@ -95,6 +102,7 @@ get_project_field() {
 # Export helper functions
 export -f has_profile
 export -f has_roadmap
+export -f has_flashcards
 export -f get_profile_field
 export -f get_roadmap_field
 export -f has_project_knowledge

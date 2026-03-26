@@ -20,21 +20,49 @@ Deep exploration session (30-60 minutes) using Socratic method and teach-back.
 
 ---
 
-## Phase 2: Socratic Interrogation (15-20 min)
+## Phase 2: Prior Knowledge Check
 
-### 🎓 Teach Me: [Topic Name]
+Before diving in, ask the user:
 
-I'm going to learn about **[topic]** from YOU. You're the teacher, I'm the student.
+**"What do you already know about [topic]? Even rough impressions count — give me your best current understanding."**
 
-**Your task**: Explain [topic] to me like I'm completely new to it.
+Wait for their response. Then assess:
 
-Take your time. Be thorough. Teach me everything you know.
+- **If they demonstrate solid prior knowledge** → proceed to Socratic Interrogation (Phase 3)
+- **If they have partial/fragmented knowledge** → briefly note what they got right, then proceed to Initial Instruction (Phase 2b) to fill foundational gaps before Socratic work
+- **If they know little or nothing** → say so honestly and proceed to Initial Instruction (Phase 2b) first
+
+---
+
+## Phase 2b: Initial Instruction (only if needed — skip if prior knowledge is solid)
+
+Teach the topic clearly and concisely. Cover:
+
+1. **What it is** — one-sentence definition, then expand
+2. **Why it exists** — the problem it solves
+3. **Core components/pillars** — the main building blocks
+4. **How it's used in practice** — concrete examples or scenarios
+5. **Key trade-offs or gotchas** — what trips people up
+
+Keep it to the essential concepts needed to engage with Socratic questioning. Don't dump everything — leave room for discovery.
+
+After teaching, ask: **"Does that make sense so far? Any questions before we go deeper?"**
+
+---
+
+## Phase 3: Socratic Interrogation (15-20 min)
+
+### Teach Me Back: [Topic Name]
+
+Now that you have a foundation, let's test and deepen it. Explain [topic] back to me in your own words.
+
+**Your task**: Explain [topic] as if teaching someone new to it. Use your own words — not mine.
 
 ---
 
 ### Socratic Ladder (I'll challenge you)
 
-After your explanation, I'll probe deeper with questions:
+After your explanation, probe deeper:
 
 **Level 1 - Surface**: "Why does it work that way?"
 
@@ -50,7 +78,7 @@ After your explanation, I'll probe deeper with questions:
 
 ### Challenge Assumptions
 
-As you teach, I'll challenge with:
+As they explain, challenge with:
 - "Are you sure it's ONLY for [reason]?"
 - "What if [edge case]?"
 - "Could there be another explanation?"
@@ -58,7 +86,7 @@ As you teach, I'll challenge with:
 
 ---
 
-## Phase 3: Gap Identification & Targeted Learning (15-25 min)
+## Phase 4: Gap Identification & Targeted Learning (15-25 min)
 
 ### 🔍 Socratic Assessment Complete
 
@@ -94,7 +122,7 @@ After reading, apply the new knowledge:
 
 ---
 
-## Phase 4: Teach-Back Verification (10-15 min)
+## Phase 5: Teach-Back Verification (10-15 min)
 
 ### 🎯 Teach-Back Challenge
 
@@ -144,7 +172,40 @@ I'm a [junior developer / new learner / mid-level engineer - adjust based on pro
 
 ---
 
-## Phase 5: Document & Schedule (5 min)
+## Phase 5b: Flashcard Generation (Optional)
+
+Based on this session, suggest flashcards to help memorize key facts from [topic].
+
+**Only generate cards for concrete, testable knowledge — not vague concepts.**
+
+Generate 3-8 cards based on session content, mixing types:
+- **basic** cards for definitions, lists, numbers, acronyms discovered during the session
+- **cloze** cards using `{{c1::answer}}` syntax for key terms and definitions
+- **scenario** cards based on Socratic questions where the user struggled
+
+For each proposed card, show:
+- **Type**: basic / cloze / scenario
+- **Front**: [question or cloze text]
+- **Back**: [answer]
+- **Tags**: [relevant tags]
+
+**Options:**
+1. Accept all cards
+2. Accept with edits (specify which to change)
+3. Skip card generation
+4. Add your own cards too
+
+*After user confirms, save via:*
+
+```bash
+bash ./.claude/scripts/learning/flashcards.sh add-cards '$CARDS_JSON'
+```
+
+*Where $CARDS_JSON is a JSON array of card objects with fields: front, back, type, tags, source_topic, source_session ("weekly-dive").*
+
+---
+
+## Phase 6: Document & Schedule (5 min)
 
 ### 📊 Teach-Back Results
 

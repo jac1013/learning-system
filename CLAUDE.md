@@ -22,6 +22,7 @@ Bash scripts that manage state. Called via `bash ./.claude/scripts/learning/<nam
 - `determine-topic.sh` — topic resolution for daily-recall, weekly-dive, monthly-synthesis
 - `parse-apply-args.sh` — argument parser for apply-to-work skill
 - `display-state.sh` — state display helper (profile-summary, profile-analysis, roadmap-summary, pacing)
+- `flashcards.sh` — flashcard CRUD, SM-2 algorithm, stats, Anki export (operations: init, stats, list-due, add-card, add-cards, update-sm2, get-card, search, export-anki)
 
 All paths are resolved dynamically. Never introduce hardcoded absolute paths.
 
@@ -40,6 +41,7 @@ These files are created at runtime in the project root and are **gitignored**:
 | `learning-log.jsonl` | Append-only session history |
 | `.spaced-repetition.json` | Per-topic review scheduling state |
 | `.review-schedule.json` | Queue of due reviews |
+| `.flashcards.json` | Per-card flashcard content and SM-2 scheduling state |
 | `synthesis/` | Monthly synthesis documents |
 
 ## Rules for Modifying This System

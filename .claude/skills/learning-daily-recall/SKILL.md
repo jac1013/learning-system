@@ -89,6 +89,39 @@ After initial explanation, challenge with:
 
 ---
 
+## Phase 3b: Flashcard Capture (Optional)
+
+Based on the gaps identified during recall, suggest flashcards for the facts that were missed or struggled with.
+
+**Only generate cards for gaps and missed items — not for things recalled correctly.**
+
+Generate 1-5 cards from missed/weak areas:
+- **basic** cards for facts, terms, or definitions that were forgotten
+- **cloze** cards using `{{c1::answer}}` syntax for key terms missed during recall
+- **scenario** cards for reasoning gaps where the user's logic was off
+
+For each proposed card, show:
+- **Type**: basic / cloze / scenario
+- **Front**: [question targeting the specific gap]
+- **Back**: [correct answer]
+- **Tags**: [relevant tags]
+
+**Options:**
+1. Accept all cards
+2. Accept with edits
+3. Skip
+4. Add your own
+
+*After user confirms:*
+
+```bash
+bash ./.claude/scripts/learning/flashcards.sh add-cards '$CARDS_JSON'
+```
+
+*Where $CARDS_JSON is a JSON array of card objects with fields: front, back, type, tags, source_topic, source_session ("daily-recall").*
+
+---
+
 ## Phase 4: Evaluation & Scheduling
 
 ### Score Recall (0-10)
