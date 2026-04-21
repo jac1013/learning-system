@@ -50,6 +50,7 @@ After setup, the system guides you — no manual topic selection needed.
 | `/learning-create-profile` | 10-15 min | Create or update your learner profile |
 | `/learning-create-roadmap` | 5-10 min | Generate or regenerate your learning roadmap |
 | `/learning-flashcards` | 5-15 min | Review flashcards with Anki-style spaced repetition |
+| `/learning-hours` | 1 min | Show total study time — grand total, recent windows, per-topic & per-type breakdown |
 
 All commands are **context-aware** — they read your profile, roadmap, and review history to suggest what to work on. You can always override with a specific topic:
 
@@ -78,6 +79,7 @@ All commands are **context-aware** — they read your profile, roadmap, and revi
 │   ├── learning-create-profile/SKILL.md
 │   ├── learning-create-roadmap/SKILL.md
 │   ├── learning-flashcards/SKILL.md
+│   ├── learning-hours/SKILL.md
 │   └── learning-init-project/SKILL.md
 ├── hooks/                        # SessionStart hook
 ├── settings.json                 # Hook registration
@@ -92,6 +94,7 @@ learning-log.jsonl                # Session history
 .spaced-repetition.json           # Review scheduling state
 .review-schedule.json             # Due review queue
 .flashcards.json                  # Flashcard content + SM-2 state
+.current-session.json             # Active session timer (auto-cleared on log)
 synthesis/                        # Monthly synthesis documents
 ```
 

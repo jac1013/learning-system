@@ -65,9 +65,28 @@ update_spaced_repetition() {
     echo "Updated spaced repetition: $topic (score: $score, next: $next_review)"
 }
 
-# Function to append to learning log
+# Function to append to learning log.
+# If an active session exists (.current-session.json), the measured duration
+# overrides any duration_minutes supplied in the entry, and the session is
+# cleared. This makes study time automatic — skills can omit duration_minutes
+# entirely and get a real measurement instead of an estimate.
 append_to_log() {
     local entry="$1"
+
+    # Auto-add timestamp if missing
+    if ! echo "$entry" | jq -e 'has("timestamp")' >/dev/null 2>&1; then
+        local now_iso
+        now_iso=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+        entry=$(echo "$entry" | jq --arg ts "$now_iso" '. + {timestamp: $ts}')
+    fi
+
+    # Auto-enrich with measured session duration (overrides any estimate)
+    if [[ -f "$CURRENT_SESSION_FILE" ]]; then
+        local duration
+        duration=$(bash "$(dirname "${BASH_SOURCE[0]}")/session-track.sh" duration)
+        entry=$(echo "$entry" | jq --argjson dur "$duration" '. + {duration_minutes: $dur}')
+        rm -f "$CURRENT_SESSION_FILE"
+    fi
 
     # Ensure learning log exists
     touch "$LEARNING_LOG"

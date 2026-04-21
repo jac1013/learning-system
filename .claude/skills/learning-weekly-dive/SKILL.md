@@ -10,13 +10,15 @@ context: fork
 
 Deep exploration session (30-60 minutes) using Socratic method and teach-back.
 
-**Topic**: ${1:-auto}
+**Topic**: $ARGUMENTS
 
 ---
 
 ## Phase 1: Determine Topic
 
-!`bash ./.claude/scripts/learning/determine-topic.sh weekly-dive "$1"`
+!`bash ./.claude/scripts/learning/session-track.sh start learning-weekly-dive "$ARGUMENTS"`
+
+!`bash ./.claude/scripts/learning/determine-topic.sh weekly-dive "$ARGUMENTS"`
 
 ---
 

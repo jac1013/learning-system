@@ -22,6 +22,7 @@ SPACED_REP_FILE="$LEARNING_ROOT/.spaced-repetition.json"
 REVIEW_SCHEDULE_FILE="$LEARNING_ROOT/.review-schedule.json"
 PROJECT_KNOWLEDGE_FILE="$LEARNING_ROOT/project-knowledge.json"
 FLASHCARDS_FILE="$LEARNING_ROOT/.flashcards.json"
+CURRENT_SESSION_FILE="$LEARNING_ROOT/.current-session.json"
 
 # Portable date helpers (GNU/Linux vs BSD/macOS)
 # Usage: portable_date_iso        → today in YYYY-MM-DD
@@ -49,6 +50,7 @@ export SPACED_REP_FILE
 export REVIEW_SCHEDULE_FILE
 export PROJECT_KNOWLEDGE_FILE
 export FLASHCARDS_FILE
+export CURRENT_SESSION_FILE
 
 # Function to check if profile exists
 has_profile() {

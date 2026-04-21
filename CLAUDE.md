@@ -23,6 +23,7 @@ Bash scripts that manage state. Called via `bash ./.claude/scripts/learning/<nam
 - `parse-apply-args.sh` — argument parser for apply-to-work skill
 - `display-state.sh` — state display helper (profile-summary, profile-analysis, roadmap-summary, pacing)
 - `flashcards.sh` — flashcard CRUD, SM-2 algorithm, stats, Anki export (operations: init, stats, list-due, add-card, add-cards, update-sm2, get-card, search, export-anki)
+- `session-track.sh` — automatic study-time tracker (operations: start, duration, end, status, stats). Session skills call `start <skill> [topic]` at entry; `save-state.sh log` auto-enriches log entries with the measured duration and clears the active session on log. `stats` aggregates hours from `learning-log.jsonl`. Orphan sessions (never ended) are auto-closed on next `start`: discarded if <2min, capped at 60min and flagged `"type":"orphan-session"` otherwise.
 
 All paths are resolved dynamically. Never introduce hardcoded absolute paths.
 
@@ -42,6 +43,7 @@ These files are created at runtime in the project root and are **gitignored**:
 | `.spaced-repetition.json` | Per-topic review scheduling state |
 | `.review-schedule.json` | Queue of due reviews |
 | `.flashcards.json` | Per-card flashcard content and SM-2 scheduling state |
+| `.current-session.json` | Active study session state (skill, topic, started_at). Auto-cleared on log; orphans auto-closed on next `start`. |
 | `synthesis/` | Monthly synthesis documents |
 
 ## Rules for Modifying This System

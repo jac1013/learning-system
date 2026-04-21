@@ -9,11 +9,13 @@ argument-hint: "[topic|export]"
 
 Review your flashcard decks with Anki-style spaced repetition (SM-2 algorithm).
 
-**Argument**: ${1:-all}
+**Argument**: $ARGUMENTS
 
 ---
 
 ## Phase 1: Load State & Deck Selection
+
+!`bash ./.claude/scripts/learning/session-track.sh start learning-flashcards "$ARGUMENTS"`
 
 !`bash ./.claude/scripts/learning/flashcards.sh stats`
 

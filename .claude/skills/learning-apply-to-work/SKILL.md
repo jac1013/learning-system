@@ -9,13 +9,15 @@ argument-hint: "[--type=code-pr|writing|qa|architecture|security] [--target=<ide
 
 Apply learned concepts to actual work tasks.
 
-**Arguments**: ${@:-auto}
+**Arguments**: $ARGUMENTS
 
 ---
 
 ## Phase 1: Determine Work Type & Topics
 
-!`bash ./.claude/scripts/learning/parse-apply-args.sh "$@"`
+!`bash ./.claude/scripts/learning/session-track.sh start learning-apply-to-work`
+
+!`bash ./.claude/scripts/learning/parse-apply-args.sh $ARGUMENTS`
 
 ---
 

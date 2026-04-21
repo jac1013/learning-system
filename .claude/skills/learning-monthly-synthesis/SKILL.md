@@ -10,13 +10,15 @@ context: fork
 
 Complete reconstruction and mastery verification (1-2 hours).
 
-**Topic**: ${1:-auto}
+**Topic**: $ARGUMENTS
 
 ---
 
 ## Phase 1: Determine Topic
 
-!`bash ./.claude/scripts/learning/determine-topic.sh monthly-synthesis "$1"`
+!`bash ./.claude/scripts/learning/session-track.sh start learning-monthly-synthesis "$ARGUMENTS"`
+
+!`bash ./.claude/scripts/learning/determine-topic.sh monthly-synthesis "$ARGUMENTS"`
 
 ---
 

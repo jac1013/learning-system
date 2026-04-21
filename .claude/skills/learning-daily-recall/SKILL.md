@@ -9,13 +9,15 @@ argument-hint: "[optional-topic]"
 
 Quick retrieval stress session (5-15 minutes).
 
-**Topic**: ${1:-auto}
+**Topic**: $ARGUMENTS
 
 ---
 
 ## Phase 1: Determine Topic
 
-!`bash ./.claude/scripts/learning/determine-topic.sh daily-recall "$1"`
+!`bash ./.claude/scripts/learning/session-track.sh start learning-daily-recall "$ARGUMENTS"`
+
+!`bash ./.claude/scripts/learning/determine-topic.sh daily-recall "$ARGUMENTS"`
 
 ---
 
