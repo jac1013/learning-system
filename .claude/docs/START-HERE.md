@@ -46,6 +46,12 @@ After this, the system guides you—no manual topic specification needed!
 # → System: "Event sourcing next in roadmap (Phase 2)"
 ```
 
+**Performance Practice** (20-60 min):
+```bash
+/learning-performance-practice
+# → System: "Run the next roadmap simulation and improve one weak behavior"
+```
+
 **Monthly Mastery** (1-2 hours):
 ```bash
 /learning-monthly-synthesis
@@ -128,20 +134,26 @@ AI asks BEFORE showing:
 
 **10x stronger memory!**
 
-### 4. AI Role Inversion
+### 4. Deliberate Performance Practice
+- Precommitted scenario, constraints, and rubric
+- Unassisted baseline before feedback
+- Evidence-based scoring and self-assessment calibration
+- Focused retry on one high-impact behavior
+
+### 5. AI Role Inversion
 AI is friction generator:
 - Asks questions first
 - Challenges assumptions
 - Delays answers strategically
 - Socratic method (5 probing levels)
 
-### 5. Spaced Repetition (Automated)
+### 6. Spaced Repetition (Automated)
 Intelligent scheduling:
 - Strong recall (9-10) → 30 days
 - Weak recall (<5) → 1 day
 - Completely automated
 
-### 6. Domain-Agnostic
+### 7. Domain-Agnostic
 Same framework for:
 - Code (patterns, architectures)
 - QA (strategies, testing)
@@ -149,7 +161,7 @@ Same framework for:
 - Architecture (designs, trade-offs)
 - Security (threats, mitigations)
 
-### 7. Real-World Anchoring
+### 8. Real-World Anchoring
 Apply to actual work:
 - Code PRs and implementation
 - Writing and documentation

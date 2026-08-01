@@ -44,6 +44,12 @@ This **one command** does everything:
 - Or specify: `/learning-weekly-dive "topic"`
 - **Use**: Weekly, for new topics
 
+**`/learning-performance-practice`** (20-60 min)
+- Simulated execution with a precommitted scenario and rubric
+- System suggests a roadmap activity or recently learned topic
+- Or specify: `/learning-performance-practice "topic"`
+- **Use**: Weekly, for skills that must be performed under constraints
+
 **`/learning-monthly-synthesis`** 🎓 (1-2 hours)
 - Mastery verification + synthesis
 - System suggests ready topics
@@ -92,6 +98,10 @@ This **one command** does everything:
 # Weekly (30-60 min, once per week)
 /learning-weekly-dive
 # → System: "Event sourcing next in roadmap"
+
+# Weekly or before a high-stakes event (20-60 min)
+/learning-performance-practice
+# → System: runs an unassisted simulation, scores it, then drills one weakness
 
 # As needed (before real work)
 /learning-apply-to-work
@@ -190,6 +200,12 @@ Ready to start?
 **How**: Reconstruct system, analyze scenarios, teach mastery
 **Why**: Integration creates lasting expertise
 **Time**: 1-2 hours
+
+### Performance Practice (Deliberate Practice)
+**What**: Simulated execution under realistic constraints
+**How**: Freeze scenario and rubric, perform without help, self-assess, score evidence, retry one weak behavior
+**Why**: Knowing what to do does not guarantee being able to do it under pressure
+**Time**: 20-60 minutes
 
 ### Apply to Work (Real-World Anchoring)
 **What**: Use learning in actual work

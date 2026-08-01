@@ -174,9 +174,42 @@ I'm a [junior developer / new learner / mid-level engineer - adjust based on pro
 
 ---
 
-## Phase 5b: Flashcard Generation (Optional)
+## Phase 5b: Module Quiz (5-10 min, Optional)
+
+Teach-back tests whether you can *produce* an explanation. This tests whether you can *discriminate* between answers that look alike — a different failure mode, and the one that shows up on real exams and in real decisions.
+
+**Offer the skip explicitly.** A weekly dive is already 30-60 minutes:
+
+1. Take the quiz (5 questions, ~7 min)
+2. Skip to flashcards
+
+If taken, author **5 questions on what this session actually covered** — especially the gaps identified in Phase 4, since those are where confusions are known to exist. Follow the authoring rubric in `.claude/skills/learning-quiz/SKILL.md` (Phase 2): scenario stems, defensible distractors, at least half at `application` or `analysis` difficulty, `distractor_rationale` required for every wrong option.
+
+Deposit them before serving, so each has an id to record against:
+
+```bash
+bash ./.claude/scripts/learning/quiz.sh add-questions '$QUESTIONS_JSON'
+```
+
+Use `source_session: "weekly-dive"`. Over a 12-week roadmap this is what grows the bank into something `/learning-quiz exam` can actually draw on.
+
+Run them in **practice mode**: the learner commits their pick *and* why their pick is right *and* why one other option is wrong, before anything is revealed. Then record each:
+
+```bash
+bash ./.claude/scripts/learning/quiz.sh record "$QID" "$CORRECT" "$PICKED"
+```
+
+**Do not write a separate score.** The quiz result is evidence for the **Accuracy** dimension of the teach-back rubric above — a learner who explained clearly but missed 3 of 5 discrimination items did not score 9 on Accuracy. Adjust that dimension before Phase 6 and say why.
+
+Carry every miss forward into the next phase as a card.
+
+---
+
+## Phase 5c: Flashcard Generation (Optional)
 
 Based on this session, suggest flashcards to help memorize key facts from [topic].
+
+**Include one card per quiz miss from Phase 5b**, built from the *confusion* (the concept the chosen distractor represents), not from the question text. A card that reproduces the stem teaches recognition of that one question; a card built from the confusion teaches the distinction.
 
 **Only generate cards for concrete, testable knowledge — not vague concepts.**
 
@@ -249,7 +282,9 @@ bash ./.claude/scripts/learning/save-state.sh roadmap "$TOPIC" "completed"
 bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 ```
 
-*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "weekly-dive", topic, overall_score, scores (clarity/accuracy/depth/completeness), duration_minutes, strengths array, gaps array, next_review date.*
+*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "weekly-dive", practice_type "knowledge", topic, overall_score, scores (clarity/accuracy/depth/completeness), duration_minutes, strengths array, gaps array, next_review date.*
+
+*If Phase 5b's quiz was taken, add a `quiz` sub-object: `{"questions_total": 5, "questions_correct": 3, "score_percent": 60}`. Omit it entirely if the quiz was skipped — do not log zeros, which would read as a failed quiz rather than no quiz.*
 
 ---
 

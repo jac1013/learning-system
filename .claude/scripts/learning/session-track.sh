@@ -68,6 +68,7 @@ close_orphan_if_present() {
           type: "orphan-session",
           skill: $skill,
           topic: (if $topic == "" then null else $topic end),
+          practice_type: "unclassified",
           duration_minutes: $duration,
           capped: $capped,
           notes: "auto-closed orphan session"}')
@@ -146,7 +147,7 @@ op_stats() {
     done
 
     if [[ ! -f "$LEARNING_LOG" || ! -s "$LEARNING_LOG" ]]; then
-        echo '{"total_minutes":0,"total_hours":0,"session_count":0,"last_7_days_minutes":0,"last_30_days_minutes":0,"by_topic":{},"by_type":{},"earliest":null,"latest":null}'
+        echo '{"total_minutes":0,"total_hours":0,"session_count":0,"last_7_days_minutes":0,"last_30_days_minutes":0,"by_topic":{},"by_type":{},"by_practice_type":{},"earliest":null,"latest":null}'
         return 0
     fi
 
@@ -155,6 +156,18 @@ op_stats() {
     d30=$(portable_date_ago 30)
 
     jq -s --arg d7 "$d7" --arg d30 "$d30" --arg since "$since" '
+        def resolved_practice_type:
+            .practice_type //
+            (if .type == "performance-practice" then "performance"
+             elif .type == "apply-to-work" then "application"
+             elif (.type == "daily-recall"
+                   or .type == "weekly-dive"
+                   or .type == "monthly-synthesis"
+                   or .type == "flashcard-review"
+                   or .type == "quiz") then "knowledge"
+             else "unclassified"
+             end);
+
         (if $since == "" then
             map(select(.duration_minutes != null))
          else
@@ -173,6 +186,12 @@ op_stats() {
             by_type:  ($all | group_by(.type // "unknown")
                             | map({key: (.[0].type // "unknown"), value: (map(.duration_minutes) | add)})
                             | from_entries),
+            by_practice_type: ($all | group_by(resolved_practice_type)
+                                    | map({
+                                        key: (.[0] | resolved_practice_type),
+                                        value: (map(.duration_minutes) | add)
+                                      })
+                                    | from_entries),
             earliest: ($all | map(.timestamp) | min),
             latest:   ($all | map(.timestamp) | max)
           }

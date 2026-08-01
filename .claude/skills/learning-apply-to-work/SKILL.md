@@ -215,7 +215,7 @@ bash ./.claude/scripts/learning/save-state.sh spaced-rep "$TOPIC" "$SCORE" "Appl
 bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 ```
 
-*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "apply-to-work", work_type, target, topics_applied array, duration_minutes, successes array, struggles array, insights array.*
+*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "apply-to-work", practice_type "application", work_type, target, topics_applied array, duration_minutes, successes array, struggles array, insights array.*
 
 ---
 

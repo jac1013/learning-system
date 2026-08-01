@@ -202,7 +202,7 @@ bash ./.claude/scripts/learning/save-state.sh roadmap "$TOPIC" "mastered"
 bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 ```
 
-*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "monthly-synthesis", topic, mastery_score, reconstruction_accuracy, duration_minutes, synthesis_document path, status "mastered", next_review (30 days from today).*
+*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "monthly-synthesis", practice_type "knowledge", topic, mastery_score, reconstruction_accuracy, duration_minutes, synthesis_document path, status "mastered", next_review (30 days from today).*
 
 ---
 

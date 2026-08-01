@@ -1,16 +1,17 @@
 # Learning Framework for Claude Code
 
-A portable, domain-agnostic learning system built on modern learning science. It runs as a set of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills and plugins, turning your terminal into a personalized learning environment with spaced repetition, retrieval practice, and Socratic questioning.
+A portable, domain-agnostic learning system built on modern learning science. It runs as a set of [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills and plugins, turning your terminal into a personalized learning environment with spaced repetition, retrieval practice, deliberate performance practice, and Socratic questioning.
 
 Works for **any topic**: software engineering, QA, writing, architecture, security, and more.
 
 ## How It Works
 
-The framework applies three research-backed principles:
+The framework applies four research-backed principles:
 
 - **Retrieval stress** — the system asks you to recall before showing answers. Testing yourself strengthens memory far more than re-reading.
 - **Spaced repetition** — reviews are scheduled automatically based on how well you recalled. Strong recall pushes the next review further out; weak recall brings it closer.
 - **AI role inversion** — instead of explaining, the AI asks questions, challenges assumptions, and makes you teach it back.
+- **Deliberate performance practice** — realistic simulations are attempted without help, scored against a precommitted rubric, and repeated with one focused improvement.
 
 ## Getting Started
 
@@ -45,12 +46,14 @@ After setup, the system guides you — no manual topic selection needed.
 | `/learning-init` | 15-25 min | First-time setup (profile + roadmap + tour) |
 | `/learning-daily-recall` | 5-15 min | Quick retrieval practice on overdue topics |
 | `/learning-weekly-dive` | 30-60 min | Deep Socratic exploration of a topic |
+| `/learning-performance-practice` | 20-60 min | Practice observable performance under realistic constraints |
 | `/learning-monthly-synthesis` | 1-2 hours | Mastery verification with full reconstruction |
 | `/learning-apply-to-work` | varies | Apply learning to real tasks (PRs, design, writing) |
 | `/learning-create-profile` | 10-15 min | Create or update your learner profile |
 | `/learning-create-roadmap` | 5-10 min | Generate or regenerate your learning roadmap |
 | `/learning-flashcards` | 5-15 min | Review flashcards with Anki-style spaced repetition |
-| `/learning-hours` | 1 min | Show total study time — grand total, recent windows, per-topic & per-type breakdown |
+| `/learning-quiz` | 10-30 min | Multiple-choice practice, or a timed mock exam with `exam` |
+| `/learning-hours` | 1 min | Show total study time — recent windows plus topic, workflow, and practice-type breakdowns |
 
 All commands are **context-aware** — they read your profile, roadmap, and review history to suggest what to work on. You can always override with a specific topic:
 
@@ -63,7 +66,10 @@ All commands are **context-aware** — they read your profile, roadmap, and revi
 - **Daily** (5-15 min): `/learning-daily-recall` — quick retrieval on due topics
 - **Daily** (5-15 min): `/learning-flashcards` — review due cards from your decks
 - **Weekly** (30-60 min): `/learning-weekly-dive` — deep dive on next roadmap topic
+- **Weekly** (20-60 min): `/learning-performance-practice` — run a simulation, score it, and retry one weak behavior
+- **Weekly** (10-15 min): `/learning-quiz` — multiple-choice practice on what you just studied
 - **Monthly** (1-2 hours): `/learning-monthly-synthesis` — verify mastery, create synthesis doc
+- **Monthly** (30-45 min): `/learning-quiz exam` — timed mock exam across every topic so far
 - **As needed**: `/learning-apply-to-work` — before PRs, architecture decisions, writing
 
 ## Project Structure
@@ -74,17 +80,19 @@ All commands are **context-aware** — they read your profile, roadmap, and revi
 │   ├── learning-init/SKILL.md
 │   ├── learning-daily-recall/SKILL.md
 │   ├── learning-weekly-dive/SKILL.md
+│   ├── learning-performance-practice/SKILL.md
 │   ├── learning-monthly-synthesis/SKILL.md
 │   ├── learning-apply-to-work/SKILL.md
 │   ├── learning-create-profile/SKILL.md
 │   ├── learning-create-roadmap/SKILL.md
 │   ├── learning-flashcards/SKILL.md
+│   ├── learning-quiz/SKILL.md
 │   ├── learning-hours/SKILL.md
 │   └── learning-init-project/SKILL.md
-├── hooks/                        # SessionStart hook
-├── settings.json                 # Hook registration
+├── settings.json                 # Project settings
 ├── scripts/
 │   └── learning/                 # Bash helpers (state management)
+│       └── tests/                # Helper test suites
 └── docs/                         # Extended documentation
 
 # User state (created at runtime, gitignored)
@@ -94,6 +102,7 @@ learning-log.jsonl                # Session history
 .spaced-repetition.json           # Review scheduling state
 .review-schedule.json             # Due review queue
 .flashcards.json                  # Flashcard content + SM-2 state
+.quiz-bank.json                   # Quiz question bank + per-question stats
 .current-session.json             # Active session timer (auto-cleared on log)
 synthesis/                        # Monthly synthesis documents
 ```

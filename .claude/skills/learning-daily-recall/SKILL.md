@@ -158,7 +158,7 @@ bash ./.claude/scripts/learning/save-state.sh spaced-rep "$TOPIC" "$SCORE" "$NOT
 bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 ```
 
-*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "daily-recall", topic, score, duration_minutes, strengths array, gaps array, next_review date.*
+*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "daily-recall", practice_type "knowledge", topic, score, duration_minutes, strengths array, gaps array, next_review date.*
 
 ---
 

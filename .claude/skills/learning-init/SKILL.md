@@ -92,6 +92,18 @@ You now have:
 
 ---
 
+#### Performance Practice (20-60 minutes)
+
+**`/learning-performance-practice`**
+- Simulated execution under realistic constraints
+- System suggests a roadmap activity or recently learned topic
+- Or specify: `/learning-performance-practice "topic"`
+
+**When**: Weekly, and before situations where execution under pressure matters
+**What happens**: Freeze a scenario and rubric, perform without help, score observable evidence, then retry one focused weakness
+
+---
+
 #### Apply to Real Work (Varies)
 
 **`/learning-apply-to-work`**
@@ -151,7 +163,13 @@ System will suggest your first roadmap topic!
 ```
 Start with a quick 5-10 min session.
 
-**Option 3: Review Roadmap**
+**Option 3: Practice a Performance**
+```bash
+/learning-performance-practice
+```
+Run a realistic simulation from your roadmap.
+
+**Option 4: Review Roadmap**
 ```bash
 cat ./roadmap.json | jq
 ```
@@ -172,5 +190,6 @@ The system adapts automatically!
 
 1. `/learning-weekly-dive` - Start first topic
 2. `/learning-daily-recall` - Quick practice
-3. Review files - Explore what was created
-4. Ask me anything!
+3. `/learning-performance-practice` - Practice under realistic constraints
+4. Review files - Explore what was created
+5. Ask me anything!

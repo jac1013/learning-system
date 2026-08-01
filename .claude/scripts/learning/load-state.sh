@@ -22,6 +22,7 @@ SPACED_REP_FILE="$LEARNING_ROOT/.spaced-repetition.json"
 REVIEW_SCHEDULE_FILE="$LEARNING_ROOT/.review-schedule.json"
 PROJECT_KNOWLEDGE_FILE="$LEARNING_ROOT/project-knowledge.json"
 FLASHCARDS_FILE="$LEARNING_ROOT/.flashcards.json"
+QUIZ_BANK_FILE="$LEARNING_ROOT/.quiz-bank.json"
 CURRENT_SESSION_FILE="$LEARNING_ROOT/.current-session.json"
 
 # Portable date helpers (GNU/Linux vs BSD/macOS)
@@ -50,6 +51,7 @@ export SPACED_REP_FILE
 export REVIEW_SCHEDULE_FILE
 export PROJECT_KNOWLEDGE_FILE
 export FLASHCARDS_FILE
+export QUIZ_BANK_FILE
 export CURRENT_SESSION_FILE
 
 # Function to check if profile exists
@@ -83,6 +85,11 @@ has_flashcards() {
     [[ -f "$FLASHCARDS_FILE" ]]
 }
 
+# Function to check if the quiz question bank exists
+has_quiz_bank() {
+    [[ -f "$QUIZ_BANK_FILE" ]]
+}
+
 # Function to check if project knowledge map exists
 has_project_knowledge() {
     [[ -f "$PROJECT_KNOWLEDGE_FILE" ]]
@@ -105,6 +112,7 @@ get_project_field() {
 export -f has_profile
 export -f has_roadmap
 export -f has_flashcards
+export -f has_quiz_bank
 export -f get_profile_field
 export -f get_roadmap_field
 export -f has_project_knowledge

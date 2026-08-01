@@ -33,6 +33,7 @@ This framework implements modern learning science research (2024-2026 consensus)
 
 **Commands**:
 - `.claude/skills/learning-weekly-dive/SKILL.md` - 30-60 min Socratic interrogation
+- `.claude/skills/learning-performance-practice/SKILL.md` - 20-60 min deliberate practice under realistic constraints
 - `.claude/skills/learning-monthly-synthesis/SKILL.md` - 1-2 hour reconstruction
 
 **Skills**:
@@ -105,6 +106,25 @@ This framework implements modern learning science research (2024-2026 consensus)
 2. **Scenario Analysis**: Apply to real-world scenarios
 3. **Master Teaching**: Teach to advanced learner
 4. **Synthesis Document**: Permanent artifact of understanding
+
+### Performance Practice (20-60 minutes)
+
+```bash
+# Let the roadmap suggest a performance activity
+/learning-performance-practice
+
+# Or choose a topic directly
+/learning-performance-practice "stakeholder discovery"
+```
+
+**What Happens**:
+1. **Freeze Contract**: Agree on scenario, constraints, output, timebox, and observable rubric
+2. **Baseline**: Perform without hints or coaching
+3. **Calibrate**: Self-assess before seeing external evaluation
+4. **Score Evidence**: Evaluate observed behavior against the frozen rubric
+5. **Focused Retry**: Isolate one weak behavior and repeat with a realistic variation
+
+Performance results are logged separately from recall scores, so execution quality does not distort spaced-repetition scheduling.
 
 ### Apply to Real Work
 

@@ -19,10 +19,11 @@ Bash scripts that manage state. Called via `bash ./.claude/scripts/learning/<nam
 - `save-state.sh` — updates spaced repetition scores and review schedule
 - `infer-next.sh` — determines next topic based on profile, roadmap, and review state
 - `check-state.sh` — consolidated state checker for skill initialization (contexts: init, profile, roadmap, project, profile-exists)
-- `determine-topic.sh` — topic resolution for daily-recall, weekly-dive, monthly-synthesis
+- `determine-topic.sh` — topic resolution for daily-recall, weekly-dive, monthly-synthesis, and performance-practice
 - `parse-apply-args.sh` — argument parser for apply-to-work skill
 - `display-state.sh` — state display helper (profile-summary, profile-analysis, roadmap-summary, pacing)
 - `flashcards.sh` — flashcard CRUD, SM-2 algorithm, stats, Anki export (operations: init, stats, list-due, add-card, add-cards, update-sm2, get-card, search, export-anki)
+- `quiz.sh` — multiple-choice question bank and sampler (operations: init, session-init, stats, sample, add-questions, record, record-exam, list-weak, get-question, search). `session-init "$ARGUMENTS"` is the single eager `!`-block entry point for the quiz skill: it parses mode (`exam` prefix) and topic, delegates topic resolution to `determine-topic.sh quiz`, and prints bank stats. `sample` scores questions by never-seen > miss-rate, deprioritizes anything already served today, and balances across topics in `--mode=exam`. Questions are deduplicated on normalized stem within a `source_topic`. The bank is separate from `.flashcards.json` — quiz stats drive sampling only, never SM-2 or topic scheduling.
 - `session-track.sh` — automatic study-time tracker (operations: start, duration, end, status, stats). Session skills call `start <skill> [topic]` at entry; `save-state.sh log` auto-enriches log entries with the measured duration and clears the active session on log. `stats` aggregates hours from `learning-log.jsonl`. Orphan sessions (never ended) are auto-closed on next `start`: discarded if <2min, capped at 60min and flagged `"type":"orphan-session"` otherwise.
 
 All paths are resolved dynamically. Never introduce hardcoded absolute paths.
@@ -43,6 +44,7 @@ These files are created at runtime in the project root and are **gitignored**:
 | `.spaced-repetition.json` | Per-topic review scheduling state |
 | `.review-schedule.json` | Queue of due reviews |
 | `.flashcards.json` | Per-card flashcard content and SM-2 scheduling state |
+| `.quiz-bank.json` | Multiple-choice question bank with per-question seen/missed stats |
 | `.current-session.json` | Active study session state (skill, topic, started_at). Auto-cleared on log; orphans auto-closed on next `start`. |
 | `synthesis/` | Monthly synthesis documents |
 
@@ -75,6 +77,7 @@ When creating or modifying skills, maintain these principles:
 3. **Spaced repetition** — scores drive review intervals (high score = longer interval)
 4. **Teach-back** — having the user explain to the AI is more effective than the AI explaining to the user
 5. **Application anchoring** — connect learning to the user's real work context (from `profile.json`)
+6. **Observable performance** — freeze scenarios and rubrics before an unassisted attempt; score behavior and artifacts, not inferred traits
 
 ## Extending the System
 

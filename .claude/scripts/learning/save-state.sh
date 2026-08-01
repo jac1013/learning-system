@@ -77,14 +77,35 @@ append_to_log() {
     if ! echo "$entry" | jq -e 'has("timestamp")' >/dev/null 2>&1; then
         local now_iso
         now_iso=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-        entry=$(echo "$entry" | jq --arg ts "$now_iso" '. + {timestamp: $ts}')
+        entry=$(echo "$entry" | jq -c --arg ts "$now_iso" '. + {timestamp: $ts}')
     fi
+
+    # Normalize the generic practice category for reporting. Explicit values
+    # win; legacy skill callers are classified from their workflow type.
+    entry=$(echo "$entry" | jq -c '
+        . as $entry
+        | if has("practice_type") and (["knowledge", "performance", "application", "unclassified"] | index($entry.practice_type)) then .
+        elif has("practice_type") then error("invalid practice_type: " + (.practice_type | tostring))
+        else . + {
+            practice_type:
+                (if .type == "performance-practice" then "performance"
+                 elif .type == "apply-to-work" then "application"
+                 elif (.type == "daily-recall"
+                       or .type == "weekly-dive"
+                       or .type == "monthly-synthesis"
+                       or .type == "flashcard-review"
+                       or .type == "quiz") then "knowledge"
+                 else "unclassified"
+                 end)
+        }
+        end
+    ')
 
     # Auto-enrich with measured session duration (overrides any estimate)
     if [[ -f "$CURRENT_SESSION_FILE" ]]; then
         local duration
         duration=$(bash "$(dirname "${BASH_SOURCE[0]}")/session-track.sh" duration)
-        entry=$(echo "$entry" | jq --argjson dur "$duration" '. + {duration_minutes: $dur}')
+        entry=$(echo "$entry" | jq -c --argjson dur "$duration" '. + {duration_minutes: $dur}')
         rm -f "$CURRENT_SESSION_FILE"
     fi
 

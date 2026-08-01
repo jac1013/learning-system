@@ -249,7 +249,11 @@ Ready to review PRs with this lens?
 /learning-daily-recall
 # → System suggests reviews based on spaced repetition
 
-# Step 4: Apply to work (ongoing)
+# Step 4: Practice performance (weekly/as needed)
+/learning-performance-practice
+# → System suggests a roadmap simulation or recently learned topic
+
+# Step 5: Apply to work (ongoing)
 /learning-apply-to-work
 # → System matches learning to real work
 ```
@@ -264,6 +268,10 @@ Ready to review PRs with this lens?
 # Weekly (30-60 min)
 /learning-weekly-dive
 # → System: "Event sourcing is next in roadmap"
+
+# Weekly or before a high-stakes event (20-60 min)
+/learning-performance-practice
+# → System: "Run an unassisted simulation and improve one weak behavior"
 
 # Monthly (1-2 hours)
 /learning-monthly-synthesis

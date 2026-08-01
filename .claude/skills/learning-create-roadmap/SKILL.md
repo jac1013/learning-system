@@ -26,6 +26,18 @@ Generate your personalized learning roadmap (5-10 minutes).
 
 ## Roadmap Structure
 
+Each topic can contain multiple **practice activities**. Practice type belongs to the activity, not the topic: the same topic may need knowledge retrieval, simulated performance, and real-world application.
+
+Use these activity types:
+
+- `knowledge` - recall, explain, compare, and retain concepts
+- `performance` - produce observable behavior under realistic constraints
+- `application` - use the learning in consequential real work
+
+Add at least one `knowledge` activity for each conceptual topic. Add a `performance` activity whenever the goal requires the learner to speak, decide, design, demonstrate, role-play, present, or otherwise execute under constraints. Add an `application` activity only when the profile provides a genuine real-world target.
+
+Performance activities must define a concrete scenario, observable success criteria, a realistic timebox, and 3-5 behavior-based rubric criteria. Do not use vague criteria such as "confidence" or "quality."
+
 Based on your goal "**[goal from profile]**", here's your 12-week learning path:
 
 ### Phase 1: Fundamentals (Weeks 1-4)
@@ -105,7 +117,32 @@ Based on your work context (**[from profile]**):
     "topic-key": {
       "name": "", "phase": 1, "week": "1-2", "sequence": 1,
       "status": "ready|blocked", "prerequisites": [],
-      "estimated_hours": 3, "type": "foundational|building|core"
+      "estimated_hours": 3, "type": "foundational|building|core",
+      "practice_activities": [
+        {
+          "type": "knowledge",
+          "description": "Recall and explain the core concepts",
+          "success_criteria": ["Observable knowledge criterion"]
+        },
+        {
+          "type": "performance",
+          "scenario": "Concrete simulated situation",
+          "mode": "live-role-play|single-response|external",
+          "timebox_minutes": 30,
+          "success_criteria": ["Observable performance outcome"],
+          "rubric": [
+            {
+              "criterion": "Observable behavior",
+              "description": "What effective performance looks like"
+            }
+          ]
+        },
+        {
+          "type": "application",
+          "target": "Real work target from the learner profile",
+          "success_criteria": ["Evidence that learning changed the work"]
+        }
+      ]
     }
   },
   "phases": {
@@ -177,6 +214,7 @@ Based on your time commitment:
 - ✅ Pacing can be adjusted
 - ✅ Sequence can be reordered (if prerequisites met)
 - ✅ Application opportunities can be updated
+- ✅ Practice activities can be added, repeated, or adjusted independently
 
 **Update anytime**: Edit the JSON file or run `/learning-create-roadmap` again
 

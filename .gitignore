@@ -8,5 +8,6 @@ learning-log.jsonl
 .spaced-repetition.json
 .review-schedule.json
 .flashcards.json
+.quiz-bank.json
 .current-session.json
 synthesis/

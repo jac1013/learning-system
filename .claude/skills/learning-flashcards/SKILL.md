@@ -163,7 +163,7 @@ Repeat until the user is done adding cards.
 bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 ```
 
-*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "flashcard-review", topic (or "mixed" if multiple topics), cards_reviewed, average_quality, duration_minutes.*
+*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "flashcard-review", practice_type "knowledge", topic (or "mixed" if multiple topics), cards_reviewed, average_quality, duration_minutes.*
 
 ---
 

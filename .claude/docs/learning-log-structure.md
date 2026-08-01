@@ -14,6 +14,7 @@ Each line is a JSON object with these fields:
 {
   "timestamp": "2026-02-01T08:00:00Z",
   "type": "daily-recall",
+  "practice_type": "knowledge",
   "topic": "observability-fundamentals",
   "topic_name": "Observability Fundamentals",
   "score": 7,
@@ -36,9 +37,8 @@ Each line is a JSON object with these fields:
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | ISO 8601 | When the session occurred |
-| `type` | string | `daily-recall`, `weekly-dive`, `monthly-synthesis`, `apply-to-work` |
-| `topic` | string | Topic key (matches `.spaced-repetition.json` keys) |
-| `score` | number | 0-10 recall/mastery score |
+| `type` | string | Workflow, such as `daily-recall`, `performance-practice`, or `apply-to-work` |
+| `practice_type` | string | `knowledge`, `performance`, or `application` |
 | `duration_minutes` | number | Session length |
 
 ### Optional Fields
@@ -46,10 +46,39 @@ Each line is a JSON object with these fields:
 | Field | Type | Description |
 |---|---|---|
 | `topic_name` | string | Human-readable topic name |
+| `topic` | string | Topic key or name; may be absent for multi-topic application sessions |
+| `score` | number | 0-10 recall score for knowledge-practice workflows |
 | `strengths` | string[] | What was recalled well |
 | `gaps` | string[] | What was missed or weak |
 | `next_review` | date string | Scheduled next review date |
 | `notes` | string | Free-form session notes |
+
+Workflow-specific fields are allowed and encouraged. A performance-practice entry normally includes `scenario`, `mode`, `timebox_minutes`, the frozen `rubric`, an `attempts` array with criterion-level scores and evidence, `self_assessment`, `baseline_score`, `final_score`, `score_delta`, `completed_loops`, `improvement_target`, and an artifact reference. An application entry normally includes `work_type`, `target`, and `topics_applied`.
+
+Performance scores must not be written to `.spaced-repetition.json`: execution quality and memory recall are different measurements.
+
+### `quiz` Entries
+
+Written by `/learning-quiz`. `practice_type` is `knowledge`.
+
+| Field | Type | Description |
+|---|---|---|
+| `mode` | string | `practice` or `exam` |
+| `topic` | string | Topic key or name; `all` for a mixed exam |
+| `questions_total` | number | Questions served |
+| `questions_correct` | number | Correct answers; multi-select is all-or-nothing |
+| `score` | number | 0-10 integer form of `score_percent`, for consistency with other workflows |
+| `score_percent` | number | 0-100 |
+| `passed` | boolean | Exam mode only — whether `score_percent >= threshold` |
+| `threshold` | number | Exam mode only — pass percentage, default 72 |
+| `timebox_minutes` | number | Exam mode only — the declared exam timebox, not the measured duration |
+| `by_difficulty` | object | Keyed by `recall`/`application`/`analysis`, each `{correct, total}` |
+| `missed` | object[] | `{question_id, picked, correct, concept}` per miss |
+| `cards_created` | number | Flashcards generated from misses |
+
+Quiz scores must not be written to `.spaced-repetition.json`: discrimination under multiple choice and free recall are different measurements, and a standalone quiz would otherwise shift a topic's review interval on recognition evidence alone. Inside a weekly dive the quiz result instead informs the **Accuracy** dimension of that session's teach-back score, and appears as a `quiz` sub-object (`{questions_total, questions_correct, score_percent}`) on the `weekly-dive` entry rather than as its own log line.
+
+Per-question statistics live in `.quiz-bank.json`, not in the log. The log records what happened in the session; the bank records what to serve next.
 
 ## Writing Entries
 

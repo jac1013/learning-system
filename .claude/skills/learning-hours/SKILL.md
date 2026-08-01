@@ -69,8 +69,17 @@ Format `by_type` as a list:
 - `weekly-dive` — Xh Ym
 - `monthly-synthesis` — Xh Ym
 - `flashcard-review` — Xh Ym
+- `performance-practice` — Xh Ym
 - `apply-to-work` — Xh Ym
 - `orphan-session` — Xh Ym *(auto-closed sessions; capped entries are estimates, not measurements)*
+
+### By Practice Type
+
+Format `by_practice_type` as a list:
+- `knowledge` — Xh Ym
+- `performance` — Xh Ym
+- `application` — Xh Ym
+- `unclassified` — Xh Ym *(legacy or orphan entries that cannot be classified)*
 
 ---
 
