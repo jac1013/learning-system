@@ -20,6 +20,14 @@ Deep exploration session (30-60 minutes) using Socratic method and teach-back.
 
 !`bash ./.claude/scripts/learning/determine-topic.sh weekly-dive "$ARGUMENTS"`
 
+Once the topic is settled, mark it started. **Do not ask permission for this** — roadmap status is framework-managed, not a decision the learner makes:
+
+```bash
+bash ./.claude/scripts/learning/roadmap-status.sh enter "$TOPIC"
+```
+
+Report any `COMPLETED=` or `UNLOCKED=` lines it prints in one sentence, then move on. A `COMPLETED=` line means the learner moved on from a topic they had left in progress; an `UNLOCKED=` line means a previously blocked topic just became available.
+
 ---
 
 ## Phase 2: Prior Knowledge Check
@@ -174,16 +182,11 @@ I'm a [junior developer / new learner / mid-level engineer - adjust based on pro
 
 ---
 
-## Phase 5b: Module Quiz (5-10 min, Optional)
+## Phase 5b: Module Quiz (5-10 min)
 
-Teach-back tests whether you can *produce* an explanation. This tests whether you can *discriminate* between answers that look alike — a different failure mode, and the one that shows up on real exams and in real decisions.
+**This phase is required. Run it every time — do not offer to skip it, and do not ask whether the learner wants it.** Announce it and start. Teach-back tests whether you can *produce* an explanation; this tests whether you can *discriminate* between answers that look alike, which is a different failure mode and the one that shows up on real exams and in real decisions.
 
-**Offer the skip explicitly.** A weekly dive is already 30-60 minutes:
-
-1. Take the quiz (5 questions, ~7 min)
-2. Skip to flashcards
-
-If taken, author **5 questions on what this session actually covered** — especially the gaps identified in Phase 4, since those are where confusions are known to exist. Follow the authoring rubric in `.claude/skills/learning-quiz/SKILL.md` (Phase 2): scenario stems, defensible distractors, at least half at `application` or `analysis` difficulty, `distractor_rationale` required for every wrong option.
+Author **5 questions on what this session actually covered** — especially the gaps identified in Phase 4, since those are where confusions are known to exist. Follow the authoring rubric in `.claude/skills/learning-quiz/SKILL.md` (Phase 2): scenario stems, defensible distractors, at least half at `application` or `analysis` difficulty, `distractor_rationale` required for every wrong option.
 
 Deposit them before serving, so each has an id to record against:
 
@@ -193,7 +196,12 @@ bash ./.claude/scripts/learning/quiz.sh add-questions '$QUESTIONS_JSON'
 
 Use `source_session: "weekly-dive"`. Over a 12-week roadmap this is what grows the bank into something `/learning-quiz exam` can actually draw on.
 
-Run them in **practice mode**: the learner commits their pick *and* why their pick is right *and* why one other option is wrong, before anything is revealed. Then record each:
+**Run them exam-style.** Present the stem and options, state single- or multi-answer, and take the learner's pick. Ask for nothing else — no reasoning, no justification, no "why did you pick that". Then:
+
+- **Correct** → say so, full credit, and add one or two sentences on *why* it is right and what makes the nearest distractor tempting. Keep it short.
+- **Wrong** → say plainly that it was wrong, give the correct answer with its explanation, and give the `distractor_rationale` for what they picked. No interrogation. The miss becomes a card in the next phase.
+
+Record each answer:
 
 ```bash
 bash ./.claude/scripts/learning/quiz.sh record "$QID" "$CORRECT" "$PICKED"
@@ -205,9 +213,9 @@ Carry every miss forward into the next phase as a card.
 
 ---
 
-## Phase 5c: Flashcard Generation (Optional)
+## Phase 5c: Flashcard Generation
 
-Based on this session, suggest flashcards to help memorize key facts from [topic].
+Based on this session, generate flashcards for the key facts from [topic].
 
 **Include one card per quiz miss from Phase 5b**, built from the *confusion* (the concept the chosen distractor represents), not from the question text. A card that reproduces the stem teaches recognition of that one question; a card built from the confusion teaches the distinction.
 
@@ -218,25 +226,15 @@ Generate 3-8 cards based on session content, mixing types:
 - **cloze** cards using `{{c1::answer}}` syntax for key terms and definitions
 - **scenario** cards based on Socratic questions where the user struggled
 
-For each proposed card, show:
-- **Type**: basic / cloze / scenario
-- **Front**: [question or cloze text]
-- **Back**: [answer]
-- **Tags**: [relevant tags]
-
-**Options:**
-1. Accept all cards
-2. Accept with edits (specify which to change)
-3. Skip card generation
-4. Add your own cards too
-
-*After user confirms, save via:*
+**Save them directly — do not ask the learner to review or approve the cards.** Review happens when the card comes up for study; asking for sign-off here makes the session tedious and adds nothing the first review won't catch.
 
 ```bash
 bash ./.claude/scripts/learning/flashcards.sh add-cards '$CARDS_JSON'
 ```
 
 *Where $CARDS_JSON is a JSON array of card objects with fields: front, back, type, tags, source_topic, source_session ("weekly-dive").*
+
+Then report what was saved in a compact list — type, front, back — so the learner knows what is now in the deck and can say if something is wrong. Mention that `/learning-flashcards` is where they'll see them again.
 
 ---
 
@@ -274,9 +272,13 @@ bash ./.claude/scripts/learning/flashcards.sh add-cards '$CARDS_JSON'
 bash ./.claude/scripts/learning/save-state.sh spaced-rep "$TOPIC" "$OVERALL_SCORE" "Teach-back: C:$CLARITY A:$ACCURACY D:$DEPTH Cm:$COMPLETENESS"
 ```
 
+*Then resolve the roadmap status. `$OPEN_GAP_COUNT` is the number of Phase 4 gaps still unresolved at the end of the session — count them honestly, including any the learner acknowledged but did not close.*
+
 ```bash
-bash ./.claude/scripts/learning/save-state.sh roadmap "$TOPIC" "completed"
+bash ./.claude/scripts/learning/roadmap-status.sh resolve "$TOPIC" "$OVERALL_SCORE" "$OPEN_GAP_COUNT"
 ```
+
+**Do not ask the learner to confirm the status change, and do not mark a topic completed yourself.** The script decides: a topic completes only when it was earned (score ≥ 7 with zero open gaps). Otherwise it stays `in-progress` and completes automatically the next time the learner starts a different topic — moving on is the signal that a topic is done. Report the `TOPIC_STATUS=` and `REASON=` lines in one sentence, plus any `UNLOCKED=` line.
 
 ```bash
 bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
@@ -284,7 +286,7 @@ bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 
 *Where `$LOG_ENTRY` is a JSON object with: timestamp, type "weekly-dive", practice_type "knowledge", topic, overall_score, scores (clarity/accuracy/depth/completeness), duration_minutes, strengths array, gaps array, next_review date.*
 
-*If Phase 5b's quiz was taken, add a `quiz` sub-object: `{"questions_total": 5, "questions_correct": 3, "score_percent": 60}`. Omit it entirely if the quiz was skipped — do not log zeros, which would read as a failed quiz rather than no quiz.*
+*Include a `quiz` sub-object from Phase 5b — `{"questions_total": 5, "questions_correct": 3, "score_percent": 60}`. Phase 5b always runs, so this is always present.*
 
 ---
 

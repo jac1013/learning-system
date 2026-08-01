@@ -157,6 +157,12 @@ Based on your work context (**[from profile]**):
 }
 ```
 
+### Status field
+
+Only ever write `ready` or `blocked` here. The rest of the lifecycle — `in-progress`, `completed`, `mastered` — is written by `roadmap-status.sh` as the learner works, never by this skill and never by the learner.
+
+Set `status: "ready"` on every topic with no unmet prerequisite (at minimum, the first topic of Phase 1), and `blocked` on the rest. Give each blocked topic explicit `prerequisites` where real dependencies exist; where they don't, leave `prerequisites: []` and rely on `sequence`, which unlocks a topic once every lower-`sequence` topic is done. **A roadmap where every topic is `blocked` is unusable** — nothing can promote the first one.
+
 ---
 
 ## Roadmap Summary

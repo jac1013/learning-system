@@ -194,8 +194,10 @@ bash ./.claude/scripts/learning/save-state.sh spaced-rep "$TOPIC" "$MASTERY_SCOR
 
 *Mark as synthesized in `.spaced-repetition.json` (set `synthesized: true` and `synthesis_date` for the topic).*
 
+*Mark mastery on the roadmap. Use `roadmap-status.sh`, not `save-state.sh roadmap` — it also promotes any blocked topic whose prerequisites this satisfies. Do not ask the learner to confirm; report the `TOPIC_STATUS=` and any `UNLOCKED=` lines it prints.*
+
 ```bash
-bash ./.claude/scripts/learning/save-state.sh roadmap "$TOPIC" "mastered"
+bash ./.claude/scripts/learning/roadmap-status.sh master "$TOPIC"
 ```
 
 ```bash

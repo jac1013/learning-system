@@ -25,6 +25,7 @@ Bash scripts that manage state. Called via `bash ./.claude/scripts/learning/<nam
 - `flashcards.sh` — flashcard CRUD, SM-2 algorithm, stats, Anki export (operations: init, stats, list-due, add-card, add-cards, update-sm2, get-card, search, export-anki)
 - `quiz.sh` — multiple-choice question bank and sampler (operations: init, session-init, stats, sample, add-questions, record, record-exam, list-weak, get-question, search). `session-init "$ARGUMENTS"` is the single eager `!`-block entry point for the quiz skill: it parses mode (`exam` prefix) and topic, delegates topic resolution to `determine-topic.sh quiz`, and prints bank stats. `sample` scores questions by never-seen > miss-rate, deprioritizes anything already served today, and balances across topics in `--mode=exam`. Questions are deduplicated on normalized stem within a `source_topic`. The bank is separate from `.flashcards.json` — quiz stats drive sampling only, never SM-2 or topic scheduling.
 - `session-track.sh` — automatic study-time tracker (operations: start, duration, end, status, stats). Session skills call `start <skill> [topic]` at entry; `save-state.sh log` auto-enriches log entries with the measured duration and clears the active session on log. `stats` aggregates hours from `learning-log.jsonl`. Orphan sessions (never ended) are auto-closed on next `start`: discarded if <2min, capped at 60min and flagged `"type":"orphan-session"` otherwise.
+- `roadmap-status.sh` — automatic roadmap status transitions (operations: enter, resolve, master, unlock, status). Owns the `blocked → ready → in-progress → completed → mastered` lifecycle; skills call it and report what it did rather than asking the learner. `enter <topic>` marks a topic in-progress and completes any *other* in-progress topic (`completion_reason: "moved-on"`) — moving on is the signal that the previous topic is done. `resolve <topic> <score> <gaps>` completes only when earned (score ≥ 7 **and** zero open gaps, `completion_reason: "met-bar"`); otherwise the topic stays in-progress. Completed/mastered topics are never demoted by a revisit. Every operation then runs `unlock`, which promotes blocked topics whose prerequisites are satisfied — by explicit `prerequisites` where present, else by `sequence`. All operations are silent no-ops when `roadmap.json` is absent, and never create it.
 
 All paths are resolved dynamically. Never introduce hardcoded absolute paths.
 
@@ -57,12 +58,14 @@ These files are created at runtime in the project root and are **gitignored**:
 - Use `load-state.sh` functions (`has_profile`, `has_roadmap`, `get_profile_field`) rather than reading files directly
 - Append to `learning-log.jsonl` — never overwrite it
 - Update `.spaced-repetition.json` scores through `save-state.sh`
+- Update roadmap *status* through `roadmap-status.sh`, silently — status is framework-managed, and skills report the transition rather than asking the learner to approve it
 - Keep skills domain-agnostic — they should work for any topic, not just programming
+- Save generated flashcards directly, then show what was saved. Card review happens at study time; an approval step before saving is friction that stops sessions from being run
 
 ### Do Not
 
 - Add hardcoded absolute paths (breaks portability)
-- Modify user state files (`profile.json`, `roadmap.json`) without explicit user request
+- Modify roadmap *content* (topics, sequence, prerequisites) or `profile.json` without explicit user request — status fields are the exception, see above
 - Delete or overwrite `learning-log.jsonl` (it's an append-only log)
 - Add `settings.local.json` to version control (it contains machine-specific permissions)
 - Commit user state files (they are personal data, gitignored for a reason)
@@ -72,7 +75,7 @@ These files are created at runtime in the project root and are **gitignored**:
 
 When creating or modifying skills, maintain these principles:
 
-1. **Retrieval before revelation** — always ask the user what they think/remember before showing the answer
+1. **Retrieval before revelation** — always ask the user what they think/remember before showing the answer. In multiple-choice formats the *pick itself* is the retrieval attempt; do not additionally demand written reasoning before revealing (see `learning-quiz`)
 2. **Productive struggle** — difficulty is a feature, not a bug. Don't make it too easy
 3. **Spaced repetition** — scores drive review intervals (high score = longer interval)
 4. **Teach-back** — having the user explain to the AI is more effective than the AI explaining to the user

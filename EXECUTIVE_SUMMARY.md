@@ -21,7 +21,7 @@ Most "AI tutoring" inverts the classroom: the AI explains, you nod. This framewo
 - **Daily (5–15 min)** — `/learning-daily-recall` quick-fire questions on overdue topics
 - **Daily (5–15 min)** — `/learning-flashcards` Anki-style card review (cloze + scenarios)
 - **Weekly (30–60 min)** — `/learning-weekly-dive` deep Socratic exploration of next roadmap topic
-- **Weekly (10–15 min)** — `/learning-quiz` multiple-choice practice; you must justify your pick before anything is revealed
+- **Weekly (10–15 min)** — `/learning-quiz` certification-style multiple choice; pick an answer, get the reasoning back, and every miss becomes a flashcard
 - **Weekly (20–60 min)** — `/learning-performance-practice` perform the skill under constraints, scored against a precommitted rubric
 - **Monthly (1–2 hr)** — `/learning-monthly-synthesis` mastery verification + written synthesis doc
 - **Monthly (30–45 min)** — `/learning-quiz exam` timed mock exam across every topic studied so far

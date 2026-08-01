@@ -119,6 +119,12 @@ append_to_log() {
 }
 
 # Function to update roadmap topic status
+#
+# DEPRECATED for skill use — call roadmap-status.sh instead. This is a raw
+# setter: it takes whatever status you hand it, does not resolve display names
+# to roadmap keys, does not guard against demoting a mastered topic, and does
+# not unlock dependents afterwards. roadmap-status.sh owns the lifecycle.
+# Kept only as a manual escape hatch for repairing a roadmap by hand.
 update_roadmap_status() {
     local topic="$1"
     local status="$2"  # ready, in-progress, completed, mastered
