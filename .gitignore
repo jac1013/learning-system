@@ -10,4 +10,5 @@ learning-log.jsonl
 .flashcards.json
 .quiz-bank.json
 .current-session.json
+.flashcard-session.json
 synthesis/

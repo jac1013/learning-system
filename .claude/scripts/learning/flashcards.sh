@@ -1,7 +1,8 @@
 #!/bin/bash
 # Learning System - Flashcard Engine
-# Card-level spaced repetition with SM-2 algorithm
-# Operations: init, stats, list-due, add-card, add-cards, update-sm2, get-card, search, export-anki
+# Card-level spaced repetition with SM-2 algorithm, plus an in-session lapse queue
+# Operations: init, stats, list-due, add-card, add-cards, update-sm2, get-card, search, export-anki,
+#             queue-init, queue-next, queue-rate, queue-status, queue-end
 
 set -euo pipefail
 
@@ -241,6 +242,245 @@ op_update_sm2() {
     echo "Updated card $card_id: quality=$quality interval=$new_interval ease=$new_ease next=$next_review"
 }
 
+# --- In-session lapse queue ---
+#
+# SM-2 schedules the *next* session. It does nothing for a card you just blanked
+# on right now: "Again" resets the interval to 1 day and the card walks away.
+# The learner ends the session having never once produced the answer, which is
+# the one thing that would have encoded it.
+#
+# Anki solves this with relearning steps — a lapsed card returns within the same
+# session until you get it. This is that mechanic: a lapse puts the card back
+# REQUEUE_GAP positions later, so a couple of other cards intervene (long enough
+# that it is recall and not echo, short enough to still be the same session).
+#
+# Two rules make it honest:
+#
+#   1. Only the FIRST rating of a card in a session drives SM-2. Retries are
+#      practice, never measurement. Otherwise blanking a card and then passing
+#      it on the retry would schedule it out as if it had been recalled cleanly,
+#      which inverts the whole point of the lapse.
+#   2. A retry cap stops one unknown card from eating the session. At the cap
+#      the card is left for tomorrow — the first "Again" already scheduled it.
+
+QUEUE_RETRY_CAP=3     # attempts per card per session before it is left for tomorrow
+QUEUE_REQUEUE_GAP=2   # how many other cards appear before a lapsed card returns
+
+has_flashcard_session() {
+    [[ -f "$FLASHCARD_SESSION_FILE" ]]
+}
+
+# Build the session queue from due cards.
+op_queue_init() {
+    local topic="${1:-}"
+    local limit="${2:-10}"
+    ensure_flashcards_file
+
+    local today due count
+    today=$(portable_date_iso)
+    due=$(op_list_due "$topic" "$limit")
+    count=$(echo "$due" | jq 'length')
+
+    if [[ "$count" -eq 0 ]]; then
+        rm -f "$FLASHCARD_SESSION_FILE"
+        echo "QUEUE_SIZE=0"
+        echo "NO_CARDS_DUE=1"
+        return 0
+    fi
+
+    # An abandoned session is replaced rather than merged: its cards are still
+    # due, so they come back through list-due here anyway.
+    local temp_file
+    temp_file=$(mktemp)
+    trap "rm -f '$temp_file'" RETURN
+
+    echo "$due" | jq \
+        --arg today "$today" \
+        --arg topic "${topic:-all}" \
+        --argjson cap "$QUEUE_RETRY_CAP" \
+        --argjson gap "$QUEUE_REQUEUE_GAP" '
+        {
+            version: 1,
+            started_at: $today,
+            topic: $topic,
+            retry_cap: $cap,
+            requeue_gap: $gap,
+            queue: [.[].id],
+            served: {}
+        }
+    ' > "$temp_file" && mv "$temp_file" "$FLASHCARD_SESSION_FILE"
+
+    echo "QUEUE_SIZE=$count"
+    echo "RETRY_CAP=$QUEUE_RETRY_CAP"
+    echo "REQUEUE_GAP=$QUEUE_REQUEUE_GAP"
+}
+
+# Peek at the next card. Deliberately does NOT pop — queue-rate removes it.
+# Calling this twice in a row returns the same card, so a skill that loses its
+# place cannot silently drop a card off the queue.
+op_queue_next() {
+    if ! has_flashcard_session; then
+        echo "SESSION=absent"
+        return 0
+    fi
+
+    local card_id
+    card_id=$(jq -r '.queue[0] // empty' "$FLASHCARD_SESSION_FILE")
+
+    if [[ -z "$card_id" ]]; then
+        echo "QUEUE_EMPTY=1"
+        return 0
+    fi
+
+    jq --arg id "$card_id" --slurpfile session "$FLASHCARD_SESSION_FILE" '
+        ($session[0]) as $s
+        | (.cards[$id] // {}) as $card
+        | {
+            id: $id,
+            attempt: (($s.served[$id].attempts // 0) + 1),
+            remaining: ($s.queue | length),
+            retry_cap: $s.retry_cap
+          } + $card
+    ' "$FLASHCARDS_FILE"
+}
+
+# Record a rating. The single entry point after the learner answers — it decides
+# whether SM-2 applies and whether the card comes back, so the skill cannot get
+# the measurement/practice split wrong.
+op_queue_rate() {
+    local card_id="${1:-}"
+    local quality="${2:-}"
+
+    if [[ -z "$card_id" || -z "$quality" ]]; then
+        echo "Usage: flashcards.sh queue-rate <card-id> <quality 0|3|4|5>" >&2
+        return 1
+    fi
+    if ! [[ "$quality" =~ ^[0-5]$ ]]; then
+        echo "ERROR: quality must be 0-5 (Again=0, Hard=3, Good=4, Easy=5); got '$quality'" >&2
+        return 1
+    fi
+    if ! has_flashcard_session; then
+        echo "ERROR: no active flashcard session; run queue-init first" >&2
+        return 1
+    fi
+
+    ensure_flashcards_file
+
+    # Unknown ids must not be written. op_update_sm2 would happily create a junk
+    # subtree under .cards for a typo'd id, and the queue would then diverge
+    # from the deck with no error anywhere.
+    local known
+    known=$(jq -r --arg id "$card_id" 'if .cards[$id] then "yes" else "no" end' "$FLASHCARDS_FILE")
+    if [[ "$known" != "yes" ]]; then
+        echo "ERROR: unknown card id '$card_id'" >&2
+        return 1
+    fi
+
+    local attempts cap gap
+    attempts=$(jq -r --arg id "$card_id" '.served[$id].attempts // 0' "$FLASHCARD_SESSION_FILE")
+    cap=$(jq -r '.retry_cap // 3' "$FLASHCARD_SESSION_FILE")
+    gap=$(jq -r '.requeue_gap // 2' "$FLASHCARD_SESSION_FILE")
+
+    if [[ "$attempts" -eq 0 ]]; then
+        op_update_sm2 "$card_id" "$quality" >/dev/null
+        echo "SM2_APPLIED=1"
+    else
+        echo "SM2_APPLIED=0"
+        echo "SM2_NOTE=retry rep — the schedule was set by this card's first attempt"
+    fi
+
+    local new_attempts=$((attempts + 1))
+    local outcome
+    if [[ "$quality" -ne 0 ]]; then
+        outcome="resolved"
+    elif [[ "$new_attempts" -lt "$cap" ]]; then
+        outcome="requeued"
+    else
+        outcome="capped"
+    fi
+
+    local temp_file
+    temp_file=$(mktemp)
+    trap "rm -f '$temp_file'" RETURN
+
+    jq --arg id "$card_id" \
+       --argjson quality "$quality" \
+       --argjson attempts "$new_attempts" \
+       --arg outcome "$outcome" \
+       --argjson gap "$gap" '
+        def remove_first($x): (index($x)) as $p
+            | if $p == null then . else (.[:$p] + .[$p+1:]) end;
+
+        .served[$id] = ((.served[$id] // {attempts: 0, qualities: []})
+            | .attempts = $attempts
+            | .qualities += [$quality]
+            | .outcome = $outcome
+            | if $attempts == 1 then .first_quality = $quality else . end)
+        | .queue = (.queue | remove_first($id))
+        | .queue = (if $outcome == "requeued"
+                    then (if $gap >= (.queue | length)
+                          then (.queue + [$id])
+                          else (.queue[:$gap] + [$id] + .queue[$gap:]) end)
+                    else .queue end)
+    ' "$FLASHCARD_SESSION_FILE" > "$temp_file" && mv "$temp_file" "$FLASHCARD_SESSION_FILE"
+
+    echo "OUTCOME=$outcome"
+    echo "ATTEMPT=$new_attempts/$cap"
+
+    case "$outcome" in
+        requeued)
+            local pos
+            pos=$(jq -r --arg id "$card_id" '(.queue | index($id)) // 0' "$FLASHCARD_SESSION_FILE")
+            echo "REQUEUED_AFTER=$pos"
+            ;;
+        capped)
+            echo "CAP_REACHED=$cap"
+            echo "CAP_NOTE=left for tomorrow — the first Again already scheduled it"
+            ;;
+    esac
+
+    echo "QUEUE_REMAINING=$(jq -r '.queue | length' "$FLASHCARD_SESSION_FILE")"
+}
+
+op_queue_status() {
+    if ! has_flashcard_session; then
+        echo "SESSION=absent"
+        return 0
+    fi
+
+    jq -r '
+        (.served | to_entries) as $s
+        | "SESSION=active",
+          "TOPIC=\(.topic)",
+          "QUEUE_REMAINING=\(.queue | length)",
+          "CARDS_SEEN=\($s | length)",
+          "TOTAL_REPS=\([$s[].value.attempts] | add // 0)",
+          "LAPSED=\([$s[] | select((.value.qualities // []) | any(. == 0))] | length)",
+          "CAPPED=\([$s[] | select(.value.outcome == "capped")] | length)",
+          "RETRY_CAP=\(.retry_cap)",
+          "REQUEUE_GAP=\(.requeue_gap)"
+    ' "$FLASHCARD_SESSION_FILE"
+}
+
+# Report and clear. Safe to call on an already-ended session.
+op_queue_end() {
+    if ! has_flashcard_session; then
+        echo "SESSION=absent"
+        return 0
+    fi
+
+    op_queue_status
+
+    jq -r '
+        (.served | to_entries) as $s
+        | "RECOVERED=\([$s[] | select(((.value.qualities // []) | any(. == 0)) and .value.outcome == "resolved")] | length)",
+          "UNFINISHED=\(.queue | length)",
+          "AVG_FIRST_QUALITY=\([$s[].value.first_quality // empty] | if length > 0 then (add / length * 100 | floor / 100) else 0 end)"
+    ' "$FLASHCARD_SESSION_FILE"
+
+    rm -f "$FLASHCARD_SESSION_FILE"
+}
+
 # Get a single card by ID
 op_get_card() {
     local card_id="$1"
@@ -293,7 +533,8 @@ op_export_anki() {
 
 if [[ $# -eq 0 ]]; then
     echo "Usage: flashcards.sh <operation> [args...]" >&2
-    echo "Operations: init, stats, list-due, add-card, add-cards, update-sm2, get-card, search, export-anki" >&2
+    echo "Operations: init, stats, list-due, add-card, add-cards, update-sm2, get-card, search, export-anki," >&2
+    echo "            queue-init, queue-next, queue-rate, queue-status, queue-end" >&2
     exit 1
 fi
 
@@ -327,6 +568,21 @@ case "$operation" in
         ;;
     export-anki)
         op_export_anki "${1:-}"
+        ;;
+    queue-init)
+        op_queue_init "${1:-}" "${2:-10}"
+        ;;
+    queue-next)
+        op_queue_next
+        ;;
+    queue-rate)
+        op_queue_rate "${1:-}" "${2:-}"
+        ;;
+    queue-status)
+        op_queue_status
+        ;;
+    queue-end)
+        op_queue_end
         ;;
     *)
         echo "Unknown operation: $operation" >&2

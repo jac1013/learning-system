@@ -43,13 +43,37 @@ Wait for their choice before proceeding.
 
 ## Phase 2: Review Due Cards
 
-!`bash ./.claude/scripts/learning/flashcards.sh list-due "$TOPIC" 10`
+Build the session queue. This is the only place cards are selected — do not call `list-due` directly, or lapsed cards will never come back around:
 
-*Review up to 10 cards per session, most overdue first.*
+```bash
+bash ./.claude/scripts/learning/flashcards.sh queue-init "$TOPIC" 10
+```
 
-If no cards are due, say so and skip to Phase 4 (Add New Cards).
+If it reports `NO_CARDS_DUE=1`, say so and skip to Phase 4 (Add New Cards).
 
-For each due card, adapt the review flow based on card type:
+### The review loop
+
+Repeat until the queue is empty. **Every iteration is exactly two calls** — pull a card, serve it, record the rating:
+
+```bash
+bash ./.claude/scripts/learning/flashcards.sh queue-next
+```
+
+Returns the full card plus `attempt` (which pass this is) and `remaining`. `QUEUE_EMPTY=1` means the session is done — go to Phase 3.
+
+It **peeks rather than pops**, so calling it twice returns the same card. The card only leaves the queue when you rate it. That is deliberate: a dropped turn should stall the loop, not silently lose a card.
+
+If `attempt` is greater than 1, this card is a return visit from a lapse. Say so — *"Back to this one — second look."* — and serve it exactly as before. Do not shorten it, hint, or reveal early because they saw it minutes ago; that is the repetition doing its work.
+
+After the learner answers and rates, record it with the single entry point:
+
+```bash
+bash ./.claude/scripts/learning/flashcards.sh queue-rate "$CARD_ID" "$QUALITY"
+```
+
+Never call `update-sm2` yourself during a queued session — `queue-rate` decides whether the rating counts as measurement or practice, and calling both double-counts the review.
+
+For each card served, adapt the review flow based on card type:
 
 ---
 
@@ -94,33 +118,39 @@ For each due card, adapt the review flow based on card type:
 
 ### After each rating:
 
-Map the user's choice to SM-2 quality: Again=0, Hard=3, Good=4, Easy=5
+Map the user's choice to SM-2 quality: **Again=0, Hard=3, Good=4, Easy=5**, then pass it to `queue-rate` (above). Read the `OUTCOME=` line it returns and report accordingly:
 
-*Execute:*
+- `OUTCOME=requeued` — the card lapsed and is coming back **this session**, after the number of cards in `REQUEUED_AFTER`. Say it concretely: *"Coming back in 2 cards."* Do not say "tomorrow" — the whole point is that they get another attempt before they leave.
+- `OUTCOME=capped` — third strike. *"Leaving this one for tomorrow — it's already scheduled."* Do not keep serving it; that is what the cap is for.
+- `OUTCOME=resolved` on attempt 1 — normal pass. Report the new interval: *"Next review in [N] days."*
+- `OUTCOME=resolved` on attempt 2+ — they recovered a lapsed card within the session. Say so, and be clear the schedule did **not** move: *"Got it on the second pass. Still due tomorrow — recovering in-session is practice, not proof."*
 
-```bash
-bash ./.claude/scripts/learning/flashcards.sh update-sm2 "$CARD_ID" "$QUALITY"
-```
+That last distinction matters and is worth stating plainly if the learner asks: only the **first** attempt at a card each session sets its schedule. Retries build the memory; they don't buy a longer interval. `queue-rate` enforces this — `SM2_APPLIED=0` on the response means the rating was practice.
 
-Show brief feedback after update:
-- **Again**: "This card will come back today. You'll get it."
-- **Hard**: "Scheduled for tomorrow. The struggle helps."
-- **Good**: "Next review in [N] days."
-- **Easy**: "Next review in [N] days. Solid recall."
-
-Then proceed to the next card.
+Then loop back to `queue-next`.
 
 ---
 
 ## Phase 3: Session Summary
 
-After reviewing all cards (or the batch of 10):
+Close the queue. This both reports and clears the session — call it exactly once, at the end:
+
+```bash
+bash ./.claude/scripts/learning/flashcards.sh queue-end
+```
 
 ### Session Results
 
-**Cards Reviewed**: [N]
-**Average Quality**: [X] ([description])
-**Cards Still Due**: [N remaining]
+Build the summary from what it returns:
+
+**Cards Reviewed**: `CARDS_SEEN` (in `TOTAL_REPS` passes — mention the gap only if there were retries)
+**Average Quality**: `AVG_FIRST_QUALITY` ([description]) — first attempts only, which is the honest number
+**Lapsed**: `LAPSED`, of which `RECOVERED` came back and stuck within the session
+**Left for tomorrow**: `CAPPED` (hit the retry cap) + `UNFINISHED` (queue not emptied)
+
+If `RECOVERED` is greater than zero, name it as the win it is — those are cards that would have been forgotten under a plain "see you tomorrow" model.
+
+If `CAPPED` is greater than zero, those cards are the real signal in the session. Three failed attempts in ten minutes is not a scheduling problem, it's a knowledge problem — point at `/learning-weekly-dive "[topic]"` rather than more card review.
 
 **Struggling Cards** (ease factor < 1.5):
 - [Card front snippet] — consider a deeper review via `/learning-weekly-dive "[topic]"`
@@ -163,7 +193,9 @@ Repeat until the user is done adding cards.
 bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 ```
 
-*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "flashcard-review", practice_type "knowledge", topic (or "mixed" if multiple topics), cards_reviewed, average_quality, duration_minutes.*
+*Where `$LOG_ENTRY` is a JSON object with: timestamp, type "flashcard-review", practice_type "knowledge", topic (or "mixed" if multiple topics), cards_reviewed (`CARDS_SEEN`), average_quality (`AVG_FIRST_QUALITY`), cards_lapsed (`LAPSED`), cards_recovered (`RECOVERED`), cards_capped (`CAPPED`).*
+
+Omit `duration_minutes` — `save-state.sh log` overwrites it with the measured session time.
 
 ---
 

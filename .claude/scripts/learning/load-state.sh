@@ -24,6 +24,7 @@ PROJECT_KNOWLEDGE_FILE="$LEARNING_ROOT/project-knowledge.json"
 FLASHCARDS_FILE="$LEARNING_ROOT/.flashcards.json"
 QUIZ_BANK_FILE="$LEARNING_ROOT/.quiz-bank.json"
 CURRENT_SESSION_FILE="$LEARNING_ROOT/.current-session.json"
+FLASHCARD_SESSION_FILE="$LEARNING_ROOT/.flashcard-session.json"
 
 # Portable date helpers (GNU/Linux vs BSD/macOS)
 # Usage: portable_date_iso        → today in YYYY-MM-DD
@@ -53,6 +54,7 @@ export PROJECT_KNOWLEDGE_FILE
 export FLASHCARDS_FILE
 export QUIZ_BANK_FILE
 export CURRENT_SESSION_FILE
+export FLASHCARD_SESSION_FILE
 
 # Function to check if profile exists
 has_profile() {

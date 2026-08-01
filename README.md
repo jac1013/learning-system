@@ -104,6 +104,7 @@ learning-log.jsonl                # Session history
 .flashcards.json                  # Flashcard content + SM-2 state
 .quiz-bank.json                   # Quiz question bank + per-question stats
 .current-session.json             # Active session timer (auto-cleared on log)
+.flashcard-session.json           # In-session card queue (cleared at session end)
 synthesis/                        # Monthly synthesis documents
 ```
 
