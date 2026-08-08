@@ -76,7 +76,9 @@ Written by `/learning-quiz`. `practice_type` is `knowledge`.
 | `missed` | object[] | `{question_id, picked, correct, concept}` per miss |
 | `cards_created` | number | Flashcards generated from misses |
 
-Quiz scores must not be written to `.spaced-repetition.json`: discrimination under multiple choice and free recall are different measurements, and a standalone quiz would otherwise shift a topic's review interval on recognition evidence alone. Inside a weekly dive the quiz result instead informs the **Accuracy** dimension of that session's teach-back score, and appears as a `quiz` sub-object (`{questions_total, questions_correct, score_percent}`) on the `weekly-dive` entry rather than as its own log line.
+Quiz scores must not be written to `.spaced-repetition.json`: discrimination under multiple choice and free recall are different measurements, and a standalone quiz would otherwise shift a topic's review interval on recognition evidence alone. Inside a weekly dive the quiz result instead informs the **Accuracy** dimension of that session's score, and appears as a `quiz` sub-object (`{questions_total, questions_correct, score_percent}`) on the `weekly-dive` entry rather than as its own log line.
+
+A `weekly-dive` entry also carries a `diagnostic` sub-object (`{errors_seeded, errors_found, decoy_flagged}`) from the Phase 5 broken case. It is not a separate score — the four dimensions already absorb it — but it is the log's sharpest longitudinal signal, because the errors are seeded from gaps that same session just identified. A found-rate that climbs across dives is repair that held; one that doesn't is a topic being re-taught rather than learned.
 
 Per-question statistics live in `.quiz-bank.json`, not in the log. The log records what happened in the session; the bank records what to serve next.
 

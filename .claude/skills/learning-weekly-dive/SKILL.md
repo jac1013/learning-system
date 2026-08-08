@@ -1,6 +1,6 @@
 ---
 name: learning-weekly-dive
-description: 30-60 minute deep dive using Socratic questioning and teach-back. System suggests next roadmap topic or specify your own. Builds deep understanding through challenge.
+description: 30-60 minute deep dive using Socratic questioning, teach-back, and diagnosis of a seeded broken case. System suggests next roadmap topic or specify your own. Builds deep understanding through challenge.
 disable-model-invocation: false
 argument-hint: "[optional-topic]"
 context: fork
@@ -8,7 +8,7 @@ context: fork
 
 # Weekly Dive - Deep Socratic Learning
 
-Deep exploration session (30-60 minutes) using Socratic method and teach-back.
+Deep exploration session (30-60 minutes). Three different tests of the same knowledge: teach it (Phase 3), repair a broken case built from your own gaps (Phase 5), discriminate under multiple choice (Phase 5b).
 
 **Topic**: $ARGUMENTS
 
@@ -132,59 +132,75 @@ After reading, apply the new knowledge:
 
 ---
 
-## Phase 5: Teach-Back Verification (10-15 min)
+## Phase 5: Diagnose the Broken Case (8-12 min)
 
-### 🎯 Teach-Back Challenge
+### 🔧 Find What's Wrong
 
-Now teach me [topic] again, incorporating what you just learned.
+This is the session's verification step, and it is deliberately **not** a second teach-back. Phase 3 already had them produce an explanation; asking for another one twenty-five minutes later largely retrieves *the first explanation* rather than the topic — it comes out smoother than their knowledge warrants, which is the worst possible property in the phase you score. Diagnosis makes them use the knowledge on something they have never seen. That is the thing worth measuring.
 
-**Important**: Do this WITHOUT looking at notes or references!
+### Build the case
 
-I'm a [junior developer / new learner / mid-level engineer - adjust based on profile].
+Construct a plausible worked artifact in whatever form this topic's real output takes — a configuration, a design, a plan, a query, an argument, a treatment, a procedure. Use the learner's work context from `profile.json` where it fits: a broken thing that looks like their job beats a textbook one.
 
-**I'll ask clarifying questions**:
-- "I don't understand [aspect]. Can you explain differently?"
-- "Why do we need [component]? Can't we just [naive alternative]?"
-- "When would I use this in real work?"
-- "How is this different from [similar concept]?"
+Seed it with **exactly 3 errors** and **1 decoy** — something that looks wrong or unusual but is correct. Announce the error count. Never mention the decoy.
+
+The errors are where this phase lives or dies:
+
+- **Each error traces to a Phase 4 gap.** That is the whole point — you are testing the repair, on unfamiliar ground. With fewer than 3 gaps, fill from the Socratic ladder points where they hesitated, then from known misconceptions for the topic.
+- **At least one error must match a misconception the learner said out loud** in Phase 3. That one is the real measurement here.
+- **Conceptual errors only.** No typos, no syntax, no formatting, no missing semicolons. Each error must read as entirely reasonable and be wrong for a reason that takes understanding the topic to see.
+- **The decoy must be genuinely tempting** — an unusual but correct choice. It is what stops "find 3 errors" from collapsing into "flag the 3 strangest lines."
+- **Do not telegraph.** You are writing both the errors and the correct parts, so it is easy to leak position through style — the wrong lines being the only commented ones, the only verbose ones, the only ones with a value spelled out. Errors must be indistinguishable from correct material on everything except substance.
+
+### Serve it
+
+Present the artifact and the task:
+
+> Here's a worked example from someone else. It contains **3 errors**. For each one you find: quote it, say **why** it's wrong, and give the fix.
+
+**Take all of their answers before revealing anything.** No per-item confirmation, no "yes, keep going", no narrowing hints — feedback on the first error leaks the search space for the other two. If they stall, let them submit what they have; a short answer is data.
+
+Then reveal all four: the three errors, and the decoy they either flagged or correctly left alone.
 
 ---
 
-### Teach-Back Evaluation
+### Diagnostic Evaluation
 
-**Scoring (0-10 on each dimension)**:
+**Scoring (0-10 on each dimension)** — the same four dimensions the framework scores everywhere, read off diagnostic behavior instead of exposition:
 
-**Clarity** (Can a beginner understand?):
-- 10: Could teach complete beginner
-- 7-8: Mostly clear
-- 5-6: Requires prior knowledge
+**Accuracy** (Is the diagnosis right?):
+- 10: Found the errors and named the actual cause of each
+- 7-8: Found most; one cause described loosely
+- 5-6: Found errors but misattributed a cause, or flagged the decoy
+- 0-4: Mostly missed, or flagged things at random
+
+**Depth** (Do you explain *why* it breaks?):
+- 10: Mechanism for each — what fails, in what order, and what the fix restores
+- 7-8: Mechanism for most of them
+- 5-6: "That's not how it works" with no because
+- 0-4: Pattern-matched against a rule, no reasoning
+
+**Completeness** (Did you cover the case?):
+- 10: All 3 found, decoy left alone
+- 7-8: 2 of 3, decoy left alone
+- 5-6: 2 of 3, or all 3 but flagged the decoy as well
+- 0-4: 1 or fewer
+
+**Clarity** (Could someone act on your diagnosis?):
+- 10: Every fix is specific enough for someone else to apply
+- 7-8: Clear, one fix vague
+- 5-6: Names the problem but the fix is hand-wavy
 - 0-4: Hard to follow
 
-**Accuracy** (Is it correct?):
-- 10: Completely correct
-- 7-8: Mostly correct, minor inaccuracies
-- 5-6: Some errors
-- 0-4: Many errors
-
-**Depth** (Do you explain "why"?):
-- 10: Explains why, trade-offs, alternatives
-- 7-8: Explains some reasoning
-- 5-6: Mostly "what" not "why"
-- 0-4: Surface-level only
-
-**Completeness** (Do you cover key aspects?):
-- 10: Covers all major components
-- 7-8: Minor omissions
-- 5-6: Missing important aspects
-- 0-4: Major gaps
-
 **Overall Score**: Average of 4 dimensions
+
+A missed error is worth more than a found one for what comes next — it marks a gap that survived Phase 4's repair. Carry every miss into Phase 5c as a card.
 
 ---
 
 ## Phase 5b: Module Quiz (5-10 min)
 
-**This phase is required. Run it every time — do not offer to skip it, and do not ask whether the learner wants it.** Announce it and start. Teach-back tests whether you can *produce* an explanation; this tests whether you can *discriminate* between answers that look alike, which is a different failure mode and the one that shows up on real exams and in real decisions.
+**This phase is required. Run it every time — do not offer to skip it, and do not ask whether the learner wants it.** Announce it and start. Phase 3 tested whether they can *produce* an explanation and Phase 5 whether they can *repair* a broken case; this tests whether they can *discriminate* between answers that look alike — a third failure mode, and the one that shows up on real exams and in real decisions.
 
 Author **5 questions on what this session actually covered** — especially the gaps identified in Phase 4, since those are where confusions are known to exist. Follow the authoring rubric in `.claude/skills/learning-quiz/SKILL.md` (Phase 2): scenario stems, defensible distractors, at least half at `application` or `analysis` difficulty, `distractor_rationale` required for every wrong option.
 
@@ -207,7 +223,7 @@ Record each answer:
 bash ./.claude/scripts/learning/quiz.sh record "$QID" "$CORRECT" "$PICKED"
 ```
 
-**Do not write a separate score.** The quiz result is evidence for the **Accuracy** dimension of the teach-back rubric above — a learner who explained clearly but missed 3 of 5 discrimination items did not score 9 on Accuracy. Adjust that dimension before Phase 6 and say why.
+**Do not write a separate score.** The quiz result is evidence for the **Accuracy** dimension of the Phase 5 rubric above — a learner who diagnosed the broken case well but missed 3 of 5 discrimination items did not score 9 on Accuracy. Adjust that dimension before Phase 6 and say why.
 
 Carry every miss forward into the next phase as a card.
 
@@ -221,10 +237,12 @@ Based on this session, generate flashcards for the key facts from [topic].
 
 **Only generate cards for concrete, testable knowledge — not vague concepts.**
 
+**Include one card per error missed in Phase 5**, built from the distinction that would have caught it. A missed error is a gap that survived the session's own repair, which makes it the highest-value card in the batch. If they flagged the decoy, card the reason it was actually correct.
+
 Generate 3-8 cards based on session content, mixing types:
 - **basic** cards for definitions, lists, numbers, acronyms discovered during the session
 - **cloze** cards using `{{c1::answer}}` syntax for key terms and definitions
-- **scenario** cards based on Socratic questions where the user struggled
+- **scenario** cards based on Socratic questions where the user struggled, or on the broken case they could not repair
 
 **Save them directly — do not ask the learner to review or approve the cards.** Review happens when the card comes up for study; asking for sign-off here makes the session tedious and adds nothing the first review won't catch.
 
@@ -240,7 +258,7 @@ Then report what was saved in a compact list — type, front, back — so the le
 
 ## Phase 6: Document & Schedule (5 min)
 
-### 📊 Teach-Back Results
+### 📊 Session Results
 
 **Overall Score**: [X/10] - [Mastery/Strong/Good/Moderate/Weak]
 
@@ -250,8 +268,8 @@ Then report what was saved in a compact list — type, front, back — so the le
 - Depth: [X/10] - [Comment]
 - Completeness: [X/10] - [Comment]
 
-**What You Explained Well**:
-- [Specific strength with example]
+**What You Got Right**:
+- [Specific strength, quoted from the teach-back or the diagnosis]
 - [Another strength]
 
 **What to Improve**:
@@ -269,7 +287,7 @@ Then report what was saved in a compact list — type, front, back — so the le
 *Calculate overall score as average of the 4 dimension scores, then execute:*
 
 ```bash
-bash ./.claude/scripts/learning/save-state.sh spaced-rep "$TOPIC" "$OVERALL_SCORE" "Teach-back: C:$CLARITY A:$ACCURACY D:$DEPTH Cm:$COMPLETENESS"
+bash ./.claude/scripts/learning/save-state.sh spaced-rep "$TOPIC" "$OVERALL_SCORE" "Weekly dive: C:$CLARITY A:$ACCURACY D:$DEPTH Cm:$COMPLETENESS"
 ```
 
 *Then resolve the roadmap status. `$OPEN_GAP_COUNT` is the number of Phase 4 gaps still unresolved at the end of the session — count them honestly, including any the learner acknowledged but did not close.*
@@ -286,6 +304,8 @@ bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 
 *Where `$LOG_ENTRY` is a JSON object with: timestamp, type "weekly-dive", practice_type "knowledge", topic, overall_score, scores (clarity/accuracy/depth/completeness), duration_minutes, strengths array, gaps array, next_review date.*
 
+*Include a `diagnostic` sub-object from Phase 5 — `{"errors_seeded": 3, "errors_found": 2, "decoy_flagged": false}`. Over time this is the cleanest signal in the log: found-rate rising on errors seeded from that session's own gaps is repair that held.*
+
 *Include a `quiz` sub-object from Phase 5b — `{"questions_total": 5, "questions_correct": 3, "score_percent": 60}`. Phase 5b always runs, so this is always present.*
 
 ---
@@ -296,7 +316,8 @@ bash ./.claude/scripts/learning/save-state.sh log "$LOG_ENTRY"
 
 **Topic**: [topic name]
 **Duration**: [X minutes]
-**Teach-Back Score**: [X/10]
+**Session Score**: [X/10]
+**Broken Case**: [N] of 3 errors found[, decoy flagged]
 
 **Key Insights Gained**:
 - [Insight 1 - connection or realization]
