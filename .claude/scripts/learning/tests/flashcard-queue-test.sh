@@ -65,6 +65,18 @@ make_all_due() {
 }
 make_all_due
 
+# Put one card back to its as-created state, so two cards can be compared from
+# an identical starting point regardless of what earlier sections did to them.
+reset_card() {
+    local t
+    t=$(mktemp)
+    jq --arg id "$1" --arg d "$yesterday" '
+        .cards[$id].sm2 = {interval: 1, ease_factor: 2.5, repetitions: 0,
+                           next_review: $d, last_reviewed: null, quality_history: []}
+    ' "$DECK" > "$t"
+    mv "$t" "$DECK"
+}
+
 id_of() { jq -r --arg f "$1" '.cards | to_entries[] | select(.value.front == $f) | .key' "$DECK"; }
 C1=$(id_of "Card one"); C2=$(id_of "Card two"); C3=$(id_of "Card three"); C4=$(id_of "Card four")
 
@@ -193,6 +205,58 @@ if bash "$FC" queue-rate "$C1" 9 >/dev/null 2>&1; then
 fi
 if bash "$FC" queue-rate "$C1" "good" >/dev/null 2>&1; then
     echo "FAIL: queue-rate accepted a non-numeric quality" >&2
+    exit 1
+fi
+
+# --- queue-regrade: an overridden rating replaces, it never stacks -------
+# The skill assigns the quality from what the learner wrote, so a wrong guess
+# must be correctable without the card paying for two reviews.
+make_all_due
+reset_card "$C1"; reset_card "$C2"
+bash "$FC" queue-init "" 10 >/dev/null
+
+# Control: C2 is rated Again once, directly.
+bash "$FC" queue-rate "$C2" 0 >/dev/null
+
+# C1 is auto-rated Good, then the learner says they actually blanked.
+bash "$FC" queue-rate "$C1" 4 >/dev/null
+out=$(bash "$FC" queue-regrade "$C1" 0)
+assert_equal "1" "$(kv REGRADED "$out")" "queue-regrade should report that it corrected the rating"
+assert_equal "requeued" "$(kv OUTCOME "$out")" "a downgrade to Again should bring the card back this session"
+assert_equal "1" "$(jq -r --arg id "$C1" '.cards[$id].sm2.quality_history | length' "$DECK")" "a regrade must replace the rating, not stack a second review on it"
+assert_equal "0" "$(jq -r --arg id "$C1" '.cards[$id].sm2.quality_history[0]' "$DECK")" "the corrected quality should be the one on record"
+assert_equal "$(jq -r --arg id "$C2" '.cards[$id].sm2.ease_factor' "$DECK")" "$(jq -r --arg id "$C1" '.cards[$id].sm2.ease_factor' "$DECK")" "a regraded card should land exactly where the same rating given first would have"
+assert_equal "$(jq -r --arg id "$C2" '.cards[$id].sm2.interval' "$DECK")" "$(jq -r --arg id "$C1" '.cards[$id].sm2.interval' "$DECK")" "a regraded card's interval should match the direct rating"
+assert_equal "0" "$(jq -r --arg id "$C1" '.served[$id].first_quality' "$SESSION")" "the session summary should report the corrected quality"
+assert_equal "1" "$(jq -r --arg id "$C1" '.served[$id].attempts' "$SESSION")" "a regrade is a correction, not a second attempt"
+if ! jq -e --arg id "$C1" '.queue | index($id)' "$SESSION" >/dev/null; then
+    echo "FAIL: a card regraded down to Again never came back to the queue" >&2
+    exit 1
+fi
+
+# The other direction: auto-rated Again, but the learner had it.
+make_all_due
+reset_card "$C3"
+bash "$FC" queue-init "" 10 >/dev/null
+bash "$FC" queue-rate "$C3" 0 >/dev/null
+out=$(bash "$FC" queue-regrade "$C3" 4)
+assert_equal "resolved" "$(kv OUTCOME "$out")" "an upgrade should resolve the card"
+assert_equal "1" "$(jq -r --arg id "$C3" '.cards[$id].sm2.repetitions' "$DECK")" "an upgrade should restore the repetition the lapse had reset"
+assert_equal "1" "$(jq -r --arg id "$C3" '.cards[$id].sm2.quality_history | length' "$DECK")" "an upgrade must also replace rather than stack"
+if jq -e --arg id "$C3" '.queue | index($id)' "$SESSION" >/dev/null; then
+    echo "FAIL: a card regraded upward is still queued for a retry" >&2
+    exit 1
+fi
+
+# --- Regrade validation --------------------------------------------------
+if bash "$FC" queue-regrade "$C4" 4 >/dev/null 2>&1; then
+    echo "FAIL: queue-regrade accepted a card that was never rated this session" >&2
+    exit 1
+fi
+
+bash "$FC" queue-rate "$C3" 0 >/dev/null   # second rating: C3 is now on attempt 2
+if bash "$FC" queue-regrade "$C3" 4 >/dev/null 2>&1; then
+    echo "FAIL: queue-regrade rewrote a schedule that a retry never set" >&2
     exit 1
 fi
 

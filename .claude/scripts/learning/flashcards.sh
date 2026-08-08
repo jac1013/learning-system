@@ -2,7 +2,7 @@
 # Learning System - Flashcard Engine
 # Card-level spaced repetition with SM-2 algorithm, plus an in-session lapse queue
 # Operations: init, stats, list-due, add-card, add-cards, update-sm2, get-card, search, export-anki,
-#             queue-init, queue-next, queue-rate, queue-status, queue-end
+#             queue-init, queue-next, queue-rate, queue-regrade, queue-status, queue-end
 
 set -euo pipefail
 
@@ -381,9 +381,17 @@ op_queue_rate() {
     cap=$(jq -r '.retry_cap // 3' "$FLASHCARD_SESSION_FILE")
     gap=$(jq -r '.requeue_gap // 2' "$FLASHCARD_SESSION_FILE")
 
+    local sm2_before="null"
     if [[ "$attempts" -eq 0 ]]; then
+        # Snapshot the pre-rating state so queue-regrade can *replace* this
+        # rating rather than stack a second review on top of it.
+        sm2_before=$(jq -c --arg id "$card_id" '.cards[$id].sm2' "$FLASHCARDS_FILE")
         op_update_sm2 "$card_id" "$quality" >/dev/null
         echo "SM2_APPLIED=1"
+        jq -r --arg id "$card_id" '
+            "INTERVAL=\(.cards[$id].sm2.interval)",
+            "NEXT_REVIEW=\(.cards[$id].sm2.next_review)"
+        ' "$FLASHCARDS_FILE"
     else
         echo "SM2_APPLIED=0"
         echo "SM2_NOTE=retry rep — the schedule was set by this card's first attempt"
@@ -407,7 +415,8 @@ op_queue_rate() {
        --argjson quality "$quality" \
        --argjson attempts "$new_attempts" \
        --arg outcome "$outcome" \
-       --argjson gap "$gap" '
+       --argjson gap "$gap" \
+       --argjson before "$sm2_before" '
         def remove_first($x): (index($x)) as $p
             | if $p == null then . else (.[:$p] + .[$p+1:]) end;
 
@@ -415,7 +424,7 @@ op_queue_rate() {
             | .attempts = $attempts
             | .qualities += [$quality]
             | .outcome = $outcome
-            | if $attempts == 1 then .first_quality = $quality else . end)
+            | if $attempts == 1 then (.first_quality = $quality | .sm2_before = $before) else . end)
         | .queue = (.queue | remove_first($id))
         | .queue = (if $outcome == "requeued"
                     then (if $gap >= (.queue | length)
@@ -438,6 +447,119 @@ op_queue_rate() {
             echo "CAP_NOTE=left for tomorrow — the first Again already scheduled it"
             ;;
     esac
+
+    echo "QUEUE_REMAINING=$(jq -r '.queue | length' "$FLASHCARD_SESSION_FILE")"
+}
+
+# Correct the rating on this session's *first* attempt at a card.
+#
+# The skill assigns the quality itself from what the learner wrote — that is what
+# keeps a card down to one exchange. But it is an inference about someone else's
+# retrieval, and only the learner can feel how hard it actually was. Without a
+# correction path that inference is unappealable and silently writes the schedule.
+#
+# This replaces the rating instead of adding a second one: it restores the SM-2
+# state snapshotted before the original rating and re-applies from there, so an
+# override costs the card nothing. Deliberately limited to attempt 1 — later
+# attempts never touched SM-2, so there is nothing there to correct.
+op_queue_regrade() {
+    local card_id="${1:-}"
+    local quality="${2:-}"
+
+    if [[ -z "$card_id" || -z "$quality" ]]; then
+        echo "Usage: flashcards.sh queue-regrade <card-id> <quality 0|3|4|5>" >&2
+        return 1
+    fi
+    if ! [[ "$quality" =~ ^[0-5]$ ]]; then
+        echo "ERROR: quality must be 0-5 (Again=0, Hard=3, Good=4, Easy=5); got '$quality'" >&2
+        return 1
+    fi
+    if ! has_flashcard_session; then
+        echo "ERROR: no active flashcard session; nothing to regrade" >&2
+        return 1
+    fi
+
+    ensure_flashcards_file
+
+    local attempts
+    attempts=$(jq -r --arg id "$card_id" '.served[$id].attempts // 0' "$FLASHCARD_SESSION_FILE")
+    if [[ "$attempts" -eq 0 ]]; then
+        echo "ERROR: card '$card_id' has not been rated this session" >&2
+        return 1
+    fi
+    if [[ "$attempts" -gt 1 ]]; then
+        echo "ERROR: '$card_id' is on attempt $attempts — only its first rating set the schedule, and that is already spent" >&2
+        return 1
+    fi
+
+    local before
+    before=$(jq -c --arg id "$card_id" '.served[$id].sm2_before // empty' "$FLASHCARD_SESSION_FILE")
+    if [[ -z "$before" || "$before" == "null" ]]; then
+        echo "ERROR: no pre-rating snapshot for '$card_id'" >&2
+        return 1
+    fi
+
+    # Roll the card back, then re-apply. The snapshot carries the old
+    # quality_history too, so the corrected rating lands in place of the
+    # original rather than beside it.
+    local temp_file
+    temp_file=$(mktemp)
+    trap "rm -f '$temp_file'" RETURN
+
+    jq --arg id "$card_id" --argjson before "$before" '.cards[$id].sm2 = $before' \
+        "$FLASHCARDS_FILE" > "$temp_file" && mv "$temp_file" "$FLASHCARDS_FILE"
+
+    op_update_sm2 "$card_id" "$quality" >/dev/null
+    echo "REGRADED=1"
+    echo "SM2_APPLIED=1"
+    jq -r --arg id "$card_id" '
+        "INTERVAL=\(.cards[$id].sm2.interval)",
+        "NEXT_REVIEW=\(.cards[$id].sm2.next_review)"
+    ' "$FLASHCARDS_FILE"
+
+    local cap gap outcome
+    cap=$(jq -r '.retry_cap // 3' "$FLASHCARD_SESSION_FILE")
+    gap=$(jq -r '.requeue_gap // 2' "$FLASHCARD_SESSION_FILE")
+
+    # A regrade is a correction, not a new attempt, so the attempt count holds at 1.
+    if [[ "$quality" -ne 0 ]]; then
+        outcome="resolved"
+    elif [[ "$cap" -gt 1 ]]; then
+        outcome="requeued"
+    else
+        outcome="capped"
+    fi
+
+    temp_file=$(mktemp)
+    trap "rm -f '$temp_file'" RETURN
+
+    jq --arg id "$card_id" \
+       --argjson quality "$quality" \
+       --arg outcome "$outcome" \
+       --argjson gap "$gap" '
+        def remove_first($x): (index($x)) as $p
+            | if $p == null then . else (.[:$p] + .[$p+1:]) end;
+
+        .served[$id].qualities = [$quality]
+        | .served[$id].first_quality = $quality
+        | .served[$id].outcome = $outcome
+        | .served[$id].regraded = true
+        | .queue = (.queue | remove_first($id))
+        | .queue = (if $outcome == "requeued"
+                    then (if $gap >= (.queue | length)
+                          then (.queue + [$id])
+                          else (.queue[:$gap] + [$id] + .queue[$gap:]) end)
+                    else .queue end)
+    ' "$FLASHCARD_SESSION_FILE" > "$temp_file" && mv "$temp_file" "$FLASHCARD_SESSION_FILE"
+
+    echo "OUTCOME=$outcome"
+    echo "ATTEMPT=1/$cap"
+
+    if [[ "$outcome" == "requeued" ]]; then
+        local pos
+        pos=$(jq -r --arg id "$card_id" '(.queue | index($id)) // 0' "$FLASHCARD_SESSION_FILE")
+        echo "REQUEUED_AFTER=$pos"
+    fi
 
     echo "QUEUE_REMAINING=$(jq -r '.queue | length' "$FLASHCARD_SESSION_FILE")"
 }
@@ -534,7 +656,7 @@ op_export_anki() {
 if [[ $# -eq 0 ]]; then
     echo "Usage: flashcards.sh <operation> [args...]" >&2
     echo "Operations: init, stats, list-due, add-card, add-cards, update-sm2, get-card, search, export-anki," >&2
-    echo "            queue-init, queue-next, queue-rate, queue-status, queue-end" >&2
+    echo "            queue-init, queue-next, queue-rate, queue-regrade, queue-status, queue-end" >&2
     exit 1
 fi
 
@@ -577,6 +699,9 @@ case "$operation" in
         ;;
     queue-rate)
         op_queue_rate "${1:-}" "${2:-}"
+        ;;
+    queue-regrade)
+        op_queue_regrade "${1:-}" "${2:-}"
         ;;
     queue-status)
         op_queue_status
